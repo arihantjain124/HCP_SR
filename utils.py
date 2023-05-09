@@ -5,6 +5,12 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 from numpy.linalg import eig
+from numpy.linalg import inv
+from numpy.linalg import pinv
+from numpy.linalg import lstsq
+from numpy.linalg import solve
+from numpy import inf
+import numpy as np
 
 base_dir = "/storage/users/arihant"
 base_dir_7t = [base_dir + "/HCP_7T/" + i   for i in os.listdir(base_dir + "/HCP_7T") if len(i) == 6]
@@ -12,6 +18,13 @@ base_dir_3t = [base_dir + "/HCP_3T/" + i   for i in os.listdir(base_dir + "/HCP_
 
 path_7t = {}
 path_3t = {}
+
+dsm = np.array([0.91, 0.416, 0,0, 0.91, 0.416,0.416, 0, 0.91,0.91, -0.416, 0,0, 0.91, -0.416,-0.416, 0, 0.91])
+dsm = dsm.reshape(6,3)
+dsm_norm = np.copy(dsm)
+dsm_mag = np.sqrt(dsm[:,0]**2 + dsm[:,1]**2 + dsm[:,2]**2)
+for i in range(3):
+    dsm_norm[:,i] = dsm[:,i] / dsm_mag
 
 
 for i in base_dir_7t:
@@ -43,10 +56,11 @@ def load_hcp(id_load,res,ret_img = False,crop = 10):
     mask,affine = load_nifti(load_from["brain_mask"], return_img=ret_img)
     scan, affine = load_nifti(load_from["3d_scan"], return_img=False)
     
+    grad_dev, affine = load_nifti(load_from["grad_dev"], return_img=False)
     bvals, bvecs = read_bvals_bvecs(load_from['bvals'], load_from['bvecs'])
     gtab = gradient_table(bvals, bvecs)
     
-    return data[:,:,crop:-crop,:],mask[:,:,crop:-crop],scan,gtab
+    return data[:,:,crop:-crop,:],mask[:,:,crop:-crop],scan,gtab,grad_dev
 
 def mean_volume(data,gtab,b):
     if b not in gtab.bvals:
@@ -125,4 +139,69 @@ def dtimetric(tensor,mask):
     ret['rd'] = rd                
     return ret
                     
+def diff_coefficent(dwis,b0,bvecs,bvals,shp,bval_synth,base_bval = 5):
+    # compute apparent diffusion coefficients
+    # meanb0 = mean_volume(data,gtab,base_bval)[...,np.newaxis]
+    b0 = b0[...,np.newaxis]
+    adcs = np.log(dwis / b0); # s = b0 * exp(-b * adc)
     
+    for i in range(adcs.shape[3]):
+        adcs[:,:,:,i] = adcs[:,:,:,i] / (-bvals[i])
+
+        
+    adcs_vec = adcs.reshape(shp[0]*shp[1]*shp[2],adcs.shape[3]) # tx volume data to vectors
+    tensor_vec = lstsq(amatrix(bvecs),adcs_vec.T,rcond=-1)[0]
+    # tensor_vec = pinv(amatrix(bvecs)) @ adcs_vec.T # solve tensors
+
+    tensor_img = tensor_vec.T.reshape(shp[0],shp[1],shp[2],6)
+    tensor_img = np.nan_to_num(tensor_img)
+    tensor_img[tensor_img == inf] = 0
+    # print(tensor_img.max(),tensor_img.min())
+
+
+    # # synthesize dwis along DSM6 dirs
+    dwis_norm = np.exp(-bval_synth * (amatrix(dsm_norm) @ tensor_vec))
+    # print(dwis_norm.shape)
+    dwis = b0 * dwis_norm.T.reshape(shp[0],shp[1],shp[2], dwis_norm.shape[0]);    
+    dwis = np.nan_to_num(dwis)
+    dwis[dwis == inf] = 0
+
+    diff_img = np.concatenate((b0,dwis),axis =3 )
+    return diff_img,tensor_img
+
+
+def optimal_dirs(gtab,num_iter,num_dirs,debug = False,base_bval = 5):
+    rotang_all = []
+    angerr_all  = []
+    condnum_all = []
+    ind_all = []
+    dirs = np.array(gtab.bvecs[np.where(gtab.bvals != base_bval)[0]])
+    for i in range(0,num_iter):
+        
+        d = np.random.rand(1,3) * 2 * np.pi
+        rotang = d[0]
+        R = rot3d(rotang)
+        dsm_rot = (rot3d(d[0]) @ dsm_norm.T).T
+        
+        ang_error = np.degrees(np.arccos(abs(dsm_rot @ dirs.T)))
+        minerrors,idx = np.amin(ang_error,1),np.argmin(ang_error,1)
+
+        mean_ang_err = np.mean(np.amin(ang_error,1))
+        condnum = np.linalg.cond(amatrix(dirs[idx]))
+        
+        idx.sort()
+        if (mean_ang_err < 5 and condnum < 1.6):
+            if ((len(ind_all) == 0 ) or  len(np.where((ind_all == idx).all(axis=1))[0]) == 0 ):
+                angerr_all.append(mean_ang_err)
+                condnum_all.append(condnum)
+                ind_all.append(idx)
+                rotang_all.append(rotang)
+    condnum_all = np.array(condnum_all)
+    indx  = condnum_all.argsort()[:num_dirs]
+    if (debug):
+        print("Lowest Condition Number : ",condnum_all[indx])
+    ind_use = np.array(ind_all)[indx]
+    condnum_use = condnum_all[condnum_all.argsort()[:5]]
+    angerr_use = np.array(angerr_all)[indx]
+    rotang_use = np.array(rotang_all)[indx]
+    return ind_use
