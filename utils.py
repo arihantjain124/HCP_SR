@@ -7,7 +7,8 @@ import matplotlib.pyplot as plt
 from numpy.linalg import eig
 from numpy.linalg import inv
 from numpy.linalg import pinv
-from numpy.linalg import lstsq
+# from numpy.linalg import lstsq
+from scipy.linalg import lstsq
 from numpy.linalg import solve
 from numpy import inf
 import numpy as np
@@ -143,19 +144,21 @@ def diff_coefficent(dwis,b0,bvecs,bvals,shp,bval_synth,base_bval = 5):
     # compute apparent diffusion coefficients
     # meanb0 = mean_volume(data,gtab,base_bval)[...,np.newaxis]
     b0 = b0[...,np.newaxis]
-    adcs = np.log(dwis / b0); # s = b0 * exp(-b * adc)
+    adcs = np.log(1e-3+(dwis / (1e-9+b0))); # s = b0 * exp(-b * adc)
     
     for i in range(adcs.shape[3]):
         adcs[:,:,:,i] = adcs[:,:,:,i] / (-bvals[i])
 
         
     adcs_vec = adcs.reshape(shp[0]*shp[1]*shp[2],adcs.shape[3]) # tx volume data to vectors
-    tensor_vec = lstsq(amatrix(bvecs),adcs_vec.T,rcond=-1)[0]
+    # adcs_vec.dropna(inplace=True)
+    adcs_vec = overflow_fix(adcs_vec)
+    A = overflow_fix(amatrix(bvecs))
+    tensor_vec = lstsq(amatrix(bvecs),adcs_vec.T,cond=None)[0]
     # tensor_vec = pinv(amatrix(bvecs)) @ adcs_vec.T # solve tensors
 
     tensor_img = tensor_vec.T.reshape(shp[0],shp[1],shp[2],6)
-    tensor_img = np.nan_to_num(tensor_img)
-    tensor_img[tensor_img == inf] = 0
+    tensor_img = overflow_fix(tensor_img)
     # print(tensor_img.max(),tensor_img.min())
 
 
@@ -163,8 +166,7 @@ def diff_coefficent(dwis,b0,bvecs,bvals,shp,bval_synth,base_bval = 5):
     dwis_norm = np.exp(-bval_synth * (amatrix(dsm_norm) @ tensor_vec))
     # print(dwis_norm.shape)
     dwis = b0 * dwis_norm.T.reshape(shp[0],shp[1],shp[2], dwis_norm.shape[0]);    
-    dwis = np.nan_to_num(dwis)
-    dwis[dwis == inf] = 0
+    dwis = overflow_fix(dwis)
 
     diff_img = np.concatenate((b0,dwis),axis =3 )
     return diff_img,tensor_img
@@ -205,3 +207,8 @@ def optimal_dirs(gtab,num_iter,num_dirs,debug = False,base_bval = 5):
     angerr_use = np.array(angerr_all)[indx]
     rotang_use = np.array(rotang_all)[indx]
     return ind_use
+
+def overflow_fix(data):
+    data = np.nan_to_num(data)
+    data[data == np.inf] = 0
+    return data
