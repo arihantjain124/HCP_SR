@@ -6,7 +6,7 @@
 
 from keras.models import Model
 from keras.layers import Input, Conv3D, BatchNormalization, Activation, concatenate
-from keras.utils import plot_model
+from keras.utils.vis_utils import plot_model
 
 def dncnn_model(input_ch, output_ch=1, layer_num=20, filter_num=64, bnorm_flag=True, kinit_type='he_normal', tag='dncnn'):
 
