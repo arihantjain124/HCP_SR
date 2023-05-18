@@ -140,36 +140,36 @@ def dtimetric(tensor,mask):
     ret['rd'] = rd                
     return ret
                     
-def diff_coefficent(dwis,b0,bvecs,bvals,shp,bval_synth,base_bval = 5):
+def diff_coefficent(dwis,b0_img,bvecs,bvals,shp,bval_synth,base_bval = 5):
     # compute apparent diffusion coefficients
     # meanb0 = mean_volume(data,gtab,base_bval)[...,np.newaxis]
-    b0 = b0[...,np.newaxis]
-    adcs = np.log(1e-3+(dwis / (1e-9+b0))); # s = b0 * exp(-b * adc)
-    
-    for i in range(adcs.shape[3]):
-        adcs[:,:,:,i] = adcs[:,:,:,i] / (-bvals[i])
+    b0_img = b0_img[...,np.newaxis]
+    c = np.log(1e-3+(dwis / (1e-9+b0_img))); 
+    for i in range(c.shape[3]):
+        c[:,:,:,i] = c[:,:,:,i] / (-bvals[i]) # c = -In(Si/S0)/b
 
         
-    adcs_vec = adcs.reshape(shp[0]*shp[1]*shp[2],adcs.shape[3]) # tx volume data to vectors
-    # adcs_vec.dropna(inplace=True)
-    adcs_vec = overflow_fix(adcs_vec)
-    A = overflow_fix(amatrix(bvecs))
-    tensor_vec = lstsq(amatrix(bvecs),adcs_vec.T,cond=None)[0]
-    # tensor_vec = pinv(amatrix(bvecs)) @ adcs_vec.T # solve tensors
+    c_vec = c.reshape(shp[0]*shp[1]*shp[2],c.shape[3]) # tx volume data to vectors
+    # c_vec.dropna(inplace=True)
+    c_vec = overflow_fix(c_vec)
+    A = overflow_fix(amatrix(bvecs)) # Diffusion Tensor Transformation Matrix
+    print(A.shape)
+    D_vec = lstsq(A,c_vec.T,cond=None)[0] # Solving for D = inv(A) * C
+    # D_vec = pinv(amatrix(bvecs)) @ c_vec.T # solve tensors
 
-    tensor_img = tensor_vec.T.reshape(shp[0],shp[1],shp[2],6)
-    tensor_img = overflow_fix(tensor_img)
-    # print(tensor_img.max(),tensor_img.min())
+    D_img = D_vec.T.reshape(shp[0],shp[1],shp[2],6)
+    D_img = overflow_fix(D_img)
+    # print(D_img.max(),D_img.min())
 
 
     # # synthesize dwis along DSM6 dirs
-    dwis_norm = np.exp(-bval_synth * (amatrix(dsm_norm) @ tensor_vec))
-    # print(dwis_norm.shape)
-    dwis = b0 * dwis_norm.T.reshape(shp[0],shp[1],shp[2], dwis_norm.shape[0]);    
+    D_synth = np.exp(-bval_synth * (amatrix(dsm_norm) @ D_vec))
+    # print(D_synth.shape)
+    dwis = b0_img * D_synth.T.reshape(shp[0],shp[1],shp[2], D_synth.shape[0]);    
     dwis = overflow_fix(dwis)
 
-    diff_img = np.concatenate((b0,dwis),axis =3 )
-    return diff_img,tensor_img
+    diff_img = np.concatenate((b0_img,dwis),axis =3 )
+    return diff_img,D_img
 
 
 def optimal_dirs(gtab,num_iter,num_dirs,debug = False,base_bval = 5):
