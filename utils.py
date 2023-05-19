@@ -13,7 +13,7 @@ from numpy.linalg import solve
 from numpy import inf
 import numpy as np
 
-base_dir = "/workspace/data"
+base_dir = "/storage/users/arihant"
 base_dir_7t = [base_dir + "/HCP_7T/" + i   for i in os.listdir(base_dir + "/HCP_7T") if len(i) == 6]
 base_dir_3t = [base_dir + "/HCP_3T/" + i   for i in os.listdir(base_dir + "/HCP_3T") if len(i) == 6]
 
@@ -47,6 +47,8 @@ common = list(set(p) & set(q))
 
 print("number of common Subjects ",len(common))
 
+def get_ids():
+    return common
 
 def load_hcp(id_load,res,ret_img = False,crop = 10):
     load_from = path[res][id_load]

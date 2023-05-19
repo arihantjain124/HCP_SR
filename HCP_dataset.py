@@ -1,4 +1,4 @@
-import torch.utils.data as data
+import torch
 import os
 import numpy as np
 import torch
@@ -8,24 +8,34 @@ from dipy.io.image import load_nifti
 from dipy.io import read_bvals_bvecs
 from dipy.core.gradients import gradient_table
     
-class hcp_data(data.Dataset):
-    def __init__(self, opt):
+class hcp_data(torch.utils.data.IterableDataset):
+    def __init__(self, opt,ids):
+        super(hcp_data).__init__()
         
-        self.blk_size = opt.size
+        self.blk_size = opt.block_size
         self.crop_depth = opt.crop_depth
-        self.base_dir = opt.dir if opt.dir != None else "/workspace/data" 
-        self.path,self.tot_vol,self.rand_sample = self.load_data(self.base_dir)
-        self.data_3t = self.load_volume(self.rand_sample,'3T',self.crop_depth)
-        self.data_7t = self.load_volume(self.rand_sample,'7T',self.crop_depth)
-        base_mask = self.data_3t[1]
-        self.mul = np.array(self.data_7t[0].shape)/np.array(self.data_3t[0].shape)
-        self.blk_per_vols = self.blocks(base_mask)
+        self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
+        self.path,self.tot = self.load_data(self.base_dir,ids)
+        self.ids = ids
+        # self.path,self.tot_vol,self.rand_sample = self.load_data(self.base_dir)
+        # print(self.rand_sample[0])
+        # self.data_3t = self.load_volume(self.rand_sample[0],'3T',self.crop_depth)
+        # self.data_7t = self.load_volume(self.rand_sample[0],'7T',self.crop_depth)
+        # base_mask = self.data_3t[1]
+        # self.mul = np.array(self.data_7t[0].shape)/np.array(self.data_3t[0].shape)
+        # self.blk_per_vols = self.blocks(base_mask)
 
 
+    def __iter__(self):
+        id_iterator = iter(self.ids)
+        curr_id = next(id_iterator)
+        vol = self.load_volume(curr_id,'3T')
+        curr_blk = self.blocks(vol[1])
+        return self.extract_block(vol[0],curr_blk[0])
 
-    def load_data(self,base_dir):
-        base_dir_7t = [base_dir + "/HCP_7T/" + i   for i in os.listdir(base_dir + "/HCP_7T") if len(i) == 6]
-        base_dir_3t = [base_dir + "/HCP_3T/" + i   for i in os.listdir(base_dir + "/HCP_3T") if len(i) == 6]
+    def load_data(self,base_dir,ids):
+        base_dir_7t = [base_dir + "/HCP_7T/" + i   for i in ids]
+        base_dir_3t = [base_dir + "/HCP_3T/" + i   for i in ids]
         path_7t = {}
         path_3t = {}
         for i in base_dir_7t:
@@ -45,12 +55,12 @@ class hcp_data(data.Dataset):
         q = list(path_3t.keys())
         common = list(set(p) & set(q))
 
-        print("Number of Common data_id ",common)
+        # print("Number of Common data_id ",common)
         rand_sample = random.sample(common,1)
-        return path,common,rand_sample
+        return path,len(common)
 
     def load_volume(self,id_load,res,crop = 10):
-
+        # print(self.path[res][id_load])
         load_from = self.path[res][id_load]
         data , affine= load_nifti(load_from["data"])
         mask,affine = load_nifti(load_from["brain_mask"])
@@ -58,6 +68,7 @@ class hcp_data(data.Dataset):
         grad_dev, affine = load_nifti(load_from["grad_dev"])
         bvals, bvecs = read_bvals_bvecs(load_from['bvals'], load_from['bvecs'])
         gtab = gradient_table(bvals, bvecs)
+        
         if(res == '7T'):
             return data[:,:,crop*2:-crop*2,:],mask[:,:,crop*2:-crop*2],scan,gtab,grad_dev
         else:
@@ -107,12 +118,17 @@ class hcp_data(data.Dataset):
 
         return ind_block,len(ind_block)
 
-    def __len__(self):
-        return self.blk_per_vols[1] * len(self.tot_vol)
+    def extract_block(self,data, inds):
         
-    def _get_patch(self,img_indx,patch_indx,axs,typ = 'single'):
-        pass
-    
-    def __getitem__(self, idx):
+        xsz_block = inds[0, 1] - inds[0, 0] + 1
+        ysz_block = inds[0, 3] - inds[0, 2] + 1
+        zsz_block = inds[0, 5] - inds[0, 4] + 1
+        ch_block = data.shape[-1]
         
-        pass
+        blocks = np.zeros((inds.shape[0], xsz_block, ysz_block, zsz_block, ch_block))
+        
+        for ii in np.arange(inds.shape[0]):
+            inds_this = inds[ii, :]
+            blocks[ii, :, :, :, :] = data[inds_this[0]:inds_this[1]+1, inds_this[2]:inds_this[3]+1, inds_this[4]:inds_this[5]+1, :]
+        
+        yield blocks
