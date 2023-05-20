@@ -5,7 +5,7 @@
 # (c) Qiyuan Tian, Harvard, 2021
 
 import numpy as np
-import keras.backend as K
+# import keras.backend as K
 
 def extract_block(data, inds):
     xsz_block = inds[0, 1] - inds[0, 0] + 1

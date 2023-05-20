@@ -7,6 +7,7 @@ import math
 from dipy.io.image import load_nifti
 from dipy.io import read_bvals_bvecs
 from dipy.core.gradients import gradient_table
+import data.utils_dataloader as utils
     
 class hcp_data(torch.utils.data.IterableDataset):
     def __init__(self, opt,ids):
@@ -15,9 +16,12 @@ class hcp_data(torch.utils.data.IterableDataset):
         self.blk_size = opt.block_size
         self.crop_depth = opt.crop_depth
         self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
-        self.path,self.tot = self.load_data(self.base_dir,ids)
+        self.path,self.tot = self.load_path(self.base_dir,ids)
         self.ids = ids
-        # self.path,self.tot_vol,self.rand_sample = self.load_data(self.base_dir)
+        self.curr_indx_blk = 0
+        self.curr_len_blk = 0
+        self.curr_id = 0
+        # self.path,self.tot_vol,self.rand_sample = self.load_path(self.base_dir)
         # print(self.rand_sample[0])
         # self.data_3t = self.load_volume(self.rand_sample[0],'3T',self.crop_depth)
         # self.data_7t = self.load_volume(self.rand_sample[0],'7T',self.crop_depth)
@@ -27,13 +31,19 @@ class hcp_data(torch.utils.data.IterableDataset):
 
 
     def __iter__(self):
-        id_iterator = iter(self.ids)
-        curr_id = next(id_iterator)
-        vol = self.load_volume(curr_id,'3T')
-        curr_blk = self.blocks(vol[1])
-        return self.extract_block(vol[0],curr_blk[0])
+        print(self.curr_indx_blk,self.curr_id,self.curr_len_blk)
+        if(self.curr_indx_blk == self.curr_len_blk):
+            self.curr_indx_blk = 0
+            self.pre_proc()
+        else:
+            self.curr_indx_blk+=1
+        return self.block_iterator()
 
-    def load_data(self,base_dir,ids):
+    def block_iterator(self):
+        yield self.block_img_gt[self.curr_indx_blk,...],self.block_img_pred[self.curr_indx_blk,...]
+
+
+    def load_path(self,base_dir,ids):
         base_dir_7t = [base_dir + "/HCP_7T/" + i   for i in ids]
         base_dir_3t = [base_dir + "/HCP_3T/" + i   for i in ids]
         path_7t = {}
@@ -64,15 +74,19 @@ class hcp_data(torch.utils.data.IterableDataset):
         load_from = self.path[res][id_load]
         data , affine= load_nifti(load_from["data"])
         mask,affine = load_nifti(load_from["brain_mask"])
-        scan, affine = load_nifti(load_from["3d_scan"])
-        grad_dev, affine = load_nifti(load_from["grad_dev"])
+        # scan, affine = load_nifti(load_from["3d_scan"])
+        # grad_dev, affine = load_nifti(load_from["grad_dev"])
         bvals, bvecs = read_bvals_bvecs(load_from['bvals'], load_from['bvecs'])
         gtab = gradient_table(bvals, bvecs)
-        
         if(res == '7T'):
-            return data[:,:,crop*2:-crop*2,:],mask[:,:,crop*2:-crop*2],scan,gtab,grad_dev
+            vol = {'data' : data[:,:,self.crop_depth*2:-self.crop_depth*2,:],
+                    'mask': mask[:,:,self.crop_depth*2:-self.crop_depth*2],
+                    'gtab': gtab}
         else:
-            return data[:,:,crop:-crop,:],mask[:,:,crop:-crop],scan,gtab,grad_dev
+            vol = {'data' : data[:,:,self.crop_depth:-self.crop_depth,:],
+                    'mask': mask[:,:,self.crop_depth:-self.crop_depth],
+                    'gtab': gtab}
+        return vol
     
     def blocks(self,base_mask):
         # %% divide brain volume to blocks
@@ -82,7 +96,7 @@ class hcp_data(torch.utils.data.IterableDataset):
         zmin,zmax = np.min(zind),np.max(zind)
 
         ind_brain = [xmin, xmax, ymin, ymax, zmin, zmax] 
-
+        # print(ind_brain)
         # calculate number of blocks along each dimension
         sz_block = self.blk_size
         xlen = xmax - xmin + 1
@@ -115,11 +129,11 @@ class hcp_data(torch.utils.data.IterableDataset):
                     count = count + 1
 
         ind_block = ind_block.astype(int)
-
+        # print(ind_block)
         return ind_block,len(ind_block)
 
     def extract_block(self,data, inds):
-        
+
         xsz_block = inds[0, 1] - inds[0, 0] + 1
         ysz_block = inds[0, 3] - inds[0, 2] + 1
         zsz_block = inds[0, 5] - inds[0, 4] + 1
@@ -130,5 +144,61 @@ class hcp_data(torch.utils.data.IterableDataset):
         for ii in np.arange(inds.shape[0]):
             inds_this = inds[ii, :]
             blocks[ii, :, :, :, :] = data[inds_this[0]:inds_this[1]+1, inds_this[2]:inds_this[3]+1, inds_this[4]:inds_this[5]+1, :]
+        return blocks
+
+    def pre_proc(self):
+
+        vol = self.load_volume(self.ids[self.curr_id],'3T')
+        self.curr_blk = self.blocks(vol['mask'])
+        # print(vol['mask'].shape)
+        min_bval = min(vol['gtab'].bvals)
+        print(self.ids[self.curr_id])
+        # print("volume loaded")
+
+        dwis = vol['data'][:,:,:,np.where(vol['gtab'].bvals>min_bval)].squeeze()
+        b0 = utils.mean_volume(vol['data'],vol['gtab'],min_bval)
+        bvals = vol['gtab'].bvals[np.where(vol['gtab'].bvals>min_bval)]
+        bvecs = vol['gtab'].bvecs[np.where(vol['gtab'].bvals>min_bval)]
+        dwis_gt = utils.diff_coefficent(dwis,b0,bvecs,bvals,shp = vol['data'].shape,bval_synth = 1000)
+
+        # print("gt loaded")
+
+        idx = utils.optimal_dirs(vol['gtab'],10000,num_dirs = 5,debug = False,base_bval = min_bval)
+        bval_synth = 1000
+        b0s = vol['data'][:,:,:,np.where(vol['gtab'].bvals==min_bval)].squeeze()
+
+        img_gt = np.zeros((dwis_gt.shape + (5,)))
+        img_pred = np.zeros((dwis_gt.shape + (5,)))
+
         
-        yield blocks
+        self.block_img_gt = np.zeros(( (self.curr_blk[1] * 5,) + (64,64,64) + (dwis_gt.shape[-1]+1,))) 
+        self.block_img_pred = np.zeros(( (self.curr_blk[1] * 5,) + (64,64,64) + (dwis_gt.shape[-1],)))
+        # print(self.block_img_gt.shape)
+        # print("indexes Found")
+        mask_expand = np.expand_dims(vol['mask'], 3)
+
+
+        mask_block = self.extract_block(mask_expand, self.curr_blk[0]); 
+        for i in range(5):
+            b0 = b0s[:,:,:,i]
+            dwis6 =  dwis[:,:,:,idx[i]]
+            bvals6 = bvals[idx[i]]
+            bvecs6 = bvecs[idx[i]]
+            dwis_pred = utils.diff_coefficent(dwis6,b0,bvecs6,bvals6,shp = vol['data'].shape,bval_synth = 1000)
+            
+            # print(f"index {i} done")
+            for jj in np.arange(0, dwis_pred.shape[-1]):  
+                
+                img = dwis_pred[:, :, :, jj]
+                imgmean = np.mean(img[np.nonzero(vol['mask'])])
+                imgstd = np.std(img[np.nonzero(vol['mask'])])
+
+                img_pred[:,:,:,jj,i]  = (img - imgmean) / imgstd * vol['mask'] # normalize by substracting mean then dividing the std dev of brain voxels in input images
+                
+                img_gt[:,:,:,jj,i]  = (dwis_gt[:, :, :, jj] - imgmean) / imgstd * vol['mask']
+            
+            self.block_img_gt[self.curr_blk[1] * i:self.curr_blk[1] * (i+1),:,:,:,:dwis_gt.shape[-1]] = self.extract_block(img_gt[...,i],self.curr_blk[0])
+            self.block_img_pred[self.curr_blk[1] * i:self.curr_blk[1] * (i+1),...] = self.extract_block(img_pred[...,i],self.curr_blk[0])
+            self.block_img_gt[self.curr_blk[1] * i:self.curr_blk[1] * (i+1),:,:,:,dwis_gt.shape[-1]:dwis_gt.shape[-1]+1] = mask_block
+            # last channel is brain mask, which is used to weigth loss from each voxel
+        self.curr_len_blk = self.block_img_gt.shape[0]

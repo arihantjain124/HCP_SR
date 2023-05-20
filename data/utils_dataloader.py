@@ -13,13 +13,6 @@ from numpy.linalg import solve
 from numpy import inf
 import numpy as np
 
-base_dir = "/storage/users/arihant"
-base_dir_7t = [base_dir + "/HCP_7T/" + i   for i in os.listdir(base_dir + "/HCP_7T") if len(i) == 6]
-base_dir_3t = [base_dir + "/HCP_3T/" + i   for i in os.listdir(base_dir + "/HCP_3T") if len(i) == 6]
-
-path_7t = {}
-path_3t = {}
-
 dsm = np.array([0.91, 0.416, 0,0, 0.91, 0.416,0.416, 0, 0.91,0.91, -0.416, 0,0, 0.91, -0.416,-0.416, 0, 0.91])
 dsm = dsm.reshape(6,3)
 dsm_norm = np.copy(dsm)
@@ -27,43 +20,8 @@ dsm_mag = np.sqrt(dsm[:,0]**2 + dsm[:,1]**2 + dsm[:,2]**2)
 for i in range(3):
     dsm_norm[:,i] = dsm[:,i] / dsm_mag
 
-
-for i in base_dir_7t:
-    path_7t[i[-6:]] = {"3d_scan" : i + "/T1w/T1w_acpc_dc_restore_1.05.nii.gz" ,"data" : i + "/T1w/Diffusion_7T/data.nii.gz" 
-                       , "bvals" : i + "/T1w/Diffusion_7T/bvals" , "bvecs" : i + "/T1w/Diffusion_7T/bvecs"
-                      , "brain_mask" : i + "/T1w/Diffusion_7T/nodif_brain_mask.nii.gz"
-                      , "grad_dev" : i + "/T1w/Diffusion_7T/grad_dev.nii.gz"}
-for i in base_dir_3t:
-    path_3t[i[-6:]] = {"3d_scan" : i + "/T1w/T1w_acpc_dc_restore_1.25.nii.gz" , "data" : i + "/T1w/Diffusion/data.nii.gz" 
-                       , "bvals" : i + "/T1w/Diffusion/bvals" , "bvecs" : i + "/T1w/Diffusion/bvecs"
-                       , "brain_mask" : i + "/T1w/Diffusion/nodif_brain_mask.nii.gz"
-                      , "grad_dev" : i + "/T1w/Diffusion/grad_dev.nii.gz"}
-    
-    
-path = {'3T': path_3t, "7T": path_7t}
-p = list(path_7t.keys())
-q = list(path_3t.keys())
-common = list(set(p) & set(q))
-
-print("number of common Subjects ",len(common))
-
 def get_ids():
     return common
-
-def load_hcp(id_load,res,ret_img = False,crop = 10):
-    load_from = path[res][id_load]
-    if ret_img:
-        data , affine, img = load_nifti(load_from["data"], return_img=ret_img)
-    else:
-        data , affine= load_nifti(load_from["data"], return_img=ret_img)
-    mask,affine = load_nifti(load_from["brain_mask"], return_img=ret_img)
-    scan, affine = load_nifti(load_from["3d_scan"], return_img=False)
-    
-    grad_dev, affine = load_nifti(load_from["grad_dev"], return_img=False)
-    bvals, bvecs = read_bvals_bvecs(load_from['bvals'], load_from['bvecs'])
-    gtab = gradient_table(bvals, bvecs)
-    
-    return data[:,:,crop:-crop,:],mask[:,:,crop:-crop],scan,gtab,grad_dev
 
 def mean_volume(data,gtab,b):
     if b not in gtab.bvals:
@@ -159,8 +117,8 @@ def diff_coefficent(dwis,b0_img,bvecs,bvals,shp,bval_synth,base_bval = 5):
     D_vec = lstsq(A,c_vec.T,cond=None)[0] # Solving for D = inv(A) * C
     # D_vec = pinv(amatrix(bvecs)) @ c_vec.T # solve tensors
 
-    D_img = D_vec.T.reshape(shp[0],shp[1],shp[2],6)
-    D_img = overflow_fix(D_img)
+    # D_img = D_vec.T.reshape(shp[0],shp[1],shp[2],6)
+    # D_img = overflow_fix(D_img)
     # print(D_img.max(),D_img.min())
 
 
@@ -169,12 +127,11 @@ def diff_coefficent(dwis,b0_img,bvecs,bvals,shp,bval_synth,base_bval = 5):
     # print(D_synth.shape)
     dwis = b0_img * D_synth.T.reshape(shp[0],shp[1],shp[2], D_synth.shape[0]);    
     dwis = overflow_fix(dwis)
-
     diff_img = np.concatenate((b0_img,dwis),axis =3 )
-    return diff_img,D_img
+    return diff_img
 
 
-def optimal_dirs(gtab,num_iter,num_dirs,debug = False,base_bval = 5):
+def optimal_dirs(gtab,num_iter = 10000,num_dirs = 5,debug = False,base_bval = 5):
     rotang_all = []
     angerr_all  = []
     condnum_all = []
