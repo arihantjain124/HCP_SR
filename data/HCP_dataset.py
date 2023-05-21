@@ -20,7 +20,7 @@ class hcp_data(torch.utils.data.IterableDataset):
         self.ids = ids
         self.curr_indx_blk = 0
         self.curr_len_blk = 0
-        self.curr_id = 0
+        self.curr_id = -1
         # self.path,self.tot_vol,self.rand_sample = self.load_path(self.base_dir)
         # print(self.rand_sample[0])
         # self.data_3t = self.load_volume(self.rand_sample[0],'3T',self.crop_depth)
@@ -79,8 +79,8 @@ class hcp_data(torch.utils.data.IterableDataset):
         bvals, bvecs = read_bvals_bvecs(load_from['bvals'], load_from['bvecs'])
         gtab = gradient_table(bvals, bvecs)
         if(res == '7T'):
-            vol = {'data' : data[:,:,self.crop_depth*2:-self.crop_depth*2,:],
-                    'mask': mask[:,:,self.crop_depth*2:-self.crop_depth*2],
+            vol = {'data' : data[:,:,self.crop_depth:-self.crop_depth,:],
+                    'mask': mask[:,:,self.crop_depth:-self.crop_depth],
                     'gtab': gtab}
         else:
             vol = {'data' : data[:,:,self.crop_depth:-self.crop_depth,:],
@@ -147,7 +147,7 @@ class hcp_data(torch.utils.data.IterableDataset):
         return blocks
 
     def pre_proc(self):
-
+        self.curr_id+=1
         vol = self.load_volume(self.ids[self.curr_id],'3T')
         self.curr_blk = self.blocks(vol['mask'])
         # print(vol['mask'].shape)
