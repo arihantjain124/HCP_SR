@@ -8,7 +8,8 @@ from dipy.io.image import load_nifti
 from dipy.io import read_bvals_bvecs
 from dipy.core.gradients import gradient_table
 import data.utils_dataloader as utils
-    
+from itertools import islice
+
 class hcp_data(torch.utils.data.IterableDataset):
     def __init__(self, opt,ids):
         super(hcp_data).__init__()
@@ -18,9 +19,12 @@ class hcp_data(torch.utils.data.IterableDataset):
         self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
         self.path,self.tot = self.load_path(self.base_dir,ids)
         self.ids = ids
+        self.ids.sort()
         self.curr_indx_blk = 0
         self.curr_len_blk = 0
         self.curr_id = -1
+        self.batch_size = opt.batch_size
+        self.iterating = None
         # self.path,self.tot_vol,self.rand_sample = self.load_path(self.base_dir)
         # print(self.rand_sample[0])
         # self.data_3t = self.load_volume(self.rand_sample[0],'3T',self.crop_depth)
@@ -31,16 +35,27 @@ class hcp_data(torch.utils.data.IterableDataset):
 
 
     def __iter__(self):
-        print(self.curr_indx_blk,self.curr_id,self.curr_len_blk)
-        if(self.curr_indx_blk == self.curr_len_blk):
-            self.curr_indx_blk = 0
-            self.pre_proc()
-        else:
-            self.curr_indx_blk+=1
-        return self.block_iterator()
+        print(self.curr_id)
+        self.pre_proc()
+        # if(self.curr_id == -1 or self.curr_len_blk - self.curr_indx_blk < self.batch_size):
+        #     self.pre_proc()
+        #     self.curr_indx_blk = 0
+        #     self.iterating = self.batcher(np.concatenate((self.block_img_gt,self.block_img_pred),axis = -1),batch_size = self.batch_size)
+        # else:
+        #     self.curr_indx_blk+=self.batch_size
+        # # print(len(np.concatenate((self.block_img_gt,self.block_img_pred),axis = -1)))
+        return iter(np.concatenate((self.block_img_gt,self.block_img_pred),axis = -1))
 
-    def block_iterator(self):
-        yield self.block_img_gt[self.curr_indx_blk,...],self.block_img_pred[self.curr_indx_blk,...]
+
+    # def batcher(self,iterable, batch_size):
+    #     # self.curr_indx_blk+=1
+    #     # yield iterable[self.curr_indx_blk,...]
+    #     iterator = iter(iterable)
+    #     while batch := list(islice(iterator, batch_size)):
+    #         yield batch
+
+    # def block_iterator(self):
+    #     yield np.concatenate((self.block_img_gt,self.block_img_pred),axis = -1)
 
 
     def load_path(self,base_dir,ids):
@@ -152,7 +167,7 @@ class hcp_data(torch.utils.data.IterableDataset):
         self.curr_blk = self.blocks(vol['mask'])
         # print(vol['mask'].shape)
         min_bval = min(vol['gtab'].bvals)
-        print(self.ids[self.curr_id])
+        print(self.ids[self.curr_id],self.curr_id)
         # print("volume loaded")
 
         dwis = vol['data'][:,:,:,np.where(vol['gtab'].bvals>min_bval)].squeeze()
