@@ -19,12 +19,10 @@ class hcp_data(torch.utils.data.IterableDataset):
         self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
         self.path,self.tot = self.load_path(self.base_dir,ids)
         self.ids = ids
-        self.ids.sort()
-        self.curr_indx_blk = 0
-        self.curr_len_blk = 0
+        if(opt.sort == True):
+            self.ids.sort()
         self.curr_id = -1
         self.batch_size = opt.batch_size
-        self.iterating = None
         # self.path,self.tot_vol,self.rand_sample = self.load_path(self.base_dir)
         # print(self.rand_sample[0])
         # self.data_3t = self.load_volume(self.rand_sample[0],'3T',self.crop_depth)
