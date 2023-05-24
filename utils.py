@@ -13,7 +13,7 @@ from numpy.linalg import solve
 from numpy import inf
 import numpy as np
 
-base_dir = "/storage/users/arihant"
+base_dir = "/storage"
 base_dir_7t = [base_dir + "/HCP_7T/" + i   for i in os.listdir(base_dir + "/HCP_7T") if len(i) == 6]
 base_dir_3t = [base_dir + "/HCP_3T/" + i   for i in os.listdir(base_dir + "/HCP_3T") if len(i) == 6]
 

@@ -9,7 +9,7 @@ from dipy.io import read_bvals_bvecs
 from dipy.core.gradients import gradient_table
 import data.utils_dataloader as utils
 from itertools import islice
-
+np.seterr(all="ignore")
 class hcp_data(torch.utils.data.IterableDataset):
     def __init__(self, opt,ids):
         super(hcp_data).__init__()
@@ -19,6 +19,7 @@ class hcp_data(torch.utils.data.IterableDataset):
         self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
         self.path,self.tot = self.load_path(self.base_dir,ids)
         self.ids = ids
+        self.debug = opt.debug
         if(opt.sort == True):
             self.ids.sort()
         self.curr_id = -1
@@ -33,7 +34,10 @@ class hcp_data(torch.utils.data.IterableDataset):
 
 
     def __iter__(self):
-        print(self.curr_id)
+        if(self.debug == True):
+            print(self.curr_id)
+        if(self.curr_id == len(self.ids)):
+            return None
         self.pre_proc()
         # if(self.curr_id == -1 or self.curr_len_blk - self.curr_indx_blk < self.batch_size):
         #     self.pre_proc()
@@ -165,7 +169,9 @@ class hcp_data(torch.utils.data.IterableDataset):
         self.curr_blk = self.blocks(vol['mask'])
         # print(vol['mask'].shape)
         min_bval = min(vol['gtab'].bvals)
-        print(self.ids[self.curr_id],self.curr_id)
+        
+        if(self.debug == True):
+            print(self.ids[self.curr_id],self.curr_id)
         # print("volume loaded")
 
         dwis = vol['data'][:,:,:,np.where(vol['gtab'].bvals>min_bval)].squeeze()
@@ -184,8 +190,8 @@ class hcp_data(torch.utils.data.IterableDataset):
         img_pred = np.zeros((dwis_gt.shape + (5,)))
 
         
-        self.block_img_gt = np.zeros(( (self.curr_blk[1] * 5,) + (64,64,64) + (dwis_gt.shape[-1]+1,))) 
-        self.block_img_pred = np.zeros(( (self.curr_blk[1] * 5,) + (64,64,64) + (dwis_gt.shape[-1],)))
+        self.block_img_gt = np.zeros(( (self.curr_blk[1] * 5,) + (self.blk_size,self.blk_size,self.blk_size) + (dwis_gt.shape[-1]+1,))) 
+        self.block_img_pred = np.zeros(( (self.curr_blk[1] * 5,) + (self.blk_size,self.blk_size,self.blk_size) + (dwis_gt.shape[-1],)))
         # print(self.block_img_gt.shape)
         # print("indexes Found")
         mask_expand = np.expand_dims(vol['mask'], 3)
