@@ -1,0 +1,1 @@
+docker run -p 10000:8888 -p 10001:8008 --gpus all --ipc=host --ulimit memlock=-1 -it --rm -v $(pwd)/:/workspace/ -v /storage/users/arihant/:/storage/ nvcr.io/nvidia/pytorch:23.04-py3
