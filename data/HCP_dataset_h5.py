@@ -20,15 +20,16 @@ class hcp_data(torch.utils.data.Dataset):
         self.blk_size = opt.block_size
         self.crop_depth = opt.crop_depth
         self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
-        
+        self.typ = opt.typ
         self.path,self.tot = self.load_path(self.base_dir,ids)
-        
+        # if
         self.ids = ids
         self.debug = opt.debug
         if(opt.sort == True):
             self.ids.sort()
         self.preload = opt.preload
         self.blk_per_vol = 0
+        self.blk_indx = []
         if(opt.preload == True):
             self.loaded = {}
             self.loaded_gt = {}
@@ -37,37 +38,53 @@ class hcp_data(torch.utils.data.Dataset):
             self.loaded_fa = {}
             self.loaded_rgb = {}
             self.preload_data()
+        self.blk_indx = np.cumsum(self.blk_indx)
 
 
     def __len__(self):
-        return self.blk_per_vol * len(self.loaded_blk)
-    def __getitem__(self,indx):
-        vol_idx = self.ids[indx//self.blk_per_vol]
-        blk_idx = indx%self.blk_per_vol
-        return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...]
+        return self.blk_indx[-1]
     
-    def preload_data(self):
+    def __getitem__(self,indx):
+        # print(indx)
+        blk_idx = np.searchsorted(self.blk_indx, indx)
+        vol_idx = self.ids[blk_idx]
+        blk_idx = indx - self.blk_indx[blk_idx]
+        return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...]
+        
+    def preload_data(self,rebuild = False):
+
         shp_loaded = False
         for i in self.ids:
-            
-            name = self.path['3T'][i]['h5']
-            res_vol = h5py.File(name, 'r')
-            self.loaded[i] = res_vol
-            if(shp_loaded == False):
-                shp = np.array(res_vol.get('volumes0')).shape
-                self.num_blks = (np.floor(shp[0]/self.blk_size[0]),np.floor(shp[1]/self.blk_size[1]),np.floor(shp[2]/self.blk_size[2]))
-                shp_loaded = True
+            if(rebuild == True):
+                self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i] = self.pre_proc(i)
+            if(self.typ == 'upsampled'):
+                name = self.path['3T'][i]['upsampled']
+                res_vol = h5py.File(name, 'r')
+                # print(res_vol.keys())
+                self.loaded[i] = {'vol0':res_vol.get('volumes0')[:]
+                                  ,'mask':res_vol.get('mask')[:] }
+                
+                if(shp_loaded == False):
+                    shp = np.array(res_vol.get('volumes0')).shape
+                    self.num_blks = (np.floor(shp[0]/self.blk_size[0]),np.floor(shp[1]/self.blk_size[1]),np.floor(shp[2]/self.blk_size[2]))
+                    shp_loaded = True
 
-            name = self.path['3T'][i]['GT']
+            name = self.path['7T'][i]['GT']
             res = h5py.File(name, 'r')
-            self.loaded_gt[i] = res
+            # print(res.keys())
+            self.loaded_gt[i] = {'ADC':res.get('ADC')[:]
+                                ,'FA':res.get('FA')[:] 
+                                ,'color_FA':res.get('color_FA')[:] }
+            
             self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i] = self.pre_proc(i)
             
             res_vol.close()
             res.close()
+
             if(self.debug == True):
                 print(i,"loaded")
-        
+
+
 
     def load_path(self,base_dir,ids):
         base_dir_7t = [base_dir + "/HCP_7T/" + i   for i in ids]
@@ -79,6 +96,7 @@ class hcp_data(torch.utils.data.Dataset):
                             , "GT" : i + "/" + i[-6:] + "_GT.h5"}
         for i in base_dir_3t:
             path_3t[i[-6:]] = {"h5" : i + "/" + i[-6:] + ".h5"
+                            , "upsampled" : i + "/" + i[-6:] + "_upsampled.h5"
                             , "GT" : i + "/" + i[-6:] + "_GT.h5"}
         path = {'3T': path_3t, "7T":  path_7t}
         p = list(path_7t.keys())
@@ -139,18 +157,43 @@ class hcp_data(torch.utils.data.Dataset):
             blocks.append(curr_blk)
         return np.stack(blocks, axis=0)
     
+    # def verify_blk(self,vol_norm,adc,fa,rgb,inds):
+    #     for ii in np.arange(inds.shape[0]):
+    #         inds_this = inds[ii, :]
+    #         curr_blk = data[inds_this[0]:inds_this[1]+1, inds_this[2]:inds_this[3]+1, inds_this[4]:inds_this[5]+1, ...]
+    #         # if(np.count_nonzero(curr_blk)/curr_blk.size > 0.6):
+    #         blocks.append(curr_blk)
+
+    def build(self,args):
+        if(self.blk_size == args.block_size):
+            pass
+        self.blk_size = args.block_size
+        self.loaded_blk = {}
+        self.loaded_adc = {}
+        self.loaded_fa = {}
+        self.loaded_rgb = {}
+        self.preload_data(rebuild=True)
+        self.blk_indx = np.cumsum(self.blk_indx)
+
     def pre_proc(self,idx):
 
-        vol = np.array(self.loaded[idx].get('volumes0'))
-        mask = np.array(self.loaded[idx].get('mask'))
-        adc = np.array(self.loaded_gt[idx].get('ADC'))
-        fa = np.array(self.loaded_gt[idx].get('FA'))
-        rgb = np.array(self.loaded_gt[idx].get('color_FA'))
+        vol = self.loaded[idx]['vol0']
+        mask = self.loaded[idx]['mask']
+        adc = self.loaded_gt[idx]['ADC']
+        fa = self.loaded_gt[idx]['FA']
+        rgb = self.loaded_gt[idx]['color_FA']
+
+        # print("raw",vol.shape)
+        # print("ADC",adc.shape)
+        # print("FA",fa.shape)
+        # print("RGB",rgb.shape)
 
         curr_blk = self.blocks(mask)
-        self.blk_per_vol = curr_blk[1]
+        # self.blk_per_vol = curr_blk[1]
+        self.blk_indx.append(curr_blk[1])
         vol_norm = (vol-np.min(vol))/(np.max(vol)-np.min(vol))
         mask  = mask[...,np.newaxis]
+        # curr_blk = self.verify_blk(vol_norm,adc,fa,rgb,curr_blk)
         vol_norm = np.concatenate((vol_norm,mask),axis =3)
 
         blks_img = self.extract_block(vol_norm,curr_blk[0])
