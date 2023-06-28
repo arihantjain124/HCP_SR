@@ -4,24 +4,16 @@ from dipy.core.gradients import gradient_table
 import numpy as np
 import os
 import matplotlib.pyplot as plt
-from numpy.linalg import eig
-from numpy.linalg import inv
-from numpy.linalg import pinv
-# from numpy.linalg import lstsq
-from scipy.linalg import lstsq
-from numpy.linalg import solve
-from numpy import inf
-import numpy as np
 
 dsm = np.array([0.91, 0.416, 0,0, 0.91, 0.416,0.416, 0, 0.91,0.91, -0.416, 0,0, 0.91, -0.416,-0.416, 0, 0.91])
+
+
 dsm = dsm.reshape(6,3)
 dsm_norm = np.copy(dsm)
 dsm_mag = np.sqrt(dsm[:,0]**2 + dsm[:,1]**2 + dsm[:,2]**2)
+
 for i in range(3):
     dsm_norm[:,i] = dsm[:,i] / dsm_mag
-
-def get_ids():
-    return common
 
 def mean_volume(data,gtab,b):
     if b not in gtab.bvals:
@@ -44,91 +36,6 @@ def amatrix(mat):
     a = [mat[:,0] * mat[:,0],2 * mat[:,0] * mat[:,1], 2* mat[:,0] * mat[:,2],
         mat[:,1] * mat[:,1],2 * mat[:,1] * mat[:,2], mat[:,2] * mat[:,2]]
     return np.array(a).T
-
-
-def dtimetric(tensor,mask):
-    ret = {}
-    mask = mask >0.1
-    sz = mask.shape
-    v1 = np.zeros((sz[0],sz[1],sz[2],3))
-    v2 = np.zeros((sz[0],sz[1],sz[2],3))
-    v3 = np.zeros((sz[0],sz[1],sz[2],3))
-    l1 = np.zeros((sz))
-    l2 = np.zeros((sz))
-    l3 = np.zeros((sz))
-    md = np.zeros((sz))
-    rd = np.zeros((sz))
-    fa = np.zeros((sz))
-    
-    for i in range(sz[0]):
-        for j in range(sz[1]):
-            for k in range(sz[2]):
-                if (mask[i,j,k]):
-                    
-                    
-                    tensor_vox = tensor[i,j,k,:].squeeze()
-                    tensor_mtx = np.zeros((3,3))
-                    tensor_mtx[0,0] = tensor_vox[0]
-                    tensor_mtx[0,1] = tensor_vox[1];tensor_mtx[1,0] = tensor_vox[1]
-                    tensor_mtx[0,2] = tensor_vox[2];tensor_mtx[2,0] = tensor_vox[2]
-                    tensor_mtx[1,1] = tensor_vox[3]
-                    tensor_mtx[1,2] = tensor_vox[4];tensor_mtx[2,1] = tensor_vox[4]
-                    tensor_mtx[2,2] = tensor_vox[5]
-                    
-                    D,V = eig(tensor_mtx)
-                    MD = np.mean(D)
-                    FA = np.sqrt(sum((D-MD) ** 2)) / np.sqrt(sum(D**2)) * np.sqrt(1.5)
-                    
-                    v1[i, j, k, :] = V[:, 2]
-                    v2[i, j, k, :] = V[:, 1]
-                    v3[i, j, k, :] = V[:, 0]
-                    l1[i,j,k] = D[2]
-                    l2[i,j,k] = D[1]
-                    l3[i,j,k] = D[0]
-                    fa[i,j,k] = FA
-                    md[i,j,k] = MD
-                    rd[i,j,k] = np.mean(D[0:1])
-           
-    ret['v1'] = v1
-    ret['v2'] = v2
-    ret['v3'] = v3
-    ret['l1'] = l1
-    ret['l2'] = l2
-    ret['l3'] = l3
-    ret['fa'] = fa
-    ret['md'] = md
-    ret['rd'] = rd                
-    return ret
-                    
-def diff_coefficent(dwis,b0_img,bvecs,bvals,shp,bval_synth,base_bval = 5):
-    # compute apparent diffusion coefficients
-    # meanb0 = mean_volume(data,gtab,base_bval)[...,np.newaxis]
-    b0_img = b0_img[...,np.newaxis]
-    c = np.log(1e-3+(dwis / (1e-9+b0_img))); 
-    for i in range(c.shape[3]):
-        c[:,:,:,i] = c[:,:,:,i] / (-bvals[i]) # c = -In(Si/S0)/b
-
-        
-    c_vec = c.reshape(shp[0]*shp[1]*shp[2],c.shape[3]) # tx volume data to vectors
-    # c_vec.dropna(inplace=True)
-    c_vec = overflow_fix(c_vec)
-    A = overflow_fix(amatrix(bvecs)) # Diffusion Tensor Transformation Matrix
-    # print(A.shape)
-    D_vec = lstsq(A,c_vec.T,cond=None)[0] # Solving for D = inv(A) * C
-    # D_vec = pinv(amatrix(bvecs)) @ c_vec.T # solve tensors
-
-    # D_img = D_vec.T.reshape(shp[0],shp[1],shp[2],6)
-    # D_img = overflow_fix(D_img)
-    # print(D_img.max(),D_img.min())
-
-
-    # # synthesize dwis along DSM6 dirs
-    D_synth = np.exp(-bval_synth * (amatrix(dsm_norm) @ D_vec))
-    # print(D_synth.shape)
-    dwis = b0_img * D_synth.T.reshape(shp[0],shp[1],shp[2], D_synth.shape[0]);    
-    dwis = overflow_fix(dwis)
-    diff_img = np.concatenate((b0_img,dwis),axis =3 )
-    return diff_img
 
 
 def optimal_dirs(gtab,num_iter = 10000,num_dirs = 5,debug = False,base_bval = 5):
@@ -166,8 +73,3 @@ def optimal_dirs(gtab,num_iter = 10000,num_dirs = 5,debug = False,base_bval = 5)
     angerr_use = np.array(angerr_all)[indx]
     rotang_use = np.array(rotang_all)[indx]
     return ind_use
-
-def overflow_fix(data):
-    data = np.nan_to_num(data)
-    data[data == np.inf] = 0
-    return data

@@ -1,6 +1,8 @@
 from torch.nn import Conv3d
 import torch.nn as nn
 import torch
+from torchmetrics import PeakSignalNoiseRatio,StructuralSimilarityIndexMeasure
+
 class DeepDTI_torch(nn.Module):
     def __init__(self):
         super(DeepDTI_torch, self).__init__()
@@ -54,3 +56,17 @@ class Loss_MSE(nn.Module):
         loss = (gt[:,:,:,:,:7] - pred) * mask.unsqueeze(dim = -1)
         loss = torch.mean(torch.square(loss))
         return loss
+
+
+class PSNR(nn.Module):
+    def __init__(self):
+        super(PSNR, self).__init__()
+        
+        self.psnr = PeakSignalNoiseRatio().cuda()
+        self.ssim = StructuralSimilarityIndexMeasure(data_range=1.0).cuda()
+
+    def forward(self, pred, gt):
+        mask = gt[:,:,:,:,-1].unsqueeze(dim = -1)
+        gt = gt[...,0:7] * mask
+        pred = pred * mask
+        return self.psnr(preds = pred,target = gt),self.ssim(preds = pred,target = gt)

@@ -152,31 +152,31 @@ def train(model,l1_criterion,optimizer,epoch,tb):
             #                                                       loss_l1.item(),curr_lr))
     pbar.close()
     
-def valid(model,epoch,tb):
-    model.eval()
+# def valid(model,epoch,tb):
+#     model.eval()
 
-    avg_psnr, avg_ssim = 0, 0
-    for batch in testing_data_loader:
-        lr_tensor, hr_tensor = batch[0], batch[1]
-        if args.cuda:
-            lr_tensor = lr_tensor.to(device)
-            hr_tensor = hr_tensor.to(device)
+#     avg_psnr, avg_ssim = 0, 0
+#     for batch in testing_data_loader:
+#         lr_tensor, hr_tensor = batch[0], batch[1]
+#         if args.cuda:
+#             lr_tensor = lr_tensor.to(device)
+#             hr_tensor = hr_tensor.to(device)
 
-        temp = pad(lr_tensor[0])
+#         temp = pad(lr_tensor[0])
         
-        with torch.no_grad():
-            # print(lr_tensor.shape)
-            pre = model(temp)
+#         with torch.no_grad():
+#             # print(lr_tensor.shape)
+#             pre = model(temp)
 
-        pred = unpad(pre,temp[1][0],temp[1][1],temp[1][2],temp[1][3])
+#         pred = unpad(pre,temp[1][0],temp[1][1],temp[1][2],temp[1][3])
 
-        avg_psnr += utils.compute_psnr(im_pre, im_label)
-        avg_ssim += utils.compute_ssim(im_pre, im_label)
+#         avg_psnr += utils.compute_psnr(im_pre, im_label)
+#         avg_ssim += utils.compute_ssim(im_pre, im_label)
         
-    tb.add_scalar("avg_psnr", avg_psnr / len(testing_data_loader), epoch)
-    tb.add_scalar("avg_ssim", avg_ssim / len(testing_data_loader), epoch)
-    print("===> Valid. psnr: {:.4f}, ssim: {:.4f}".format(avg_psnr / len(testing_data_loader), avg_ssim / len(testing_data_loader)))
-    return avg_psnr / len(testing_data_loader),avg_ssim / len(testing_data_loader)
+#     tb.add_scalar("avg_psnr", avg_psnr / len(testing_data_loader), epoch)
+#     tb.add_scalar("avg_ssim", avg_ssim / len(testing_data_loader), epoch)
+#     print("===> Valid. psnr: {:.4f}, ssim: {:.4f}".format(avg_psnr / len(testing_data_loader), avg_ssim / len(testing_data_loader)))
+#     return avg_psnr / len(testing_data_loader),avg_ssim / len(testing_data_loader)
 
 
 

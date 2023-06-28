@@ -118,10 +118,10 @@ class hcp_data(torch.utils.data.Dataset):
         fa = self.loaded_gt[idx]['FA']
         rgb = self.loaded_gt[idx]['color_FA']
 
-        print("raw",vol.shape)
-        print("ADC",adc.shape)
-        print("FA",fa.shape)
-        print("RGB",rgb.shape)
+        # print("raw",vol.shape)
+        # print("ADC",adc.shape)
+        # print("FA",fa.shape)
+        # print("RGB",rgb.shape)
         
         vol_norm = (vol-np.min(vol))/(np.max(vol)-np.min(vol))
         mask  = mask[...,np.newaxis]
