@@ -18,8 +18,35 @@ from deep_cascade_caunet.models import CSEUnetModel
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 import utils
-import data.HCP_dataset_h5_test
-import data.HCP_dataset_h5
+import data.HCP_dataset_h5 as HCP_dataset
+
+import math
+import torch.nn.functional as F
+
+
+def pad(x):
+        _, _, h, w = x.shape
+        w_mult = ((w - 1) | 15) + 1
+        h_mult = ((h - 1) | 15) + 1
+        w_pad = [math.floor((w_mult - w) / 2), math.ceil((w_mult - w) / 2)]
+        h_pad = [math.floor((h_mult - h) / 2), math.ceil((h_mult - h) / 2)]
+        #print(w_pad,h_pad)
+        # # TODO: fix this type when PyTorch fixes theirs
+        # # the documentation lies - this actually takes a list
+        # # https://github.com/pytorch/pytorch/blob/master/torch/nn/functional.py#L3457
+        # # https://github.com/pytorch/pytorch/pull/16949
+        x = F.pad(x, w_pad + h_pad)
+        return x, (h_pad, w_pad, h_mult, w_mult)
+
+def unpad(x,h_pad,w_pad,h_mult,w_mult):
+    return x[..., h_pad[0] : h_mult - h_pad[1], w_pad[0] : w_mult - w_pad[1]]
+
+def resize(data):
+    x,y = [],[]
+    for i in range(len(data)):
+        x.append(data[i][0].reshape((data[i][0].shape[0]*data[i][0].shape[1],data[i][0].shape[2],data[i][0].shape[3])))
+        y.append(np.concatenate([np.expand_dims(data[i][1],axis = 3),np.expand_dims(data[i][2],axis = 3),data[i][3]], axis=3))
+    return torch.from_numpy(np.stack(x)),torch.from_numpy(np.stack(y))
 
 
 parser = argparse.ArgumentParser(description="IMDN")
@@ -45,8 +72,9 @@ args.batch_size = 4
 args.sort = True
 args.typ = 'upsampled'
 args.block_size = (64,64,64)
-args.epochs = 1
+args.epochs = 100
 print(args)
+
 
 args.cuda = True
 cuda = args.cuda
@@ -55,40 +83,11 @@ device = torch.device('cuda' if cuda else 'cpu')
 ids = utils.get_ids()
 ids.sort()
 ids = ids[:80]
-
-import math
-import torch.nn.functional as F
-
-def pad(x):
-        _, _, h, w = x.shape
-        w_mult = ((w - 1) | 15) + 1
-        h_mult = ((h - 1) | 15) + 1
-        w_pad = [math.floor((w_mult - w) / 2), math.ceil((w_mult - w) / 2)]
-        h_pad = [math.floor((h_mult - h) / 2), math.ceil((h_mult - h) / 2)]
-        #print(w_pad,h_pad)
-        # # TODO: fix this type when PyTorch fixes theirs
-        # # the documentation lies - this actually takes a list
-        # # https://github.com/pytorch/pytorch/blob/master/torch/nn/functional.py#L3457
-        # # https://github.com/pytorch/pytorch/pull/16949
-        x = F.pad(x, w_pad + h_pad)
-        return x, (h_pad, w_pad, h_mult, w_mult)
-
-def unpad(x,h_pad,w_pad,h_mult,w_mult):
-    return x[..., h_pad[0] : h_mult - h_pad[1], w_pad[0] : w_mult - w_pad[1]]
-
-
-def resize(data):
-    x,y = [],[]
-    for i in range(len(data)):
-        x.append(data[i][0].reshape((data[i][0].shape[0]*data[i][0].shape[1],data[i][0].shape[2],data[i][0].shape[3])))
-        y.append(np.concatenate([np.expand_dims(data[i][1],axis = 3),np.expand_dims(data[i][2],axis = 3),data[i][3]], axis=3))
-    return torch.from_numpy(np.stack(x)),torch.from_numpy(np.stack(y))
-
-training_dataset = data.HCP_dataset_h5.hcp_data(args,ids[:60])
-testing_dataset = data.HCP_dataset_h5_test.hcp_data(args,ids[60:81])
-print("dataset Loaded",len(training_dataset))
-
+dataset_hcp = HCP_dataset
+dataset_hcp.load_data(args.dir,ids)
+testing_dataset = dataset_hcp.hcp_data_test(args,ids[60:81])
 testing_data_loader = DataLoader(dataset=testing_dataset, batch_size=1,pin_memory=True,collate_fn=resize)
+
 # training_data_loader = DataLoader(dataset=training_dataset, batch_size=40, shuffle=True, pin_memory=True, drop_last=True,collate_fn=resize)
 # print(len(training_data_loader))
 
@@ -179,7 +178,7 @@ def valid(model,epoch,tb,out_size = (1, 173, 207, 173, 5)):
 parameters = dict(
     models = ['CSEUnetModel'],
     lr = [0.03,0.005,0.008],
-    batch_size = [4,16,32],
+    batch_size = [4,16,32,64,128],
     block_size = [(64,64,64),(32,32,32),(64,64,8),(64,8,64)]
 )
 
@@ -196,7 +195,8 @@ for run_id, (models,lr,batch_size,block_size) in enumerate(product(*param_values
     if models == 'CSEUnetModel':
         model = CSEUnetModel(in_chans = 8,out_chans = 5,chans = 4,num_pool_layers = 2,drop_prob=0.2,reduction=4)
         # model = nn.DataParallel(model)
-    training_dataset.build(args)
+    
+    training_dataset = dataset_hcp.hcp_data(args,ids[:60])
     training_data_loader = DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=True, pin_memory=True, drop_last=True,collate_fn=resize)
     print(f' model name {models} , num_params = {print_network(model)}')
     # args.lr = lr
