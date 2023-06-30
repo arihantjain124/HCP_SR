@@ -156,24 +156,19 @@ class hcp_data(torch.utils.data.Dataset):
             # if(np.count_nonzero(curr_blk)/curr_blk.size > 0.6):
             blocks.append(curr_blk)
         return np.stack(blocks, axis=0)
-    
-    # def verify_blk(self,vol_norm,adc,fa,rgb,inds):
-    #     for ii in np.arange(inds.shape[0]):
-    #         inds_this = inds[ii, :]
-    #         curr_blk = data[inds_this[0]:inds_this[1]+1, inds_this[2]:inds_this[3]+1, inds_this[4]:inds_this[5]+1, ...]
-    #         # if(np.count_nonzero(curr_blk)/curr_blk.size > 0.6):
-    #         blocks.append(curr_blk)
 
     def build(self,args):
         if(self.blk_size == args.block_size):
-            pass
-        self.blk_size = args.block_size
-        self.loaded_blk = {}
-        self.loaded_adc = {}
-        self.loaded_fa = {}
-        self.loaded_rgb = {}
-        self.preload_data(rebuild=True)
-        self.blk_indx = np.cumsum(self.blk_indx)
+            print("prebuild")
+        else:
+            self.blk_size = args.block_size
+            self.loaded_blk = {}
+            self.loaded_adc = {}
+            self.loaded_fa = {}
+            self.loaded_rgb = {}
+            self.blk_indx = []
+            self.preload_data(rebuild=True)
+            self.blk_indx = np.cumsum(self.blk_indx)
 
     def pre_proc(self,idx):
 

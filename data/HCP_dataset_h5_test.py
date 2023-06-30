@@ -64,7 +64,7 @@ class hcp_data(torch.utils.data.Dataset):
                                   ,'mask':res_vol.get('mask')[:] }
                 
             else:
-                name = self.path['3T'][i]['downsampled']
+                name = self.path['3T'][i]['h5']
                 res_vol = h5py.File(name, 'r')
 
                 self.loaded[i] = {'vol0':res_vol.get('volumes0')[:]

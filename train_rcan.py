@@ -45,7 +45,7 @@ args.batch_size = 4
 args.sort = True
 args.typ = 'upsampled'
 args.block_size = (64,64,64)
-args.epochs = 100
+args.epochs = 1
 print(args)
 
 args.cuda = True
@@ -214,7 +214,7 @@ for run_id, (models,lr,batch_size,block_size) in enumerate(product(*param_values
     tb = SummaryWriter(comment=comment)
 
     curr_psnr,curr_ssim = valid(model,0,tb)
-    for epoch in range(0, args.epochs + 1):
+    for epoch in range(0, args.epochs):
         train(model,l1_criterion,optimizer,epoch,training_data_loader,tb)
         curr_psnr,curr_ssim = valid(model,epoch,tb)
         if(best_psnr<curr_psnr or best_ssim<curr_ssim):
