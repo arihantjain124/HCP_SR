@@ -1,0 +1,1 @@
+docker run -p 10000:8888 -p 10001:8008 --gpus all --ipc=host --ulimit memlock=-1 -it --rm -v /home/hbp/arihant/HCP_SR/:/workspace/hcp/ -v /raid/arihant/storage:/storage/ -v /raid/arihant/DMRI_SR:/workspace/DMRI_SR/  --name arihant_hcp hcp:dmri
