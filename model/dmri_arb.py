@@ -7,7 +7,7 @@ import random
 import math
 from model.rdn import make_rdn
 from model.resblock import ResBlock
-
+import unfoldNd
 
 class SineAct(nn.Module):
     def __init__(self):
@@ -17,25 +17,25 @@ class SineAct(nn.Module):
         return torch.sin(x)
 
 class ImplicitDecoder(nn.Module):
-    def __init__(self, in_channels=16, hidden_dims=[64,32,16,16,8], output_dim = 6):
+    def __init__(self, in_channels=16, hidden_dims=[64,32,16,16,8], output_dim = 5):
         super().__init__()
 
         self.Q = nn.ModuleList()
-        last_dim_Q = in_channels * 9
+        last_dim_Q = in_channels * 27
         for hidden_dim in hidden_dims:
-            self.Q.append(nn.Sequential(nn.Conv2d(last_dim_Q, hidden_dim, 1),
+            self.Q.append(nn.Sequential(nn.Conv3d(last_dim_Q, hidden_dim, 1),
                                         SineAct()))
             last_dim_Q = hidden_dim
 
-        self.in_branch = nn.Sequential(nn.Conv2d(in_channels * 9, hidden_dims[-2], 1),
+        self.in_branch = nn.Sequential(nn.Conv3d(in_channels * 27, hidden_dims[-2], 1),
                             nn.ReLU(),
-                            nn.Conv2d(hidden_dims[-2],hidden_dims[-1], 1),
+                            nn.Conv3d(hidden_dims[-2],hidden_dims[-1], 1),
                             nn.ReLU())
         
-        self.mixer = nn.Sequential(nn.Conv2d(hidden_dims[-1] * 2, hidden_dims[-1], 1),
+        self.mixer = nn.Sequential(nn.Conv3d(hidden_dims[-1] * 2, hidden_dims[-1], 1),
                                    nn.ReLU())
 
-        self.last_layer = nn.Conv2d(hidden_dims[-1], output_dim, 1)
+        self.last_layer = nn.Conv3d(hidden_dims[-1], output_dim, 1)
 
     def step(self, x):
         lat = x
@@ -48,9 +48,9 @@ class ImplicitDecoder(nn.Module):
         return self.last_layer(feat)
 
     def forward(self, x, size):
-        B, C, H_in, W_in = x.shape
-        ratio = (x.new_tensor([math.sqrt((H_in*W_in)/(size[0]*size[1]))]).view(1, -1, 1, 1).expand(B, -1, *size))
-        x = F.interpolate(F.unfold(x, 3, padding=1).view(B, C*9, H_in, W_in), size=ratio.shape[-2:], mode='bilinear')
+        B, C, H_in, W_in,D_in = x.shape
+        ratio = (x.new_tensor([math.sqrt((H_in*W_in*D_in)/(size[0]*size[1]*size[2]))]).view(1, -1, 1, 1,1).expand(B, -1, *size))
+        x = F.interpolate(unfoldNd.unfoldNd(x, 3, padding=1).view(B, C*27, H_in, W_in,D_in), size=ratio.shape[-3:], mode='trilinear')
         return self.step(x)
 
 class DMRI_SR(nn.Module):
@@ -59,16 +59,18 @@ class DMRI_SR(nn.Module):
         self.encoder = make_rdn()
         self.decoder = ImplicitDecoder()
     
-    def set_scale(self, scale, scale2):
+    def set_scale(self, scale = (2,2,2)):
         self.scale = scale
-        self.scale2 = scale2
 
     def forward(self, inp):
         
         B,C,H,W,D = inp.shape
-        H_hr = round(H*self.scale)
-        W_hr = round(W*self.scale2)
-        size = [H_hr, W_hr]
+
+        H_hr = round(H*self.scale[0])
+        W_hr = round(W*self.scale[1])
+        D_hr = round(D*self.scale[2])
+        
+        size = [H_hr, W_hr,D_hr]
         
         feat = self.encoder(inp)
         # latent = self.latent_layer(feat)
