@@ -14,6 +14,7 @@ class SineAct(nn.Module):
         super().__init__()
     
     def forward(self, x):
+        # return x
         return torch.sin(x)
 
 class ImplicitDecoder(nn.Module):

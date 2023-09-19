@@ -10,7 +10,7 @@ from dipy.core.gradients import gradient_table
 import data.utils_dataloader as utils
 from itertools import islice
 import h5py
-
+import os
 np.seterr(all="ignore")
 
 loaded = {}
@@ -40,14 +40,21 @@ def load_path(base_dir,ids):
 def load_data(base_dir,ids):
     ids.sort()
     path,tot = load_path(base_dir,ids)
+    act_ids = []
     for i in ids:
         name = path['3T'][i]['h5']
+        if(not os.path.isfile(name)):
+            continue
         res_vol = h5py.File(name, 'r')
+        
         # print(res_vol.keys())
         loaded[i] = {'vol0':res_vol.get('volumes0')[:]
                             ,'mask':res_vol.get('mask')[:] }
         
         name = path['7T'][i]['GT']
+        
+        if(not os.path.isfile(name)):
+            continue
         res = h5py.File(name, 'r')
         # print(res.keys())
         loaded_gt[i] = {'ADC':res.get('ADC')[:]
@@ -59,19 +66,27 @@ def load_data(base_dir,ids):
         res.close()
 
         name = path['7T'][i]['h5']
+        
+        if(not os.path.isfile(name)):
+            continue
         res = h5py.File(name, 'r')
         loaded_gt[i]['vol0'] = res.get('volumes0')[:]
         loaded_gt[i]['mask'] = res.get('mask')[:]
         res_vol.close()
         res.close()
+        act_ids.append(i)
+    return act_ids
 
 
 
 class hcp_data(torch.utils.data.Dataset):
-    def __init__(self, opt,ids):
+    def __init__(self, opt,ids,test = False):
         super(hcp_data).__init__()
-
-        self.blk_size = opt.block_size
+        if(test == True):
+            self.blk_size = opt.test_block_size
+        else:
+            self.blk_size = opt.block_size
+        self.ret_points = opt.ret_points
         self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
         self.ids = ids
         self.debug = opt.debug
@@ -93,7 +108,10 @@ class hcp_data(torch.utils.data.Dataset):
         blk_idx = np.searchsorted(self.blk_indx, indx)
         vol_idx = self.ids[blk_idx]
         blk_idx = indx - self.blk_indx[blk_idx]
-        return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...]
+        if(self.ret_points):
+            return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...],self.loaded_ret_lr[vol_idx][blk_idx,...],self.loaded_ret_hr[vol_idx][blk_idx,...]
+        else:
+            return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...]
         
     def preload_data(self):
         
@@ -102,8 +120,10 @@ class hcp_data(torch.utils.data.Dataset):
         self.loaded_adc = {}
         self.loaded_fa = {}
         self.loaded_rgb = {}
+        self.loaded_ret_lr = {}
+        self.loaded_ret_hr = {}
         for i in self.ids:
-            self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i] = self.pre_proc(i)
+            self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i],self.loaded_ret_lr[i],self.loaded_ret_hr[i] = self.pre_proc(i)
             if(self.debug == True):
                 print(i,"loaded")
 
@@ -165,8 +185,6 @@ class hcp_data(torch.utils.data.Dataset):
             for ii in np.arange(inds.shape[0]):
                 inds_this = inds[ii, :]
                 curr_blk = data[inds_this[0]:inds_this[1]+1, inds_this[2]:inds_this[3]+1, inds_this[4]:inds_this[5]+1, ...]
-                # if(np.count_nonzero(curr_blk)/curr_blk.size > 0.6):
-                # print(curr_blk.shape)
                 blocks.append(curr_blk)
             return np.stack(blocks, axis=0)
 
@@ -186,90 +204,15 @@ class hcp_data(torch.utils.data.Dataset):
         self.blk_indx.append(curr_blk[2])
         
         mask_lr  = mask_lr[...,np.newaxis]
+        mask_hr  = mask_hr[...,np.newaxis]
 
         vol_norm = np.concatenate((vol_norm,mask_lr),axis =3)
         
         blks_img = self.extract_block(vol_norm,curr_blk[0])
-
+        blks_mask = self.extract_block(mask_hr,curr_blk[1])
         blks_adc = self.extract_block(adc,curr_blk[1])
         blks_fa = self.extract_block(fa,curr_blk[1])
         blks_rgb = self.extract_block(rgb,curr_blk[1])
         
-        return blks_img,blks_adc,blks_fa,blks_rgb
+        return blks_img,blks_adc,blks_fa,blks_rgb,curr_blk[0],curr_blk[1]
     
-
-
-
-class hcp_data_test(torch.utils.data.Dataset):
-    def __init__(self, opt,ids):
-        super(hcp_data_test).__init__()
-        self.crop_depth = opt.crop_depth
-        self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
-        self.ids = ids
-        self.debug = opt.debug
-        if(opt.sort == True):
-            self.ids.sort()
-        self.loaded_blk = {}
-        self.loaded_adc = {}
-        self.loaded_fa = {}
-        self.loaded_rgb = {}
-        self.preload_data()
-
-    def __len__(self):
-        return len(self.ids)
-    
-    def set_scale(self, scale):
-        self.scale = scale
-    
-    def __getitem__(self,indx):
-        vol_idx = self.ids[indx]
-        return self.loaded_blk[vol_idx],self.loaded_fa[vol_idx],self.loaded_adc[vol_idx],self.loaded_rgb[vol_idx]
-    
-    def preload_data(self,rebuild = False):
-
-        shp_loaded = False
-        
-        for i in self.ids:
-                
-            if(shp_loaded == False):
-                shp = np.array(loaded[i]['vol0']).shape
-                shp_loaded = True
-
-            self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i] = self.pre_proc(i)
-
-            if(self.debug == True):
-                print(i,"loaded")
-    
-
-    def pre_proc(self,idx):
-
-        vol = loaded[idx]['vol0']
-        mask = loaded[idx]['mask']
-        adc = loaded_gt[idx]['ADC']
-        fa = loaded_gt[idx]['FA']
-        rgb = loaded_gt[idx]['color_FA']
-
-        # print("raw",vol.shape)
-        # print("ADC",adc.shape)
-        # print("FA",fa.shape)
-        # print("RGB",rgb.shape)
-        
-        vol_norm = (vol-np.min(vol))/(np.max(vol)-np.min(vol))
-        mask  = mask[...,np.newaxis]
-        # curr_blk = self.verify_blk(vol_norm,adc,fa,rgb,curr_blk)
-        vol_norm = np.concatenate((vol_norm,mask),axis =3)
-
-        return vol_norm,adc,fa,rgb
-
-
-
-
-
-
-
-
-
-
-
-
-
