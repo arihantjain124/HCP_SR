@@ -1,5 +1,5 @@
 import argparse, os
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 # os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,8 +7,7 @@ import cupy as cp
 import cucim
 import utils
 import data.HCP_dataset_h5_arb as HCP_dataset
-
-from torch.utils.tensorboard import SummaryWriter
+from tensorboardX import SummaryWriter
 from itertools import product
 from tqdm import tqdm
 
@@ -30,9 +29,9 @@ print("Cuda Version {}" .format(torch.version.cuda))
 print("CUDNN Version {}" .format(torch.backends.cudnn.version()))
 
 parser = argparse.ArgumentParser(description="DTI_ARB")
-parser.add_argument("--block_size", type=tuple, default=(16,16,4),
+parser.add_argument("--block_size", type=tuple, default=(16,16,16),
                     help="Block Size")
-parser.add_argument("--test_block_size", type=tuple, default=(64,64,16),
+parser.add_argument("--test_block_size", type=tuple, default=(16,16,16),
                     help="Block Size")
 parser.add_argument("--crop_depth", type=int, default=15,
                     help="crop across z-axis")
@@ -46,6 +45,14 @@ parser.add_argument("--debug", type=bool,
                     help="Print additional input")
 parser.add_argument("--preload", type=bool,
                     help="Preload data into memory")
+parser.add_argument("--ret_points", type=bool, default=False,
+                    help="return box point of crops")
+parser.add_argument("--thres", type=float, default=0.6,
+                    help="threshold for blk emptiness")
+parser.add_argument("--offset", type=int, default=20,
+                    help="epoch with scale (1,1,1)")
+parser.add_argument("--gaps", type=int, default=20,
+                    help="number of epochs of gap between each scale change")
 
 args = list(parser.parse_known_args())[0]
 args.preload = True
@@ -59,34 +66,31 @@ device = torch.device('cuda' if cuda else 'cpu')
 args.scale = (1,1,1)
 # torch.cuda.set_device(7)
 args.epochs = 100
+args.gaps = 20
+args.offset = 40
 print(args)
 
 
-ids = utils.get_ids()
-ids.sort()
 
+def random_scale(seed = 0):
+    np.random.seed(seed)
+    sections = [0]
+    sections.extend([i+args.offset for i in range(0,args.epochs-10,args.gaps)])
+    scales = {i:np.around(np.random.uniform(1,2,3),decimals=2) for i in sections}
+    scales[0] = (1,1,1)
+    scales_txt = {j: ','.join([str(x) for x in scales[j]])  for j in scales.keys()}
+    return sections,scales,scales_txt
 
 def resize(data):
     x,y = [],[]
     for i in range(len(data)):
         x.append(data[i][0])
         y.append(np.concatenate([np.expand_dims(data[i][1],axis = 3),np.expand_dims(data[i][2],axis = 3),data[i][3]], axis=3))
-    return torch.from_numpy(np.stack(x)),torch.from_numpy(np.stack(y))
+        
+    lr = torch.from_numpy(np.stack(x))
+    pred = torch.from_numpy(np.stack(y))
+    return lr,pred
 
-total_vols = 100
-
-ids = ids[:total_vols]
-dataset_hcp = HCP_dataset
-ids = dataset_hcp.load_data(args.dir,ids)
-print("total vols:",len(ids))
-
-####
-test_vols = int(len(ids) * 0.30)
-train_vols = int(len(ids) * 0.70)
-####
-print(f'train vols:{train_vols} test_vols:{test_vols}')
-testing_dataset = dataset_hcp.hcp_data(args,ids[test_vols:],test = True)
-training_dataset = dataset_hcp.hcp_data(args,ids[:train_vols])
 
 def save_checkpoint(modelname,psnr,ssim):
     model_folder = "model_ckp_dti/"
@@ -105,7 +109,7 @@ def print_network(net):
     return num_params
 
 
-def train(model,l1_criterion,optimizer,epoch,training_data_loader,tb):
+def train(model,l1_criterion,optimizer,epoch,training_data_loader,tb,train_blk_size):
 
     model.train()
 
@@ -126,6 +130,7 @@ def train(model,l1_criterion,optimizer,epoch,training_data_loader,tb):
         model.set_scale(sca)
         optimizer.zero_grad()
         lr_tensor = torch.permute(lr_tensor, (0,4,1,2,3))
+        lr = torch.nn.functional.interpolate(lr,size = torch.Size(train_blk_size))
         pred_tensor = model(lr_tensor)
         pred_tensor = torch.permute(pred_tensor, (0,2,3,4,1)).float()
 
@@ -192,24 +197,42 @@ parameters = dict(
     models = ['arb'],
     lr = [0.02,0.05,0.08],
     batch_size = [4,8,16],
-    block_size = [(16,16,16),(16,16,8),(32,32,16)]
+    block_size = [(16,16,16),(32,32,16)],
+    test_blk_size = [(16,16,16),(16,16,8),(32,32,16),(64,64,16),(32,32,32)]
 )
 
-np.random.seed(0)
-sect = [i+20 for i in range(0,args.epochs-10,10)]
-scale = {i:np.around(np.random.uniform(1,2,3),decimals=2) for i in sect}
-scale[0] = (1,1,1)
-txt_scale = {j: ','.join([str(x) for x in scale[j]])  for j in scale.keys()}
+
+ids = utils.get_ids()
+ids.sort()
+
+total_vols = 100
+
+ids = ids[:total_vols]
+dataset_hcp = HCP_dataset
+ids = dataset_hcp.load_data(args.dir,ids)
+print("total vols:",len(ids))
+
+####
+train_vols = int(len(ids) * 0.70)
+####
+print(f'train vols:{len(ids[:train_vols])} test_vols:{len(ids[train_vols:])}')
+
+testing_dataset = dataset_hcp.hcp_data(args,ids[train_vols:],test = True)
+training_dataset = dataset_hcp.hcp_data(args,ids[:train_vols])
+print(len(testing_dataset),len(training_dataset))
 
 param_values = [v for v in parameters.values()]
 
 best_psnr,best_ssim = 0,0
-
-for run_id, (models,lr,batch_size,block_size) in enumerate(product(*param_values)):
+opti = "adam"
+for run_id, (models,lr,batch_size,block_size,test_blk_size) in enumerate(product(*param_values)):
     
+    sections,scales,scales_text = random_scale(0)
+
     best_psnr,best_ssim = 0,0
     args.block_size = block_size
     args.batch_size = batch_size
+    args.test_block_size = test_blk_size
     # args.scale = scale
     print("run id:", run_id + 1)
     if models == 'arb':
@@ -221,47 +244,58 @@ for run_id, (models,lr,batch_size,block_size) in enumerate(product(*param_values
     model = model.to('cuda')
     
     l1_criterion = torch.nn.MSELoss()
-
-    optimizer = optim.Adam(model.parameters(), lr=lr)
-#     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=800)
+    if(opti == "adam"):
+        optimizer = optim.Adam(model.parameters(), lr=lr)
+    # scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=800)
     # scheduler = torch.optim.lr_scheduler.CyclicLR(optimizer,base_lr = lr, max_lr=0.08, step_size_up  = len(training_data_loader) * 4 , mode  = 'exp_range',cycle_momentum=False)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min',factor = 0.7,patience=10,min_lr = 0.0005)
 
     # scheduler = torch.optim.lr_scheduler.OneCycleLR(optimizer, max_lr=0.05, steps_per_epoch=200, epochs=args.epochs)
-    comment = f'model = {models} batch_size = {batch_size} lr = {lr} block_size = {block_size}'
+    comment = f'batch_size = {batch_size} lr = {lr} block_size = {block_size} test_blk_size = {args.test_block_size}'
     print(comment)
     # tb = SummaryWriter(comment=comment)
     torch.cuda.empty_cache()
     next_change = 0
-    args.scale = scale[next_change]
-    with SummaryWriter(comment = comment) as tb:
-        testing_dataset.set_scale(scale = args.scale)
-        testing_dataset.preload_data()
-        testing_data_loader = DataLoader(dataset=testing_dataset, batch_size=1,pin_memory=True,collate_fn=resize)
-        curr_psnr,curr_ssim = valid(model,-1,tb,testing_data_loader)
-        for epoch in range(0, args.epochs):
-            if(next_change == epoch):
-                tb.add_text("scale_change", txt_scale[next_change], epoch)
-                # print(scale[next_change])
-                args.scale = scale[next_change]
-                next_change = sect.pop(0)
-                testing_dataset.set_scale(scale = args.scale)
-                testing_dataset.preload_data()
-                testing_data_loader = DataLoader(dataset=testing_dataset, batch_size=1,pin_memory=True,collate_fn=resize)
-                training_dataset.set_scale(scale = args.scale)
-                training_dataset.preload_data()
-                training_data_loader = DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=True, pin_memory=True, drop_last=True,collate_fn=resize)
-                # tb.add_scalar("avg_ssim", avg_ssim / len(testing_data_loader), epoch)
+    args.scale = scales[next_change]
+
+    logdir = f"runs/{models}/train/{comment}"
+    tb = SummaryWriter(logdir)
+    
+    #####
+    testing_dataset.set_scale(scale = args.scale,blk_size = test_blk_size)
+    testing_data_loader = DataLoader(dataset=testing_dataset, batch_size=1,pin_memory=True,collate_fn=resize)
+    ### DATALOADER RESIZING
+
+    #### Model init validation
+    curr_psnr,curr_ssim = valid(model,-1,tb,testing_data_loader)
+
+    #### Training Begins
+    for epoch in range(0, args.epochs):
+
+        if(next_change == epoch):
             
-            train(model,l1_criterion,optimizer,epoch,training_data_loader,tb)
-            curr_psnr,curr_ssim = valid(model,epoch,tb,testing_data_loader)
-            if(best_psnr<curr_psnr or best_ssim<curr_ssim):
-                if(best_psnr<curr_psnr):
-                    best_psnr = curr_psnr
-                if(best_ssim<curr_ssim):
-                    best_ssim = curr_ssim
-                save_checkpoint(models,best_psnr,best_ssim)
+            args.scale = scales[next_change]
+            tb.add_text("scale_change", scales_text[next_change], epoch)
+            next_change = sections.pop(0)
+            
+            testing_dataset.set_scale(scale = args.scale,blk_size = test_blk_size)
+            testing_data_loader = DataLoader(dataset=testing_dataset, batch_size=1,pin_memory=True,collate_fn=resize)
+
+            training_dataset.set_scale(scale = args.scale,blk_size = block_size)
+            training_data_loader = DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=True, pin_memory=True, drop_last=True,collate_fn=resize)
+            print(len(training_data_loader))
+            
+        train(model,l1_criterion,optimizer,epoch,training_data_loader,tb,train_blk_size = block_size)
         
-        parms = {"batch_size":batch_size,"lr":lr,"block_size":block_size}
-        metrics = {"ssim":best_ssim,"psnr":best_psnr}
-        tb.add_hparams(parms,metrics)
+        curr_psnr,curr_ssim = valid(model,epoch,tb,testing_data_loader)
+
+        if(best_psnr<curr_psnr or best_ssim<curr_ssim):
+            if(best_psnr<curr_psnr):
+                best_psnr = curr_psnr
+            if(best_ssim<curr_ssim):
+                best_ssim = curr_ssim
+            save_checkpoint(models,best_psnr,best_ssim)
+    
+    parms = {"batch_size":batch_size,"lr":lr,"train_blk_size":','.join(map(str,block_size)),"test_blk_size":','.join(map(str,args.test_block_size)),"optimizer":opti}
+    metrics = {"ssim":best_ssim,"psnr":best_psnr}
+    tb.add_hparams(parms,metrics)

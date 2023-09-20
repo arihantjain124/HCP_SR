@@ -87,6 +87,7 @@ class hcp_data(torch.utils.data.Dataset):
         else:
             self.blk_size = opt.block_size
         self.ret_points = opt.ret_points
+        self.thres = opt.thres
         self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
         self.ids = ids
         self.debug = opt.debug
@@ -94,14 +95,18 @@ class hcp_data(torch.utils.data.Dataset):
         if(opt.sort == True):
             self.ids.sort()
         self.preload_data()
-        self.blk_indx = np.cumsum(self.blk_indx)
 
 
     def __len__(self):
         return self.blk_indx[-1]
     
-    def set_scale(self, scale):
-        self.scale = scale
+    def set_scale(self, scale,blk_size):
+        if(scale == self.scale and blk_size == self.blk_size):
+            pass
+        else:
+            self.scale = scale
+            self.blk_size = blk_size
+            self.preload_data()
         
     def __getitem__(self,indx):
 
@@ -109,7 +114,7 @@ class hcp_data(torch.utils.data.Dataset):
         vol_idx = self.ids[blk_idx]
         blk_idx = indx - self.blk_indx[blk_idx]
         if(self.ret_points):
-            return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...],self.loaded_ret_lr[vol_idx][blk_idx,...],self.loaded_ret_hr[vol_idx][blk_idx,...]
+            return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...],self.loaded_ret_lr[vol_idx][blk_idx,...],self.loaded_ret_hr[vol_idx][blk_idx,...],vol_idx
         else:
             return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...]
         
@@ -126,6 +131,7 @@ class hcp_data(torch.utils.data.Dataset):
             self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i],self.loaded_ret_lr[i],self.loaded_ret_hr[i] = self.pre_proc(i)
             if(self.debug == True):
                 print(i,"loaded")
+        self.blk_indx = np.cumsum(self.blk_indx)
 
     
     def blk_points_pair(self,datalr,datahr,blk_size = [16,16,4],sca = (1,1,1)):
@@ -158,19 +164,31 @@ class hcp_data(torch.utils.data.Dataset):
         ind_block_lr = []
         ind_block_hr = []
         count = 0
+            
+        scale_t = [blk_size[i]/blk_size_hr[i] for i in range(0,3)]
+        offset = [(round((sca[i]-1) * scale_t[i] * blk_size[i]))  for i in range(3)]
+        offset = [[i//2,i//2] if i%2==0 else [i//2,i//2+1] for i in offset]
+    #     print(offset)
         for ii in np.arange(0, ranges_lr[0].shape[0]):
             for jj in np.arange(0, ranges_lr[1].shape[0]):
                 for kk in np.arange(0, ranges_lr[2].shape[0]):
-                    temp_lr = np.array([ranges_lr[0][ii], ranges_lr[0][ii]+blk_size[0]-1, ranges_lr[1][jj], ranges_lr[1][jj]+blk_size[1]-1, ranges_lr[2][kk], ranges_lr[2][kk]+blk_size[2]-1]).astype(int)
-                    temp_hr = np.array([ranges_hr[0][ii], ranges_hr[0][ii]+blk_size_hr[0]-1, ranges_hr[1][jj], ranges_hr[1][jj]+blk_size_hr[1]-1, ranges_hr[2][kk], ranges_hr[2][kk]+blk_size_hr[2]-1]).astype(int)
+                    
+                    temp_lr = np.array([ranges_lr[0][ii] - offset[0][0], ranges_lr[0][ii]+blk_size[0]-1 + offset[0][1], 
+                                        ranges_lr[1][jj] - offset[1][0], ranges_lr[1][jj]+blk_size[1]-1 + offset[1][1], 
+                                        ranges_lr[2][kk] - offset[2][0], ranges_lr[2][kk]+blk_size[2]-1 + offset[2][1]]).astype(int)
+                    
+                    temp_hr = np.array([ranges_hr[0][ii], ranges_hr[0][ii]+blk_size_hr[0]-1,
+                                        ranges_hr[1][jj], ranges_hr[1][jj]+blk_size_hr[1]-1,
+                                        ranges_hr[2][kk], ranges_hr[2][kk]+blk_size_hr[2]-1]).astype(int)
+                    
                     curr_blk = datalr[temp_lr[0]:temp_lr[1]+1, temp_lr[2]:temp_lr[3]+1, temp_lr[4]:temp_lr[5]+1, ...]
                     curr_blk_hr = datahr[temp_hr[0]:temp_hr[1]+1, temp_hr[2]:temp_hr[3]+1, temp_hr[4]:temp_hr[5]+1, ...]
-                    if((np.count_nonzero(curr_blk)/curr_blk.size > 0.65) and (np.count_nonzero(curr_blk_hr)/curr_blk_hr.size > 0.65)):
+                    # print(curr_blk.size,curr_blk.shape,curr_blk_hr.shape,curr_blk_hr.size)
+                    if((curr_blk.size != 0 and np.count_nonzero(curr_blk)/curr_blk.size > 0.65) and (np.count_nonzero(curr_blk_hr)/curr_blk_hr.size > 0.65)):
                         ind_block_lr.append(temp_lr)
                         ind_block_hr.append(temp_hr)
                         count = count + 1
-
-                        
+                    
         # print(blk_size_hr)
         ind_block_lr = np.stack(ind_block_lr)
         ind_block_lr = ind_block_lr.astype(int)
