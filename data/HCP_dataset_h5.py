@@ -102,7 +102,7 @@ class hcp_data(torch.utils.data.Dataset):
                 print(i,"loaded")
 
     
-    def blocks(self,base_mask):
+    def blocks(self,base_mask,base_vol):
         # %% divide brain volume to blocks
         xind,yind,zind = np.nonzero(base_mask)
         xmin,xmax = np.min(xind),np.max(xind)
@@ -133,14 +133,18 @@ class hcp_data(torch.utils.data.Dataset):
         yind_block = np.round(np.linspace(ystart, yend, ny))
         zind_block = np.round(np.linspace(zstart, zend, nz))
 
-        ind_block = np.zeros([xind_block.shape[0]*yind_block.shape[0]*zind_block.shape[0], 6])
+        ind_block = []
         count = 0
         for ii in np.arange(0, xind_block.shape[0]):
             for jj in np.arange(0, yind_block.shape[0]):
                 for kk in np.arange(0, zind_block.shape[0]):
-                    ind_block[count, :] = np.array([xind_block[ii], xind_block[ii]+self.blk_size[0]-1, yind_block[jj], yind_block[jj]+self.blk_size[1]-1, zind_block[kk], zind_block[kk]+self.blk_size[2]-1])
-                    count = count + 1
+                    temp = np.array([xind_block[ii], xind_block[ii]+self.blk_size[0]-1, yind_block[jj], yind_block[jj]+self.blk_size[1]-1, zind_block[kk], zind_block[kk]+self.blk_size[2]-1]).astype(int)
+                    curr_blk = base_vol[temp[0]:temp[1]+1, temp[2]:temp[3]+1, temp[4]:temp[5]+1, ...]
+                    if(np.count_nonzero(curr_blk)/curr_blk.size > 0.65):
+                        ind_block.append(temp)
+                        count = count + 1
 
+        ind_block = np.stack(ind_block)
         ind_block = ind_block.astype(int)
         # print(ind_block)
         return ind_block,len(ind_block)
@@ -151,6 +155,7 @@ class hcp_data(torch.utils.data.Dataset):
             inds_this = inds[ii, :]
             curr_blk = data[inds_this[0]:inds_this[1]+1, inds_this[2]:inds_this[3]+1, inds_this[4]:inds_this[5]+1, ...]
             # if(np.count_nonzero(curr_blk)/curr_blk.size > 0.6):
+            # print(curr_blk.shape)
             blocks.append(curr_blk)
         return np.stack(blocks, axis=0)
 
@@ -167,13 +172,13 @@ class hcp_data(torch.utils.data.Dataset):
         # print("FA",fa.shape)
         # print("RGB",rgb.shape)
 
-        curr_blk = self.blocks(mask)
+        vol_norm = (vol-np.min(vol))/(np.max(vol)-np.min(vol))
+        curr_blk = self.blocks(mask,vol_norm)
         # self.blk_per_vol = curr_blk[1]
         self.blk_indx.append(curr_blk[1])
-        vol_norm = (vol-np.min(vol))/(np.max(vol)-np.min(vol))
         mask  = mask[...,np.newaxis]
-        # curr_blk = self.verify_blk(vol_norm,adc,fa,rgb,curr_blk)
         vol_norm = np.concatenate((vol_norm,mask),axis =3)
+        # curr_blk = self.verify_blk(vol_norm,adc,fa,rgb,curr_blk)
 
         blks_img = self.extract_block(vol_norm,curr_blk[0])
         blks_adc = self.extract_block(adc,curr_blk[0])

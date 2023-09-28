@@ -22,6 +22,7 @@ class hcp_data(torch.utils.data.Dataset):
         self.path,self.tot = self.load_path(self.base_dir,ids)
         self.ids = ids
         self.debug = opt.debug
+        self.size = opt.test_size
         if(opt.sort == True):
             self.ids.sort()
         self.preload = opt.preload
@@ -54,8 +55,6 @@ class hcp_data(torch.utils.data.Dataset):
             if(self.typ == 'upsampled'):
                 name = self.path['3T'][i]['upsampled']
                 res_vol = h5py.File(name, 'r')
-
-                
                 if(shp_loaded == False):
                     shp = np.array(res_vol.get('volumes0')).shape
                     shp_loaded = True
@@ -66,10 +65,8 @@ class hcp_data(torch.utils.data.Dataset):
             else:
                 name = self.path['3T'][i]['h5']
                 res_vol = h5py.File(name, 'r')
-
                 self.loaded[i] = {'vol0':res_vol.get('volumes0')[:]
                                   ,'mask':res_vol.get('mask')[:] }
-                
                 if(shp_loaded == False):
                     shp = np.array(res_vol.get('volumes0')).shape
                     shp_loaded = True

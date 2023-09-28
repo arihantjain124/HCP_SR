@@ -1,0 +1,13 @@
+runs/
+model_ckp_dti/
+ArbSR/
+Dual_ArbNet/
+checkpoint*/
+set_runs/
+MSE_runs/
+.Trash-0/
+# Python Tools for Visual Studio (PTVS)
+data/__pycache__/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
