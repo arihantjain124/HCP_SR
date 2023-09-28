@@ -1,0 +1,22 @@
+2023-09-27-22:46:02
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+seed: 1
+save: DTIArbNet
+load: .
+reset: False
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
