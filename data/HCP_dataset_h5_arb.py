@@ -198,11 +198,17 @@ class hcp_data(torch.utils.data.Dataset):
         return ind_block_lr,ind_block_hr,len(ind_block_lr)
 
 
-    def extract_block(self,data, inds):
+    def extract_block(self,data, inds,interpolate = False):
             blocks = []
             for ii in np.arange(inds.shape[0]):
                 inds_this = inds[ii, :]
                 curr_blk = data[inds_this[0]:inds_this[1]+1, inds_this[2]:inds_this[3]+1, inds_this[4]:inds_this[5]+1, ...]
+                if(interpolate):
+                    curr_blk = torch.permute(torch.from_numpy(curr_blk), (3,0,1,2))
+                    curr_blk = torch.unsqueeze(curr_blk, 0)
+                    curr_blk = torch.nn.functional.interpolate(curr_blk,size = torch.Size(self.blk_size[:3]))
+                    curr_blk = torch.permute(curr_blk, (2,3,4,1,0))
+                    curr_blk = torch.squeeze(curr_blk)
                 blocks.append(curr_blk)
             return np.stack(blocks, axis=0)
 
@@ -226,7 +232,7 @@ class hcp_data(torch.utils.data.Dataset):
 
         # vol_norm = np.concatenate((vol_norm,mask_lr),axis =3)
         
-        blks_img = self.extract_block(vol_norm,curr_blk[0])
+        blks_img = self.extract_block(vol_norm,curr_blk[0],interpolate = True)
         blks_mask = self.extract_block(mask_hr,curr_blk[1])
         blks_adc = self.extract_block(adc,curr_blk[1])
         blks_fa = self.extract_block(fa,curr_blk[1])
@@ -317,9 +323,10 @@ class hcp_data_test_recon(torch.utils.data.Dataset):
             for jj in np.arange(0, ranges_lr[1].shape[0]):
                 for kk in np.arange(0, ranges_lr[2].shape[0]):
 
-                    temp_lr = np.array([ranges_lr[0][ii], ranges_lr[0][ii]+blk_size[0]-1 , 
-                                        ranges_lr[1][jj], ranges_lr[1][jj]+blk_size[1]-1 , 
-                                        ranges_lr[2][kk], ranges_lr[2][kk]+blk_size[2]-1 ]).astype(int)
+                    temp_lr = np.array([ranges_lr[0][ii] - offset[0][0], ranges_lr[0][ii]+blk_size[0]-1 + offset[0][1], 
+                                        ranges_lr[1][jj] - offset[1][0], ranges_lr[1][jj]+blk_size[1]-1 + offset[1][1], 
+                                        ranges_lr[2][kk] - offset[2][0], ranges_lr[2][kk]+blk_size[2]-1 + offset[2][1]]).astype(int)
+                    
 
                     temp_hr = np.array([ranges_hr[0][ii], ranges_hr[0][ii]+blk_size_hr[0]-1,
                                         ranges_hr[1][jj], ranges_hr[1][jj]+blk_size_hr[1]-1,
@@ -342,8 +349,7 @@ class hcp_data_test_recon(torch.utils.data.Dataset):
         # print(ind_block)
         return ind_block_lr,ind_block_hr,len(ind_block_lr)
 
-
-    def extract_block(self,data, inds_lr,inds_hr,blk_size,channels = 7):
+    def extract_block(self,data, inds_lr,inds_hr,blk_size,channels = 7,interpolate = False):
             blocks = []
             ind_blk = []
             blk_size = list(blk_size)
@@ -353,6 +359,12 @@ class hcp_data_test_recon(torch.utils.data.Dataset):
                 curr_blk = data[inds_this[0]:inds_this[1]+1, inds_this[2]:inds_this[3]+1, inds_this[4]:inds_this[5]+1, ...]
                 # print(curr_blk.shape)
                 if(curr_blk.shape == torch.Size(blk_size)):
+                    if(interpolate):
+                        curr_blk = torch.permute(torch.from_numpy(curr_blk), (3,0,1,2))
+                        curr_blk = torch.unsqueeze(curr_blk, 0)
+                        curr_blk = torch.nn.functional.interpolate(curr_blk,size = torch.Size(self.blk_size[:3]))
+                        curr_blk = torch.permute(curr_blk, (2,3,4,1,0))
+                        curr_blk = torch.squeeze(curr_blk)
                     blocks.append(curr_blk)
                     ind_blk.append(inds_hr[ii,:])
             return np.stack(blocks, axis=0),np.stack(ind_blk,axis=0)

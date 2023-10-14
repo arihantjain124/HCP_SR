@@ -6,9 +6,12 @@ import utils
 import model
 import loss
 from trainer import Trainer
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
 ids = utils.get_ids()
 ids.sort()
-total_vols = 10
+total_vols = 20
 ids = ids[:total_vols]
 
 if __name__ == '__main__':
@@ -19,18 +22,9 @@ if __name__ == '__main__':
         model = model.Model(args, checkpoint)
         loss = loss.Loss(args, checkpoint)
         t = Trainer(args, loader, model, loss, checkpoint)
-        
-        
-        
-        
-        print("pass")
-        
-        
-        
-        
         while not t.terminate():
             t.train()
-            # t.test()
+            t.test()
 
         # checkpoint.done()
 

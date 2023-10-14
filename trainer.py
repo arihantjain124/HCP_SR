@@ -17,6 +17,7 @@ class Trainer():
         self.loader = loader
         self.model = my_model
         self.loss = my_loss
+        self.device = torch.device('cuda' if args.cuda else 'cpu')
         self.optimizer = utility.make_optimizer(args, self.model)
         self.scheduler = utility.make_scheduler(args, self.optimizer)
 
@@ -54,20 +55,22 @@ class Trainer():
 
         self.ckp.write_log('[Epoch {}]\tLearning rate: {:.2e}'.format(epoch, Decimal(lr)))
 
-        for batch, (lr, hr) in enumerate(self.loader.training_data):
-            lr = lr.to('cuda').float()  # ranges from [0, 1]
-            hr = hr.to('cuda').float()  # ranges from [0, 1]
-            t3_vol = lr.shape
-            t7_vol = hr.shape
+        pbar = tqdm(total = len(self.loader.training_data))
+        for batch, (lr_tensor, hr_tensor) in enumerate(self.loader.training_data):
+            pbar.update(1)
+            lr_tensor = lr_tensor.to('cuda').float()  # ranges from [0, 1]
+            hr_tensor = hr_tensor.to('cuda').float()  # ranges from [0, 1]
+            t3_vol = lr_tensor.shape
+            t7_vol = hr_tensor.shape
             sca = [t7_vol[i]/t3_vol[i] for i in range(1,4)]
             timer_data.hold()
             self.optimizer.zero_grad()
-            lr = torch.permute(lr, (0,4,1,2,3))
+            lr_tensor = torch.permute(lr_tensor, (0,4,1,2,3))
             # inference
-            pred = self.model.forward(lr,sca)
+            pred = self.model.forward(lr_tensor,sca)
             pred = torch.permute(pred, (0,2,3,4,1)).float()
             # loss function
-            loss = self.loss(pred,hr)
+            loss = self.loss(pred,hr_tensor)
 
             # backward
             if loss.item() < self.args.skip_threshold * self.error_last:
@@ -104,89 +107,44 @@ class Trainer():
                 os.path.join(self.ckp.dir, 'model', 'model_{}.pt'.format(epoch))
             )
             self.ckp.write_log('save ckpt epoch{:.4f}'.format(epoch))
-
-    # def test(self):
-    #     self.model.eval()
-
-    #     with torch.no_grad():
-    #         if self.args.test_only:
-    #             scale_list = range(len(self.args.scale))
-    #             logger = print
-    #         else:
-    #             scale_list = [9,19,29]
-    #             logger = self.ckp.write_log
-
-    #         eval_psnr_avg = []
-    #         for idx_scale in scale_list:
-    #             self.loader_test.dataset.set_scale(idx_scale)
-    #             scale = self.args.scale[idx_scale]
-    #             scale2 = self.args.scale2[idx_scale]
-
-    #             eval_psnr = 0
-    #             eval_ssim = 0
-    #             for idx_img, (lr, hr, filename, _) in tqdm(enumerate(self.loader_test),total=len(self.loader_test)):
-    #                 filename = filename[0]
-    #                 # prepare LR & HR images
-    #                 no_eval = (hr.nelement() == 1)
-    #                 if not no_eval:
-    #                     if isinstance(lr,list):
-    #                         lr, ref_hr, ref_lr, hr = self.prepare(lr[0], lr[1], lr[2], hr)
-    #                     else:
-    #                         lr, hr = self.prepare(lr, hr)
-    #                         ref_hr = None
-    #                         ref_lr = None
-    #                 else:
-    #                     if isinstance(lr,list):
-    #                         lr, ref_hr, ref_lr = self.prepare(lr[0], lr[1], lr[2])
-    #                     else:
-    #                         lr, = self.prepare(lr)
-    #                         ref_hr = None
-    #                         ref_lr = None
-    #                 lr, hr, ref_hr, ref_lr = self.crop_border(lr, hr, ref_hr, ref_lr, scale, scale2)
-    #                 # inference
-    #                 self.model.get_model().set_scale(scale, scale2)
-    #                 if ref_hr is None:
-    #                     sr = self.model(lr)
-    #                 else:
-    #                     sr = self.model((lr, ref_hr, ref_lr, self.args.ref_type_test))
-    #                 if isinstance(sr,tuple):
-    #                     sr,Refsr = sr                    
-
-    #                 if not no_eval:
-    #                     psnr, ssim, mse = utility.calc_psnr(
-    #                         lr, sr,  hr, img_name=filename, scale=[scale, scale2], 
-    #                         save = self.args.save_results, savefile = self.args.savefigfilename,ref = ref_hr
-    #                     )
-    #                     eval_psnr += psnr
-    #                     eval_ssim += ssim 
+        pbar.close()
 
 
-    #             if scale == scale2:
-    #                 logger('[{} x{}]\tPSNR: {:.4f} SSIM: {:.4f}'.format(
-    #                     self.args.data_test,
-    #                     scale,
-    #                     eval_psnr / len(self.loader_test),
-    #                     eval_ssim / len(self.loader_test),
-    #                 ))
-    #             else:
-    #                 logger('[{} x{}/x{}]\tPSNR: {:.4f} SSIM: {:.4f}'.format(
-    #                     self.args.data_test,
-    #                     scale,
-    #                     scale2,
-    #                     eval_psnr / len(self.loader_test),
-    #                     eval_ssim / len(self.loader_test),
-    #                 ))
-    #             eval_psnr_avg.append(eval_psnr / len(self.loader_test))
-    #         eval_psnr_avg = np.mean(eval_psnr_avg)
-    #     if not self.args.test_only: #training mode and save the best model
-    #         if self.psnr_max is None or self.psnr_max < eval_psnr_avg:
-    #             self.psnr_max = eval_psnr_avg
-    #             torch.save(
-    #                 self.model.state_dict(),
-    #                 os.path.join(self.ckp.dir, 'model', 'model_best.pt')
-    #             )
-    #             logger('save ckpt PSNR:{:.4f}'.format(eval_psnr_avg))
+    def test(self):
+        self.model.eval()
+        eval_psnr_avg = []
+        eval_ssim_avg = []
+        pbar = tqdm(total = len(self.loader.testing_data))
+        eval_psnr = 0
+        eval_ssim = 0
+        for iteration, (lr_tensor, hr_tensor,pnts,mask) in enumerate(self.loader.testing_data, 1):
+            # print(lr_tensor.shape,hr_tensor.shape)
+            pbar.update(1)
+            lr_tensor = lr_tensor.to(self.device)
+            hr_tensor = hr_tensor.to(self.device)
+            sca = self.loader.get_scale_test()
+            lr_tensor = torch.permute(lr_tensor, (0,4,1,2,3))
+            # inference
+            with torch.no_grad():
+                pred = self.model.forward(lr_tensor,sca)
+            pred = torch.permute(pred, (0,2,3,4,1)).float()
 
+
+            psnr, ssim = utility.compute_psnr_ssim(hr_tensor,pred,pnts,mask)
+            eval_psnr += psnr
+            eval_ssim += ssim 
+
+            eval_ssim_avg.append(eval_ssim)
+            eval_psnr_avg.append(eval_psnr)
+        eval_ssim_avg = np.mean(eval_ssim_avg)
+        eval_psnr_avg = np.mean(eval_psnr_avg)
+        if self.psnr_max is None or self.psnr_max < eval_psnr_avg:
+            self.psnr_max = eval_psnr_avg
+            torch.save(
+                self.model.state_dict(),
+                os.path.join(self.ckp.dir, 'model', 'model_best.pt')
+            )
+                
     def terminate(self):
         epoch = self.scheduler.last_epoch + 1
         return epoch >= self.args.epochs
