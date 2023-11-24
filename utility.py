@@ -189,7 +189,7 @@ def make_scheduler(args, my_optimizer):
             gamma=args.gamma
         )
 
-    scheduler.step(args.start_epoch - 1)
+    # scheduler.step(args.start_epoch - 1)
 
     return scheduler
 
@@ -211,10 +211,67 @@ def compute_psnr(hr,pred):
     pred = cp.array(pred.squeeze())
     return float(metrics.peak_signal_noise_ratio(hr,pred,data_range=1))
 
+import random
+import matplotlib.pyplot as plt
 
-def compute_psnr_ssim(hr,pred,pnts,mask):
+def plot_train(pred,hr,logger,epoch):
+    pred = pred.cpu().detach().numpy()
+    hr = hr.cpu().detach().numpy()
+    samples = random.sample(range(pred.shape[0]), 6)
+    fig, ax = plt.subplots(len(samples),6)
+    k=0
+    for i in samples:
+        ax[k][0].imshow((pred[i,:,:,8,0]* 255).astype('uint8'))
+        ax[k][1].imshow((pred[i,:,:,8,1]* 255).astype('uint8'))
+        ax[k][2].imshow((pred[i,:,:,8,2:]* 255).astype('uint8'))
+        ax[k][3].imshow((hr[i,:,:,8,0]* 255).astype('uint8'))
+        ax[k][4].imshow((hr[i,:,:,8,1]* 255).astype('uint8'))
+        ax[k][5].imshow((hr[i,:,:,8,2:]* 255).astype('uint8'))
+        k+=1
+    logger.add_figure("sample_train",fig,global_step = epoch)
+
+    
+def logger_sampling(pred,logger,epoch):
+    pred = pred.cpu().detach().numpy()
+    size = pred.shape[:3]
+    x,y,z = random.sample(range(40, 100), 3)
+    fig, ax = plt.subplots(3,3)
+    fa = pred[x,:,:,0]
+    adc = pred[x,:,:,1]
+    rgb = pred[x,:,:,2:]
+    # print(fa.min(),fa.max())
+    # print(adc.min(),adc.max())
+    # print(rgb.min(),rgb.max())
+    # print(fa.shape,adc.shape,rgb.shape)
+    # print(type(fa),type(adc),type(rgb))
+    ax[0][0].imshow((fa * 255).astype('uint8'))
+    ax[0][1].imshow((adc * 255).astype('uint8'))
+    ax[0][2].imshow((rgb * 255).astype('uint8'))
+
+    
+    fa = pred[:,y,:,0]
+    adc = pred[:,y,:,1]
+    rgb = pred[:,y,:,2:]
+    ax[1][0].imshow((fa * 255).astype('uint8'))
+    ax[1][1].imshow((adc * 255).astype('uint8'))
+    ax[1][2].imshow((rgb * 255).astype('uint8'))
+
+    
+    fa = pred[:,:,z,0]
+    adc = pred[:,:,z,1]
+    rgb = pred[:,:,z,2:]
+    ax[2][0].imshow((fa * 255).astype('uint8'))
+    ax[2][1].imshow((adc * 255).astype('uint8'))
+    ax[2][2].imshow((rgb * 255).astype('uint8'))
+    # fig.colorbar()
+    logger.add_figure("samples",fig,global_step = epoch)
+
+
+
+def compute_psnr_ssim(hr,pred,pnts,logger=None,epoch=None):
     pred = recon(pred,pnts,vol_size=hr.shape)
+    if(logger != None):
+        logger_sampling(pred,logger,epoch)
     hr = cp.array(hr.squeeze())
     pred = cp.array(pred.squeeze())
-    # print(pred.shape,hr.shape,pnts.shape)
     return float(metrics.peak_signal_noise_ratio(hr,pred,data_range=1)),abs(float(metrics.structural_similarity(hr,pred,channel_axis =3,data_range=1)))

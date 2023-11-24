@@ -1,10 +1,12 @@
 import argparse
 
 parser = argparse.ArgumentParser(description="DTI_ARB")
-parser.add_argument("--block_size", type=tuple, default=(16,16,16),
+parser.add_argument("--block_size", type=tuple, default=(16,16,4),
                     help="Block Size")
-parser.add_argument("--test_block_size", type=tuple, default=(16,16,16),
+parser.add_argument("--test_block_size", type=tuple, default=(16,16,4),
                     help="Block Size")
+parser.add_argument("--stride", type=tuple, default=(0,0,0),
+                    help="Testing Dataset Stride")
 parser.add_argument("--crop_depth", type=int, default=15,
                     help="crop across z-axis")
 parser.add_argument("--dir", type=str,
@@ -23,12 +25,15 @@ parser.add_argument("--thres", type=float, default=0.6,
                     help="threshold for blk emptiness")
 parser.add_argument("--offset", type=int, default=20,
                     help="epoch with scale (1,1,1)")
-parser.add_argument("--gaps", type=int, default=20,
+parser.add_argument("--gap", type=int, default=20,
                     help="number of epochs of gap between each scale change")
+
+parser.add_argument("--no_vols", type=int, default=20,
+                    help="Number of Volumes to load")
 
 
 # Optimization specifications
-parser.add_argument('--lr', type=float, default=1e-4,
+parser.add_argument('--lr', type=float, default=0.005,
                     help='learning rate')
 parser.add_argument('--lr_decay', type=int, default=40,
                     help='learning rate decay per N epochs')
@@ -53,13 +58,15 @@ parser.add_argument('--start_epoch', type=int, default=0,
                     help='resume from the snapshot, and the start_epoch')
 
 # Loss specifications
-parser.add_argument('--loss', type=str, default='1*MSE',
+parser.add_argument('--loss', type=str, default='0.5*MSE+0.5*L1',
                     help='loss function configuration')
 parser.add_argument('--skip_threshold', type=float, default='1e6',
                     help='skipping batch that has large error')
 
 
 # Log specifications
+parser.add_argument('--run_name', type=str, default='secondrun',
+                    help='file name to save')
 parser.add_argument('--save', type=str, default='DTIArbNet',
                     help='file name to save')
 parser.add_argument('--load', type=str, default='.',
@@ -69,7 +76,7 @@ parser.add_argument('--save_models', action='store_true',
 parser.add_argument('--resume', type=int, default=0,
                     help='resume from specific checkpoint')
 
-parser.add_argument('--print_every', type=int, default=200,
+parser.add_argument('--print_every', type=int, default=20,
                     help='how many batches to wait before logging training status')
 parser.add_argument('--save_every', type=int, default=30,
                     help='how many batches to wait before logging training status')
@@ -80,6 +87,8 @@ parser.add_argument('--save_every', type=int, default=30,
 # parser.add_argument('--n_threads', type=int, default=2,
 #                     help='number of threads for data loading')
 parser.add_argument('--cpu', type=bool, default=False,
+                    help='use cpu only')
+parser.add_argument('--gpu', type=int, default=0,
                     help='use cpu only')
 # parser.add_argument('--n_GPUs', type=int, default=2,
 #                     help='number of GPUs')
@@ -125,5 +134,4 @@ args.sort = True
 args.cuda = True
 args.scale = (1,1,1)
 args.epochs = 400
-args.gaps = 20
-args.offset = 10
+args.offset = 2

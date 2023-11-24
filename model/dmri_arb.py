@@ -60,13 +60,13 @@ class DMRI_SR(nn.Module):
         self.encoder = make_rdn(inchannel=inch)
         self.decoder = ImplicitDecoder()
     
-    def set_scale(self, scale = (2,2,2)):
+    def set_scale(self, scale):
         self.scale = scale
 
     def forward(self, inp):
         
         B,C,H,W,D = inp.shape
-
+        # print(self.scale)
         H_hr = round(H*self.scale[0])
         W_hr = round(W*self.scale[1])
         D_hr = round(D*self.scale[2])

@@ -58,7 +58,7 @@ class RDN(nn.Module):
 
         # number of RDB blocks, conv layers, out channels
         self.D, C, G = {
-            'C': (3, 5, 32),
+            'C': (5, 10, 32),
         }[args.RDNconfig]
 
         # Shallow feature extraction net
