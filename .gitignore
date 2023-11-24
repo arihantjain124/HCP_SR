@@ -7,3 +7,6 @@ Dual_ArbNet/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+old_runs/
+runs/
+experiment/

@@ -108,7 +108,7 @@ class hcp_data(torch.utils.data.Dataset):
             self.ids.sort()
             
         self.scale_strict = (1,1,1)
-        self.preload_data()
+        self.preload_data(stable = True)
 
 
     def __len__(self):

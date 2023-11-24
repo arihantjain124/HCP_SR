@@ -20,3 +20,8041 @@ cuda: True
 scale: (1, 1, 1)
 epochs: 400
 
+2023-09-28-02:44:22
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+seed: 1
+save: DTIArbNet
+load: .
+reset: False
+pin_mem: False
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-09-28-02:45:20
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+seed: 1
+save: DTIArbNet
+load: .
+reset: False
+pin_mem: False
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-09-28-02:46:07
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+seed: 1
+save: DTIArbNet
+load: .
+reset: False
+pin_mem: False
+train_set: 0.7
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-09-28-14:17:38
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+seed: 1
+save: DTIArbNet
+load: .
+reset: False
+pin_mem: False
+train_set: 0.7
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-09-28-14:19:31
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+seed: 1
+save: DTIArbNet
+load: .
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-09-28-14:21:01
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+save: DTIArbNet
+load: .
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-09-28-14:21:33
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+save: DTIArbNet
+load: .
+save_models: False
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-09-28-14:22:03
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+save: DTIArbNet
+load: .
+save_models: False
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-09-28-14:23:10
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+save: DTIArbNet
+load: .
+save_models: False
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-09-28-14:23:40
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+save: DTIArbNet
+load: .
+save_models: False
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-09-28-14:24:14
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+save: DTIArbNet
+load: .
+save_models: False
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-09-28-14:24:48
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+save: DTIArbNet
+load: .
+save_models: False
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-09-28-14:26:12
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+save: DTIArbNet
+load: .
+save_models: False
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: model/DMRI.pt
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-09-28-14:27:04
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: model/DMRI.pt
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-09-28-14:31:26
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-03-21:56:39
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-04-06:48:24
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-04-06:49:36
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+loss: 1*L1
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-04-06:49:55
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+loss: 1*MSE
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-04-13:43:43
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+loss: 1*MSE
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-04-13:44:23
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+loss: 1*MSE
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-04-13:45:48
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+loss: 1*MSE
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-04-13:46:17
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-04-13:46:49
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-04-13:46:58
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-04-13:47:26
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-04-13:48:26
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-07-11:53:30
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-07-12:02:02
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-07-12:02:46
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-07-12:04:30
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-07-12:07:40
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-07-12:08:54
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-07-12:09:23
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-07-12:09:44
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-13-09:45:11
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-13-09:47:34
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-13-09:49:33
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-13-09:51:38
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-13-09:52:32
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-13-10:00:28
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-13-10:02:05
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-13-10:04:46
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-13-10:22:17
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-13-10:25:29
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-13-10:41:55
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-13-10:43:20
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-14-13:35:10
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-14-13:37:17
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-14-13:41:59
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-14-13:42:35
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-14-13:44:17
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-14-13:45:45
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-14-13:46:24
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-14-13:47:22
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-14-13:48:49
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-14-13:49:52
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-14-13:51:38
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-16-11:20:59
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-16-11:22:35
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: firstrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-16-12:42:08
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-16-13:04:47
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-16-13:06:24
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-16-13:08:12
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-16-13:09:48
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-16-13:11:14
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-06:53:30
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-06:54:09
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: third
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-06:54:30
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: third
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-07:15:21
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: third
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-07:16:10
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: third
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-07:18:22
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: third
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-07:19:50
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: third
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-07:20:22
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: third
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-07:23:34
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: third
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-07:24:25
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: third
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-07:28:53
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.0001
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: third_images
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-08:21:23
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.05
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: latest_run
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-08:23:13
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.05
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: latest_run
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-08:23:50
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.05
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: 100_volumes_400_epochs
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-08:24:12
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.05
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: 100_volumes_400_epochs
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-08:25:47
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: 100_volumes_400_epochs
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-08:28:30
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: 100_volumes_400_epochs
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-08:43:13
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: 100_volumes_400_epochs,loss=0.5MSE+0.5L1
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-10:14:43
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: 100_volumes_400_epochs,loss=1MSE
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-10:23:44
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: 100_volumes_400_epochs,loss=1MSE
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-10:53:36
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-10:54:31
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-10:56:37
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-10:57:53
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-11:34:53
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-11:41:33
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-11:42:10
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-11:42:56
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-11:43:54
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-11:45:08
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-11:45:41
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-11:47:22
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-11:48:20
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-11:54:08
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-11:59:49
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: latest
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-12:01:49
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: latest
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-12:04:19
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: latest
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-12:05:23
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: latest_150_vols
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-12:15:48
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: latest_150_vols
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-12:18:26
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 1*MSE
+skip_threshold: 1000000.0
+run_name: latest_150_vols
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-12:20:33
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 0.5*MSE+0.5L1
+skip_threshold: 1000000.0
+run_name: 150_vols_0.5MSE+0.5L1
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-12:31:58
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: 150_vols_0.5MSE+0.5L1
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-17-12:44:27
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: 150_vols_0.5MSE+0.5L1
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-20-11:21:45
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: test_run
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-20-11:22:33
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gaps: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+gap: 10
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: test_run_scale_change_2
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-20-11:30:52
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: test_run_scale_change_2
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-20-12:02:07
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: test_run_scale_change_2
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 200
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-20-12:45:32
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: test_run_scale_change_2
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-20-13:06:53
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: test_run_scale_change_2
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-20-13:08:53
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: test_run_scale_change_2
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-25-11:22:27
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-25-11:23:43
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-25-11:24:16
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: testing
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-26-00:11:04
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-26-00:11:46
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-26-00:20:43
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-26-00:21:31
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-26-00:31:21
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-10-26-00:31:42
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-02-16:58:21
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: test_1
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-02-17:00:57
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: test_1
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-02-17:01:37
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: test_1
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-02-17:02:26
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: test_1
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-02-17:02:45
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: test_1
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-02-17:05:10
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 50
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: test_1
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-02-17:05:55
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 50
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: test_1
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-02-17:06:51
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 50
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: test_1
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-07-03:37:03
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-01:28:47
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-01:29:37
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-01:30:23
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-01:31:25
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (1, 1, 1)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-01:34:23
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (1, 1, 1)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-01:34:52
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (1, 1, 1)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-01:36:11
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (1, 1, 1)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-01:36:25
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (1, 1, 1)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 1
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-01:36:54
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (1, 1, 1)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-01:40:11
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (1, 1, 1)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-01:41:09
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (1, 1, 1)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-01:47:55
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (1, 1, 1)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-01:48:44
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (1, 1, 1)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 10
+gap: 2
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-02:06:22
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (1, 1, 1)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-03:37:18
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (1, 1, 1)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-03:47:33
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 7
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-03:50:00
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 7
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-03:53:15
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 50
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-04:10:17
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-04:14:03
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-04:27:41
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-04:29:28
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-04:30:20
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 50
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-23-04:32:38
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 50
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-02:00:57
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-02:02:13
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 20
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-02:02:27
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-02:02:58
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-02:04:38
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-02:05:32
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-02:06:08
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-02:06:47
+
+block_size: (16, 16, 16)
+test_block_size: (16, 16, 16)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-02:10:20
+
+block_size: (8, 16, 4)
+test_block_size: (16, 16, 4)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-02:11:08
+
+block_size: (16, 16, 4)
+test_block_size: (16, 16, 4)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 3
+gap: 20
+no_vols: 10
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-02:12:46
+
+block_size: (16, 16, 4)
+test_block_size: (16, 16, 4)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 2
+gap: 20
+no_vols: 60
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-02:13:03
+
+block_size: (16, 16, 4)
+test_block_size: (16, 16, 4)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 2
+gap: 20
+no_vols: 60
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-02:32:58
+
+block_size: (16, 16, 4)
+test_block_size: (16, 16, 4)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 2
+gap: 20
+no_vols: 60
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-02:36:11
+
+block_size: (16, 16, 4)
+test_block_size: (16, 16, 4)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 2
+gap: 20
+no_vols: 60
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-04:27:22
+
+block_size: (16, 16, 4)
+test_block_size: (16, 16, 4)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 2
+gap: 20
+no_vols: 60
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-04:28:24
+
+block_size: (16, 16, 4)
+test_block_size: (16, 16, 4)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 2
+gap: 20
+no_vols: 60
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: secondrun
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-04:31:21
+
+block_size: (16, 16, 4)
+test_block_size: (16, 16, 4)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 2
+gap: 20
+no_vols: 60
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: 60_vols_new_run
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
+2023-11-24-04:36:49
+
+block_size: (16, 16, 4)
+test_block_size: (16, 16, 4)
+stride: (0, 0, 0)
+crop_depth: 15
+dir: /storage
+batch_size: 16
+sort: True
+debug: False
+preload: True
+ret_points: False
+thres: 0.6
+offset: 2
+gap: 20
+no_vols: 60
+lr: 0.005
+lr_decay: 40
+decay_type: step
+gamma: 0.5
+optimizer: ADAM
+momentum: 0.9
+beta1: 0.9
+beta2: 0.999
+epsilon: 1e-08
+weight_decay: 0
+start_epoch: 0
+loss: 0.5*MSE+0.5*L1
+skip_threshold: 1000000.0
+run_name: 60_vols_new_run
+save: DTIArbNet
+load: .
+save_models: False
+resume: 0
+print_every: 20
+save_every: 30
+cpu: False
+gpu: 0
+seed: 1
+reset: False
+pin_mem: False
+train_set: 0.7
+model: dmri_arb
+act: relu
+pre_train: None
+precision: single
+cuda: True
+scale: (1, 1, 1)
+epochs: 400
+
