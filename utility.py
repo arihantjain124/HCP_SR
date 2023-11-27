@@ -231,11 +231,12 @@ def plot_train(pred,hr,logger,epoch):
     logger.add_figure("sample_train",fig,global_step = epoch)
 
     
-def logger_sampling(pred,logger,epoch):
+def logger_sampling(pred,logger,epoch,hr):
+
     pred = pred.cpu().detach().numpy()
     size = pred.shape[:3]
-    x,y,z = random.sample(range(40, 100), 3)
-    fig, ax = plt.subplots(3,3)
+    x,y,z = random.sample(range(40, 90), 3)
+    fig, ax = plt.subplots(3,6)
     fa = pred[x,:,:,0]
     adc = pred[x,:,:,1]
     rgb = pred[x,:,:,2:]
@@ -271,7 +272,7 @@ def logger_sampling(pred,logger,epoch):
 def compute_psnr_ssim(hr,pred,pnts,logger=None,epoch=None):
     pred = recon(pred,pnts,vol_size=hr.shape)
     if(logger != None):
-        logger_sampling(pred,logger,epoch)
+        logger_sampling(pred,logger,epoch,hr)
     hr = cp.array(hr.squeeze())
     pred = cp.array(pred.squeeze())
     return float(metrics.peak_signal_noise_ratio(hr,pred,data_range=1)),abs(float(metrics.structural_similarity(hr,pred,channel_axis =3,data_range=1)))

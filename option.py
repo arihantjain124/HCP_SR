@@ -5,10 +5,12 @@ parser.add_argument("--block_size", type=tuple, default=(16,16,4),
                     help="Block Size")
 parser.add_argument("--test_block_size", type=tuple, default=(16,16,4),
                     help="Block Size")
-parser.add_argument("--stride", type=tuple, default=(0,0,0),
+parser.add_argument("--stride", type=tuple, default=(1,1,1),
                     help="Testing Dataset Stride")
 parser.add_argument("--crop_depth", type=int, default=15,
                     help="crop across z-axis")
+parser.add_argument("--epochs", type=int, default=200,
+                    help="Epochs")
 parser.add_argument("--dir", type=str,
                     help="dataset_directory")
 parser.add_argument("--batch_size", type=int,
@@ -65,7 +67,7 @@ parser.add_argument('--skip_threshold', type=float, default='1e6',
 
 
 # Log specifications
-parser.add_argument('--run_name', type=str, default='secondrun',
+parser.add_argument('--run_name', type=str, default='..',
                     help='file name to save')
 parser.add_argument('--save', type=str, default='DTIArbNet',
                     help='file name to save')
@@ -125,7 +127,7 @@ parser.add_argument('--precision', type=str, default='single',
                     help='FP precision for test (single | half)')
 
 
-args = parser.parse_args()
+args = list(parser.parse_known_args())[0]
 args.preload = True
 args.debug = False
 args.dir = "/storage"
@@ -133,5 +135,4 @@ args.batch_size = 16
 args.sort = True
 args.cuda = True
 args.scale = (1,1,1)
-args.epochs = 400
 args.offset = 2

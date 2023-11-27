@@ -245,13 +245,13 @@ class hcp_data(torch.utils.data.Dataset):
     
 
 class hcp_data_test_recon(torch.utils.data.Dataset):
-    def __init__(self, opt,ids):
+    def __init__(self, opt,ids,debug):
         super(hcp_data).__init__()
         self.blk_size = opt.test_block_size
         self.thres = opt.thres
         self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
         self.ids = ids
-        self.debug = opt.debug
+        self.debug = debug
         self.stride = opt.stride
         if(opt.sort == True):
             self.ids.sort()
@@ -264,6 +264,9 @@ class hcp_data_test_recon(torch.utils.data.Dataset):
     def __getitem__(self,indx):
 
         vol_idx = self.ids[indx]
+        if(self.debug):
+            return self.loaded_blk[vol_idx],self.loaded_adc[vol_idx],self.loaded_fa[vol_idx],self.loaded_rgb[vol_idx],self.loaded_ret_hr[vol_idx],self.scale[vol_idx],self.loaded_blk_hr   
+
         return self.loaded_blk[vol_idx],self.loaded_adc[vol_idx],self.loaded_fa[vol_idx],self.loaded_rgb[vol_idx],self.loaded_ret_hr[vol_idx],self.scale[vol_idx]
         
     def preload_data(self,blk_size = None):
@@ -277,11 +280,14 @@ class hcp_data_test_recon(torch.utils.data.Dataset):
         self.loaded_rgb = {}
         self.loaded_ret_hr = {}
         self.scale = {}
+        if(self.debug):
+            self.loaded_blk_hr = {}
         for i in self.ids:
-            self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i],self.loaded_ret_hr[i],self.scale[i]  = self.pre_proc(i)
-            if(self.debug == True):
-                print(i,"loaded")
-
+            
+            if(self.debug):
+                self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i],self.loaded_ret_hr[i],self.scale[i],self.loaded_blk_hr  = self.pre_proc(i)
+            else:
+                self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i],self.loaded_ret_hr[i],self.scale[i]  = self.pre_proc(i)
 
     def blk_points_pair(self,datalr,datahr,blk_size = [16,16,4],scale = (1,1,1),stride = (0,0,0)):
     
@@ -365,7 +371,7 @@ class hcp_data_test_recon(torch.utils.data.Dataset):
         curr_scale = np.around(np.random.uniform(x-asy,x+asy,3),decimals=1)
 
         size = [int(curr_scale[i] * vol.shape[i]) for i in range(3)]
-        
+        # print(size,self.scale)
         # print(size,curr_scale)
         vol_hr = interpolate(torch.from_numpy(loaded_gt[idx]['vol0']),size)
 
@@ -377,7 +383,8 @@ class hcp_data_test_recon(torch.utils.data.Dataset):
 
         curr_blk = self.blk_points_pair(vol,vol_hr,self.blk_size,curr_scale,self.stride)
         
-        # blks_img_hr,_ = self.extract_block(vol_hr,curr_blk[1],curr_blk[1])
+        blks_img_hr,_ = self.extract_block(vol_hr,curr_blk[1],curr_blk[1])
         blks_img,blk_hr = self.extract_block(vol_norm,curr_blk[0],curr_blk[1])
-        
+        if(self.debug):
+            return blks_img,adc,fa,rgb,blk_hr,curr_scale,blks_img_hr
         return blks_img,adc,fa,rgb,blk_hr,curr_scale

@@ -21,6 +21,8 @@ if __name__ == '__main__':
     checkpoint = utility.checkpoint(args)       ## setting the log and the train information
     if checkpoint.ok:
         loader = data.Data(args,ids= ids)  
+        if (args.run_name == '..'):
+            args.run_name = "vols:" + str(args.no_vols) + ",loss:" + args.loss 
         logger = SummaryWriter('runs/'+ args.run_name)
         print(args.run_name)
         model = model.Model(args, checkpoint)

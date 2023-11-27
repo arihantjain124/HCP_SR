@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 import data.HCP_dataset_h5_arb as HCP_dataset
 
 class Data:
-    def __init__(self, args,ids):
+    def __init__(self, args,ids,debug = False):
         
         self.dataset_hcp = HCP_dataset
         self.pin_mem = args.pin_mem
@@ -15,7 +15,7 @@ class Data:
         self.ids = self.dataset_hcp.load_data(args.dir,ids)
         self.train_vols = int(len(self.ids) * (args.train_set))
 
-        self.testing_dataset = self.dataset_hcp.hcp_data_test_recon(args,self.ids[self.train_vols:])
+        self.testing_dataset = self.dataset_hcp.hcp_data_test_recon(args,self.ids[self.train_vols:],debug=debug)
         self.training_dataset = self.dataset_hcp.hcp_data(args,self.ids[:self.train_vols])
 
         self.testing_data = DataLoader(dataset=self.testing_dataset, batch_size=1,shuffle=True,pin_memory=self.pin_mem,drop_last=True,collate_fn=self.resize_test)

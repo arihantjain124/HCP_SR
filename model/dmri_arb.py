@@ -50,8 +50,12 @@ class ImplicitDecoder(nn.Module):
 
     def forward(self, x, size):
         B, C, H_in, W_in,D_in = x.shape
+        # print(x.shape)
         ratio = (x.new_tensor([math.sqrt((H_in*W_in*D_in)/(size[0]*size[1]*size[2]))]).view(1, -1, 1, 1,1).expand(B, -1, *size))
-        x = F.interpolate(unfoldNd.unfoldNd(x, 3, padding=1).view(B, C*27, H_in, W_in,D_in), size=ratio.shape[-3:])
+        x = F.interpolate(unfoldNd.unfoldNd(x, 3, padding=1).view(B, C*27, H_in, W_in,D_in), size=ratio.shape[-3:],mode = "trilinear")
+        
+        # x = unfoldNd.unfoldNd(x, 3, padding=1).view(B, C*27, H_in, W_in,D_in)
+        # print(x.shape,H_in, W_in,D_in,ratio.shape)
         return self.step(x)
 
 class DMRI_SR(nn.Module):
