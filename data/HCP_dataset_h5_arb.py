@@ -11,6 +11,7 @@ import data.utils_dataloader as utils
 from itertools import islice
 import h5py
 import os
+import torchio as tio
 np.seterr(all="ignore")
 
 loaded = {}
@@ -30,7 +31,6 @@ def load_path(base_dir,ids):
                         , "GT" : i + "/" + i[-6:] + "_GT.h5"}
     for i in base_dir_3t:
         path_3t[i[-6:]] = {"h5" : i + "/" + i[-6:] + ".h5"
-                        , "upsampled" : i + "/" + i[-6:] + "_upsampled.h5"
                         , "GT" : i + "/" + i[-6:] + "_GT.h5"}
     path = {'3T': path_3t, "7T":  path_7t}
     p = list(path_7t.keys())
@@ -104,6 +104,7 @@ class hcp_data(torch.utils.data.Dataset):
         self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
         self.ids = ids
         self.debug = opt.debug
+        self.transform = tio.transforms.RescaleIntensity(percentiles=(0.5,99.5))
         if(opt.sort == True):
             self.ids.sort()
             
@@ -119,6 +120,8 @@ class hcp_data(torch.utils.data.Dataset):
         blk_idx = np.searchsorted(self.blk_indx, indx)
         vol_idx = self.ids[blk_idx]
         blk_idx = indx - self.blk_indx[blk_idx]
+        if(self.debug):
+            return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...],self.scale[vol_idx],self.blks_ret_lr[vol_idx][blk_idx,...],self.blks_ret_hr[vol_idx][blk_idx,...],vol_idx
         return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...],self.scale[vol_idx]
         
 
@@ -137,8 +140,10 @@ class hcp_data(torch.utils.data.Dataset):
         self.loaded_fa = {}
         self.loaded_rgb = {}
         self.scale = {}
+        self.blks_ret_lr = {}
+        self.blks_ret_hr = {}
         for i in self.ids:
-            self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i],self.scale[i] = self.pre_proc(i)
+            self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i],self.scale[i],self.blks_ret_lr[i],self.blks_ret_hr[i] = self.pre_proc(i)
             if(self.debug == True):
                 print(i,"loaded")
         self.blk_indx = np.cumsum(self.blk_indx)
@@ -214,6 +219,12 @@ class hcp_data(torch.utils.data.Dataset):
                 blocks.append(curr_blk)
             return np.stack(blocks, axis=0)
 
+    def norm(self,data):
+        if(len(data.size())<4):
+            temp = self.transform(torch.unsqueeze(data,0))
+            return torch.squeeze(temp)
+        return self.transform(data)
+    
     def pre_proc(self,idx):
 
         vol = torch.from_numpy(loaded[idx]['vol0'])
@@ -231,7 +242,9 @@ class hcp_data(torch.utils.data.Dataset):
         fa = interpolate(torch.from_numpy(loaded_gt[idx]['FA']),size)
         rgb = interpolate(torch.from_numpy(loaded_gt[idx]['color_FA']),size)
         
-        vol_norm = (vol-torch.min(vol))/(torch.max(vol)-torch.min(vol))
+        vol_norm = self.norm(vol)
+        adc,fa,rgb = self.norm(adc),self.norm(fa),self.norm(rgb)
+
         curr_blk = self.blk_points_pair(vol,vol_hr,blk_size=self.blk_size,scale=curr_scale)
         
         self.blk_indx.append(curr_blk[2])
@@ -241,18 +254,19 @@ class hcp_data(torch.utils.data.Dataset):
         blks_fa = self.extract_block(fa,curr_blk[1])
         blks_rgb = self.extract_block(rgb,curr_blk[1])
         
-        return blks_img,blks_adc,blks_fa,blks_rgb,curr_scale
+        return blks_img,blks_adc,blks_fa,blks_rgb,curr_scale,curr_blk[0],curr_blk[1]
     
 
 class hcp_data_test_recon(torch.utils.data.Dataset):
     def __init__(self, opt,ids,debug):
         super(hcp_data).__init__()
         self.blk_size = opt.test_block_size
-        self.thres = opt.thres
+        self.thres = opt.test_thres
         self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
         self.ids = ids
         self.debug = debug
         self.stride = opt.stride
+        self.transform = tio.transforms.RescaleIntensity(percentiles=(0.5,99.5))
         if(opt.sort == True):
             self.ids.sort()
         self.preload_data()
@@ -362,6 +376,12 @@ class hcp_data_test_recon(torch.utils.data.Dataset):
 
         return np.stack(blocks, axis=0),np.stack(ind_blk,axis=0)
 
+    def norm(self,data):
+        if(len(data.size())<4 ):
+            temp = self.transform(torch.unsqueeze(data,0))
+            return torch.squeeze(temp)
+        return self.transform(data)
+    
     def pre_proc(self,idx):
         
         vol = torch.from_numpy(loaded[idx]['vol0'])
@@ -379,8 +399,10 @@ class hcp_data_test_recon(torch.utils.data.Dataset):
         fa = interpolate(torch.from_numpy(loaded_gt[idx]['FA']),size)
         rgb = interpolate(torch.from_numpy(loaded_gt[idx]['color_FA']),size)
 
-        vol_norm = (vol-torch.min(vol))/(torch.max(vol)-torch.min(vol))
-
+        # vol_norm = (vol-torch.min(vol))/(torch.max(vol)-torch.min(vol))
+        vol_norm = self.norm(vol)
+        adc,fa,rgb = self.norm(adc),self.norm(fa),self.norm(rgb)
+        
         curr_blk = self.blk_points_pair(vol,vol_hr,self.blk_size,curr_scale,self.stride)
         
         blks_img_hr,_ = self.extract_block(vol_hr,curr_blk[1],curr_blk[1])
