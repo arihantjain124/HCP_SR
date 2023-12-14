@@ -1,15 +1,15 @@
 import argparse
 
 parser = argparse.ArgumentParser(description="DTI_ARB")
-parser.add_argument("--block_size", type=tuple, default=(16,16,4),
+parser.add_argument("--block_size", type=tuple, default=(32,32,4),
                     help="Block Size")
-parser.add_argument("--test_block_size", type=tuple, default=(16,16,4),
+parser.add_argument("--test_block_size", type=tuple, default=(32,32,4),
                     help="Block Size")
 parser.add_argument("--stride", type=tuple, default=(1,1,1),
                     help="Testing Dataset Stride")
 parser.add_argument("--crop_depth", type=int, default=15,
                     help="crop across z-axis")
-parser.add_argument("--epochs", type=int, default=200,
+parser.add_argument("--epochs", type=int, default=40,
                     help="Epochs")
 parser.add_argument("--dir", type=str,
                     help="dataset_directory")
@@ -23,21 +23,27 @@ parser.add_argument("--preload", type=bool,
                     help="Preload data into memory")
 parser.add_argument("--ret_points", type=bool, default=False,
                     help="return box point of crops")
-parser.add_argument("--thres", type=float, default=0.6,
+parser.add_argument("--thres", type=float, default=0.08,
+                    help="threshold for blk emptiness")
+parser.add_argument("--test_thres", type=float, default=0.05,
                     help="threshold for blk emptiness")
 parser.add_argument("--offset", type=int, default=20,
                     help="epoch with scale (1,1,1)")
 parser.add_argument("--gap", type=int, default=20,
                     help="number of epochs of gap between each scale change")
 
+parser.add_argument("--growth", type=int, default=64,
+                    help="epoch with scale (1,1,1)")
 parser.add_argument("--no_vols", type=int, default=20,
                     help="Number of Volumes to load")
 
 
 # Optimization specifications
-parser.add_argument('--lr', type=float, default=0.005,
+parser.add_argument('--lr', type=float, default=0.0005,
                     help='learning rate')
-parser.add_argument('--lr_decay', type=int, default=40,
+parser.add_argument('--max_lr', type=float, default=0.01,
+                    help='learning rate')
+parser.add_argument('--lr_decay', type=int, default=5,
                     help='learning rate decay per N epochs')
 parser.add_argument('--decay_type', type=str, default='step',
                     help='learning rate decay type')
@@ -60,7 +66,7 @@ parser.add_argument('--start_epoch', type=int, default=0,
                     help='resume from the snapshot, and the start_epoch')
 
 # Loss specifications
-parser.add_argument('--loss', type=str, default='0.5*MSE+0.5*L1',
+parser.add_argument('--loss', type=str, default='0.5*L1+0.5*MSE',
                     help='loss function configuration')
 parser.add_argument('--skip_threshold', type=float, default='1e6',
                     help='skipping batch that has large error')
@@ -73,7 +79,7 @@ parser.add_argument('--save', type=str, default='DTIArbNet',
                     help='file name to save')
 parser.add_argument('--load', type=str, default='.',
                     help='file name to load')
-parser.add_argument('--save_models', action='store_true',
+parser.add_argument('--save_models',  type=bool , default=False,
                     help='save all intermediate models')
 parser.add_argument('--resume', type=int, default=0,
                     help='resume from specific checkpoint')

@@ -20,30 +20,6 @@ import torch
 import torch.nn as nn
 import numpy as np
 
-class timer():
-    def __init__(self):
-        self.acc = 0
-        self.tic()
-
-    def tic(self):
-        self.t0 = time.time()
-
-    def toc(self):
-        return time.time() - self.t0
-
-    def hold(self):
-        self.acc += self.toc()
-
-    def release(self):
-        ret = self.acc
-        self.acc = 0
-
-        return ret
-
-    def reset(self):
-        self.acc = 0
-
-
 class checkpoint():
     def __init__(self, args):
         self.args = args
@@ -172,7 +148,7 @@ def make_optimizer(args, my_model):
     return optimizer_function(trainable, **kwargs)
 
 
-def make_scheduler(args, my_optimizer):
+def make_scheduler(args, my_optimizer,steps_per_epoch):
     if args.decay_type == 'step':
         scheduler = lrs.StepLR(
             my_optimizer,
@@ -188,7 +164,13 @@ def make_scheduler(args, my_optimizer):
             milestones=milestones,
             gamma=args.gamma
         )
-
+    elif args.decay_type.find("cycle") >= 0:
+        scheduler = lrs.OneCycleLR(
+            my_optimizer,
+            max_lr = args.max_lr,
+            steps_per_epoch  = steps_per_epoch,
+            epochs = args.epochs
+        )
     # scheduler.step(args.start_epoch - 1)
 
     return scheduler
@@ -237,33 +219,41 @@ def logger_sampling(pred,logger,epoch,hr):
     size = pred.shape[:3]
     x,y,z = random.sample(range(40, 90), 3)
     fig, ax = plt.subplots(3,6)
-    fa = pred[x,:,:,0]
-    adc = pred[x,:,:,1]
-    rgb = pred[x,:,:,2:]
+    fa,hr_fa = pred[x,:,:,0],hr[x,:,:,0]
+    adc,hr_adc = pred[x,:,:,1],hr[x,:,:,1]
+    rgb,hr_rgb = pred[x,:,:,2:],hr[x,:,:,2:]
     # print(fa.min(),fa.max())
     # print(adc.min(),adc.max())
     # print(rgb.min(),rgb.max())
     # print(fa.shape,adc.shape,rgb.shape)
     # print(type(fa),type(adc),type(rgb))
     ax[0][0].imshow((fa * 255).astype('uint8'))
-    ax[0][1].imshow((adc * 255).astype('uint8'))
-    ax[0][2].imshow((rgb * 255).astype('uint8'))
+    ax[0][1].imshow((hr_fa * 255).astype('uint8'))
+    ax[0][2].imshow((adc * 255).astype('uint8'))
+    ax[0][3].imshow((hr_adc * 255).astype('uint8'))
+    ax[0][4].imshow((rgb * 255).astype('uint8'))
+    ax[0][5].imshow((hr_rgb * 255).astype('uint8'))
 
-    
-    fa = pred[:,y,:,0]
-    adc = pred[:,y,:,1]
-    rgb = pred[:,y,:,2:]
+    fa,hr_fa = pred[:,y,:,0],hr[:,y,:,0]
+    adc,hr_adc = pred[:,y,:,1],hr[:,y,:,1]
+    rgb,hr_rgb = pred[:,y,:,2:],hr[:,y,:,2:]
     ax[1][0].imshow((fa * 255).astype('uint8'))
-    ax[1][1].imshow((adc * 255).astype('uint8'))
-    ax[1][2].imshow((rgb * 255).astype('uint8'))
+    ax[1][1].imshow((hr_fa * 255).astype('uint8'))
+    ax[1][2].imshow((adc * 255).astype('uint8'))
+    ax[1][3].imshow((hr_adc * 255).astype('uint8'))
+    ax[1][4].imshow((rgb * 255).astype('uint8'))
+    ax[1][5].imshow((hr_rgb * 255).astype('uint8'))
 
     
-    fa = pred[:,:,z,0]
-    adc = pred[:,:,z,1]
-    rgb = pred[:,:,z,2:]
+    fa,hr_fa = pred[:,:,z,0],hr[:,:,z,0]
+    adc,hr_adc = pred[:,:,z,1],hr[:,:,z,1]
+    rgb,hr_rgb = pred[:,:,z,2:],hr[:,:,z,2:]
     ax[2][0].imshow((fa * 255).astype('uint8'))
-    ax[2][1].imshow((adc * 255).astype('uint8'))
-    ax[2][2].imshow((rgb * 255).astype('uint8'))
+    ax[2][1].imshow((hr_fa * 255).astype('uint8'))
+    ax[2][2].imshow((adc * 255).astype('uint8'))
+    ax[2][3].imshow((hr_adc * 255).astype('uint8'))
+    ax[2][4].imshow((rgb * 255).astype('uint8'))
+    ax[2][5].imshow((hr_rgb * 255).astype('uint8'))
     # fig.colorbar()
     logger.add_figure("samples",fig,global_step = epoch)
 

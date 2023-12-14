@@ -9,7 +9,7 @@ import torch.nn as nn
 import numpy as np
 
 
-def make_rdn(inchannel=8, RDNkSize=3, growth = 16, RDNconfig='C'):
+def make_rdn(inchannel=7, RDNkSize=3, growth = 16, RDNconfig='C'):
     args = Namespace()
     args.G0 = growth
     args.RDNkSize = RDNkSize

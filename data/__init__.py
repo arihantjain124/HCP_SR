@@ -35,7 +35,7 @@ class Data:
             self.testing_data = DataLoader(dataset=self.testing_dataset, batch_size=1,shuffle=True,drop_last=True,pin_memory=self.pin_mem,collate_fn=self.resize_test)
 
     def resize(self,data):
-        x,y,z = [],[],[]
+        x,y = [],[]
         for i in range(len(data)):
             x.append(data[i][0])
             y.append(np.concatenate([np.expand_dims(data[i][1],axis = 3),np.expand_dims(data[i][2],axis = 3),data[i][3]], axis=3))
@@ -51,7 +51,6 @@ class Data:
             x.append(data[i][0])
             y.append(np.concatenate([np.expand_dims(data[i][1],axis = 3),np.expand_dims(data[i][2],axis = 3),data[i][3]], axis=3))
             z.append(data[i][4])
-            s.append(data[i][5])
         lr = torch.from_numpy(np.stack(x)).squeeze()
         pred = torch.from_numpy(np.stack(y)).squeeze()
         pnt = torch.from_numpy(np.stack(z)).squeeze()

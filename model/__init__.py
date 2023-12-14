@@ -14,7 +14,7 @@ class Model(nn.Module):
 
         if args.model == 'dmri_arb':
             module = import_module('model.' + args.model.lower())
-            self.model = module.DMRI_SR().to(self.device)
+            self.model = module.DMRI_SR(growth = args.growth).to(self.device)
             self.model.set_scale((1,1,1))
 
         if args.precision == 'half': self.model.half()

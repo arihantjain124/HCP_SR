@@ -8,11 +8,13 @@ import loss
 from trainer import Trainer
 import os
 from torch.utils.tensorboard import SummaryWriter
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 
 ids = utils.get_ids()
 ids.sort()
+args.no_vols = 40
+args.growth = 32
 total_vols = args.no_vols
 ids = ids[:total_vols]
 # print(args.test_block_size)
@@ -22,7 +24,7 @@ if __name__ == '__main__':
     if checkpoint.ok:
         loader = data.Data(args,ids= ids)  
         if (args.run_name == '..'):
-            args.run_name = "vols:" + str(args.no_vols) + ",loss:" + args.loss 
+            args.run_name = f"{args.epochs}_epoch,{args.no_vols}_vols,blk_{args.block_size},loss_{args.loss},growth_{args.growth}"
         logger = SummaryWriter('runs/'+ args.run_name)
         print(args.run_name)
         model = model.Model(args, checkpoint)
