@@ -104,7 +104,7 @@ class hcp_data(torch.utils.data.Dataset):
         self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
         self.ids = ids
         self.debug = opt.debug
-        self.transform = tio.transforms.RescaleIntensity(percentiles=(0.5,99.5))
+        self.transform = tio.transforms.RescaleIntensity(masking_method=lambda x: x > 0)
         if(opt.sort == True):
             self.ids.sort()
             
@@ -242,19 +242,20 @@ class hcp_data(torch.utils.data.Dataset):
         fa = interpolate(torch.from_numpy(loaded_gt[idx]['FA']),size)
         rgb = interpolate(torch.from_numpy(loaded_gt[idx]['color_FA']),size)
         
-        vol_norm = self.norm(vol)
+        # vol = self.norm(vol)
         adc,fa,rgb = self.norm(adc),self.norm(fa),self.norm(rgb)
 
         curr_blk = self.blk_points_pair(vol,vol_hr,blk_size=self.blk_size,scale=curr_scale)
         
         self.blk_indx.append(curr_blk[2])
         
-        blks_img = self.extract_block(vol_norm,curr_blk[0])
+        blks_img = self.extract_block(vol,curr_blk[0])
         blks_adc = self.extract_block(adc,curr_blk[1])
         blks_fa = self.extract_block(fa,curr_blk[1])
         blks_rgb = self.extract_block(rgb,curr_blk[1])
         
         return blks_img,blks_adc,blks_fa,blks_rgb,curr_scale,curr_blk[0],curr_blk[1]
+    
     
 
 class hcp_data_test_recon(torch.utils.data.Dataset):
@@ -266,7 +267,7 @@ class hcp_data_test_recon(torch.utils.data.Dataset):
         self.ids = ids
         self.debug = debug
         self.stride = opt.stride
-        self.transform = tio.transforms.RescaleIntensity(percentiles=(0.5,99.5))
+        self.transform = tio.transforms.RescaleIntensity(masking_method=lambda x: x > 0)
         if(opt.sort == True):
             self.ids.sort()
         self.preload_data()
@@ -399,14 +400,14 @@ class hcp_data_test_recon(torch.utils.data.Dataset):
         fa = interpolate(torch.from_numpy(loaded_gt[idx]['FA']),size)
         rgb = interpolate(torch.from_numpy(loaded_gt[idx]['color_FA']),size)
 
-        # vol_norm = (vol-torch.min(vol))/(torch.max(vol)-torch.min(vol))
-        vol_norm = self.norm(vol)
+        # # vol_norm = (vol-torch.min(vol))/(torch.max(vol)-torch.min(vol))
+        # vol_norm = self.norm(vol)
         adc,fa,rgb = self.norm(adc),self.norm(fa),self.norm(rgb)
         
         curr_blk = self.blk_points_pair(vol,vol_hr,self.blk_size,curr_scale,self.stride)
         
         blks_img_hr,_ = self.extract_block(vol_hr,curr_blk[1],curr_blk[1])
-        blks_img,blk_hr = self.extract_block(vol_norm,curr_blk[0],curr_blk[1])
+        blks_img,blk_hr = self.extract_block(vol,curr_blk[0],curr_blk[1])
         if(self.debug):
             return blks_img,adc,fa,rgb,blk_hr,curr_scale,blks_img_hr
         return blks_img,adc,fa,rgb,blk_hr,curr_scale
