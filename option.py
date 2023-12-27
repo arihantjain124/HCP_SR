@@ -5,9 +5,9 @@ parser.add_argument("--block_size", type=tuple, default=(32,32,4),
                     help="Block Size")
 parser.add_argument("--test_block_size", type=tuple, default=(32,32,4),
                     help="Block Size")
-parser.add_argument("--stride", type=tuple, default=(1,1,1),
+parser.add_argument("--stride", type=tuple, default=(2,2,2),
                     help="Testing Dataset Stride")
-parser.add_argument("--crop_depth", type=int, default=15,
+parser.add_argument("--crop_depth", type=int, default=1,
                     help="crop across z-axis")
 parser.add_argument("--epochs", type=int, default=40,
                     help="Epochs")
@@ -23,7 +23,13 @@ parser.add_argument("--preload", type=bool,
                     help="Preload data into memory")
 parser.add_argument("--ret_points", type=bool, default=False,
                     help="return box point of crops")
-parser.add_argument("--thres", type=float, default=0.08,
+parser.add_argument("--enable_thres", type=bool, default=True,
+                    help="threshold")
+parser.add_argument("--enable_thres_test", type=bool, default=False,
+                    help="threshold")
+parser.add_argument("--test_mask", type=bool, default=True,
+                    help="threshold")
+parser.add_argument("--thres", type=float, default=0.1,
                     help="threshold for blk emptiness")
 parser.add_argument("--test_thres", type=float, default=0.05,
                     help="threshold for blk emptiness")
@@ -66,7 +72,7 @@ parser.add_argument('--start_epoch', type=int, default=0,
                     help='resume from the snapshot, and the start_epoch')
 
 # Loss specifications
-parser.add_argument('--loss', type=str, default='0.5*L1+0.5*MSE',
+parser.add_argument('--loss', type=str, default='1*MSE',
                     help='loss function configuration')
 parser.add_argument('--skip_threshold', type=float, default='1e6',
                     help='skipping batch that has large error')

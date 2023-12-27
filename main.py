@@ -13,13 +13,15 @@ from torch.utils.tensorboard import SummaryWriter
 
 ids = utils.get_ids()
 ids.sort()
-args.no_vols = 40
-args.growth = 16
+# args.no_vols = 50
+# args.growth = 16
 total_vols = args.no_vols
 ids = ids[:total_vols]
 
 if (args.run_name == '..'):
-    args.run_name = f"{args.epochs}_epoch,{args.no_vols}_vols,blk_{args.block_size},loss_{args.loss},growth_{args.growth},new_hist_runs"
+    args.run_name = f"{args.epochs}_epoch,{args.no_vols}_vols,blk_{args.block_size},loss_{args.loss},growth_{args.growth}"
+else:
+    args.run_name = f"{args.epochs}_epoch,{args.no_vols}_vols,blk_{args.block_size},loss_{args.loss},growth_{args.growth},{args.run_name}"
 print(args.run_name)
 
 # print(args.test_block_size)

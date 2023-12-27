@@ -10,6 +10,7 @@ from tqdm import tqdm
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim.lr_scheduler as lrs
+import random
 
 class Trainer():
     def __init__(self, args, loader, my_model, my_loss, ckp,logger = None):
@@ -42,10 +43,11 @@ class Trainer():
         self.model.train()
         
         # train on integer scale factors (x2, x3, x4) for 1 epoch to maintain stability
-        if self.curr_epoch < self.args.offset and self.args.load == '.':
+        if (self.curr_epoch+1) < self.args.offset and self.args.load == '.':
             print("stablizing")
             
-        if ((self.curr_epoch%self.args.offset == 0)):
+        if (((self.curr_epoch+1)%self.args.offset == 0)):
+            print("destablizing")
             self.loader.rebuild(blk_size = (16,16,4),type = "train",stable = False)
             
         # if self.curr_epoch > self.args.offset:
@@ -64,7 +66,8 @@ class Trainer():
         self.ckp.write_log('[Epoch {}]\tLearning rate: {:.2e}'.format(self.curr_epoch, Decimal(lr)))
         
         pbar = tqdm(total = len(self.loader.training_data))
-        
+        num_samples = len(self.loader.training_data) //4
+        samples = random.sample(range(len(self.loader.training_data)), num_samples)
         for batch, (lr_tensor, hr_tensor,scale) in enumerate(self.loader.training_data):
             pbar.update(1)
             lr_tensor = lr_tensor.to('cuda').float()  # ranges from [0, 1]
@@ -96,9 +99,9 @@ class Trainer():
                 pbar.set_description(f"{self.loss.display_loss(batch)}")
                 pbar.set_postfix({"scale":scale})
                 
-            # if epoch % 10:
-            # ## plotting
-            #     utility.plot_train(pred,hr_tensor,self.logger,epoch)
+            if (batch in samples and self.curr_epoch >0):
+            ## plotting
+                utility.plot_train_pred(pred,hr_tensor,self.logger,batch)
                 
         self.loss.end_log(len(self.loader.training_data))
         self.error_last = self.loss.log[-1, -1]
@@ -113,6 +116,8 @@ class Trainer():
         eval_psnr_avg = []
         eval_ssim_avg = []
         pbar = tqdm(total = len(self.loader.testing_data))
+        num_samples = 2
+        samples = random.sample(range(len(self.loader.testing_data)), num_samples)
         for iteration, (lr_tensor, hr_tensor,pnts,scale) in enumerate(self.loader.testing_data, 1):
             # print(lr_tensor.shape,hr_tensor.shape)
             pbar.update(1)
@@ -126,11 +131,11 @@ class Trainer():
                 pred = self.model.forward(lr_tensor,scale)
             pred = torch.permute(pred, (0,2,3,4,1)).float()
             # epoch = self.scheduler.last_epoch - 1 
-            # if(epoch % 10 == 0 and self.logger != None):
-            #     # print("fig added")
-            #     psnr, ssim = utility.compute_psnr_ssim(hr_tensor,pred,pnts,self.logger,epoch)
-            # else:
-            psnr, ssim = utility.compute_psnr_ssim(hr_tensor,pred,pnts)
+            if(iteration in samples and self.logger != None):
+                # print("fig added")
+                psnr, ssim = utility.compute_psnr_ssim(hr_tensor,pred,pnts,self.logger,iteration,mask = self.args.test_mask)
+            else:
+                psnr, ssim = utility.compute_psnr_ssim(hr_tensor,pred,pnts,mask = self.args.test_mask)
             # eval_psnr += psnr
             # eval_ssim += ssim 
             # psnr,ssim = 0,0

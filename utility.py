@@ -148,7 +148,7 @@ def make_optimizer(args, my_model):
     return optimizer_function(trainable, **kwargs)
 
 
-def make_scheduler(args, my_optimizer,steps_per_epoch):
+def make_scheduler(args, my_optimizer):
     if args.decay_type == 'step':
         scheduler = lrs.StepLR(
             my_optimizer,
@@ -196,27 +196,31 @@ def compute_psnr(hr,pred):
 import random
 import matplotlib.pyplot as plt
 
-def plot_train(pred,hr,logger,epoch):
-    pred = pred.cpu().detach().numpy()
-    hr = hr.cpu().detach().numpy()
-    samples = random.sample(range(pred.shape[0]), 6)
-    fig, ax = plt.subplots(len(samples),6)
-    k=0
-    for i in samples:
-        ax[k][0].imshow((pred[i,:,:,8,0]* 255).astype('uint8'))
-        ax[k][1].imshow((pred[i,:,:,8,1]* 255).astype('uint8'))
-        ax[k][2].imshow((pred[i,:,:,8,2:]* 255).astype('uint8'))
-        ax[k][3].imshow((hr[i,:,:,8,0]* 255).astype('uint8'))
-        ax[k][4].imshow((hr[i,:,:,8,1]* 255).astype('uint8'))
-        ax[k][5].imshow((hr[i,:,:,8,2:]* 255).astype('uint8'))
-        k+=1
-    logger.add_figure("sample_train",fig,global_step = epoch)
+def plot_train_pred(pred,hr,logger,iter):
+    pred = np.clip(pred.cpu().detach().numpy().squeeze(),0,1)
+    # print(pred.shape)
+    hr = np.clip(hr.cpu().detach().numpy().squeeze(),0,1)
+    fig, ax = plt.subplots(1,6)
+    ax[0].set_title("pr_1")
+    ax[1].set_title("pr_2")
+    ax[2].set_title("pr_3")
+    ax[3].set_title("gt_1")
+    ax[4].set_title("gt_2")
+    ax[5].set_title("gt_3")
+    ax[0].imshow(pred[:,:,0,0])
+    ax[1].imshow(pred[:,:,0,1])
+    ax[2].imshow(pred[:,:,0,2:])
+    ax[3].imshow(hr[:,:,0,0])
+    ax[4].imshow(hr[:,:,0,1])
+    ax[5].imshow(hr[:,:,0,2:])
+    
+    logger.add_figure("sample_train",fig,global_step = iter)
 
     
 def logger_sampling(pred,logger,epoch,hr):
 
-    pred = pred.cpu().detach().numpy()
-    size = pred.shape[:3]
+    pred = np.clip(pred.cpu().detach().numpy(),0,1)
+    hr = np.clip(hr.cpu().detach().numpy(),0,1)
     x,y,z = random.sample(range(40, 90), 3)
     fig, ax = plt.subplots(3,6)
     fa,hr_fa = pred[x,:,:,0],hr[x,:,:,0]
@@ -227,42 +231,55 @@ def logger_sampling(pred,logger,epoch,hr):
     # print(rgb.min(),rgb.max())
     # print(fa.shape,adc.shape,rgb.shape)
     # print(type(fa),type(adc),type(rgb))
-    ax[0][0].imshow((fa * 255).astype('uint8'))
-    ax[0][1].imshow((hr_fa * 255).astype('uint8'))
-    ax[0][2].imshow((adc * 255).astype('uint8'))
-    ax[0][3].imshow((hr_adc * 255).astype('uint8'))
-    ax[0][4].imshow((rgb * 255).astype('uint8'))
-    ax[0][5].imshow((hr_rgb * 255).astype('uint8'))
+    ax[0][0].set_title("FA")
+    ax[0][1].set_title("GT_FA")
+    ax[0][2].set_title("ADC")
+    ax[0][3].set_title("GT_ADC")
+    ax[0][4].set_title("RGB")
+    ax[0][5].set_title("GT_RGB")
+    
+    
+    ax[0][0].imshow(fa)
+    ax[0][1].imshow(hr_fa)
+    ax[0][2].imshow(adc)
+    ax[0][3].imshow(hr_adc)
+    ax[0][4].imshow(rgb)
+    ax[0][5].imshow(hr_rgb)
 
     fa,hr_fa = pred[:,y,:,0],hr[:,y,:,0]
     adc,hr_adc = pred[:,y,:,1],hr[:,y,:,1]
     rgb,hr_rgb = pred[:,y,:,2:],hr[:,y,:,2:]
-    ax[1][0].imshow((fa * 255).astype('uint8'))
-    ax[1][1].imshow((hr_fa * 255).astype('uint8'))
-    ax[1][2].imshow((adc * 255).astype('uint8'))
-    ax[1][3].imshow((hr_adc * 255).astype('uint8'))
-    ax[1][4].imshow((rgb * 255).astype('uint8'))
-    ax[1][5].imshow((hr_rgb * 255).astype('uint8'))
+    ax[1][0].imshow(fa)
+    ax[1][1].imshow(hr_fa)
+    ax[1][2].imshow(adc)
+    ax[1][3].imshow(hr_adc)
+    ax[1][4].imshow(rgb)
+    ax[1][5].imshow(hr_rgb)
 
     
     fa,hr_fa = pred[:,:,z,0],hr[:,:,z,0]
     adc,hr_adc = pred[:,:,z,1],hr[:,:,z,1]
     rgb,hr_rgb = pred[:,:,z,2:],hr[:,:,z,2:]
-    ax[2][0].imshow((fa * 255).astype('uint8'))
-    ax[2][1].imshow((hr_fa * 255).astype('uint8'))
-    ax[2][2].imshow((adc * 255).astype('uint8'))
-    ax[2][3].imshow((hr_adc * 255).astype('uint8'))
-    ax[2][4].imshow((rgb * 255).astype('uint8'))
-    ax[2][5].imshow((hr_rgb * 255).astype('uint8'))
+    ax[2][0].imshow(fa)
+    ax[2][1].imshow(hr_fa)
+    ax[2][2].imshow(adc)
+    ax[2][3].imshow(hr_adc)
+    ax[2][4].imshow(rgb)
+    ax[2][5].imshow(hr_rgb)
     # fig.colorbar()
     logger.add_figure("samples",fig,global_step = epoch)
 
 
 
-def compute_psnr_ssim(hr,pred,pnts,logger=None,epoch=None):
+def compute_psnr_ssim(hr,pred,pnts,logger=None,epoch=None,mask=False):
     pred = recon(pred,pnts,vol_size=hr.shape)
+    if(mask):    
+        mask = (hr>0)
+        hr = cp.array(hr.squeeze()*mask)
+        pred = cp.array(pred.squeeze()*mask)
+    else:
+        hr = cp.array(hr.squeeze())
+        pred = cp.array(pred.squeeze())
     if(logger != None):
         logger_sampling(pred,logger,epoch,hr)
-    hr = cp.array(hr.squeeze())
-    pred = cp.array(pred.squeeze())
     return float(metrics.peak_signal_noise_ratio(hr,pred,data_range=1)),abs(float(metrics.structural_similarity(hr,pred,channel_axis =3,data_range=1)))

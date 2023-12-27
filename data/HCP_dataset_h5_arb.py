@@ -104,6 +104,7 @@ class hcp_data(torch.utils.data.Dataset):
         self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
         self.ids = ids
         self.debug = opt.debug
+        self.enable_thres = opt.enable_thres
         self.transform = tio.transforms.RescaleIntensity(masking_method=lambda x: x > 0)
         if(opt.sort == True):
             self.ids.sort()
@@ -197,8 +198,14 @@ class hcp_data(torch.utils.data.Dataset):
                     curr_blk = datalr[temp_lr[0]:temp_lr[1]+1, temp_lr[2]:temp_lr[3]+1, temp_lr[4]:temp_lr[5]+1, ...]
                     curr_blk_hr = datahr[temp_hr[0]:temp_hr[1]+1, temp_hr[2]:temp_hr[3]+1, temp_hr[4]:temp_hr[5]+1, ...]
 #                     print(curr_blk.size(),curr_blk.shape,curr_blk_hr.shape,curr_blk_hr.size())
-                    if((torch.numel(curr_blk) != 0 and torch.count_nonzero(curr_blk)/torch.numel(curr_blk) > self.thres) and 
-                      (torch.numel(curr_blk_hr) != 0 and torch.count_nonzero(curr_blk_hr)/torch.numel(curr_blk_hr) > self.thres)):
+
+                    if(self.enable_thres):
+                        if((torch.numel(curr_blk) != 0 and torch.count_nonzero(curr_blk)/torch.numel(curr_blk) > self.thres) and 
+                        (torch.numel(curr_blk_hr) != 0 and torch.count_nonzero(curr_blk_hr)/torch.numel(curr_blk_hr) > self.thres)):
+                            ind_block_lr.append(temp_lr)
+                            ind_block_hr.append(temp_hr)
+                            count = count + 1
+                    else:
                         ind_block_lr.append(temp_lr)
                         ind_block_hr.append(temp_hr)
                         count = count + 1
@@ -267,6 +274,7 @@ class hcp_data_test_recon(torch.utils.data.Dataset):
         self.ids = ids
         self.debug = debug
         self.stride = opt.stride
+        self.enable_thres = opt.enable_thres_test
         self.transform = tio.transforms.RescaleIntensity(masking_method=lambda x: x > 0)
         if(opt.sort == True):
             self.ids.sort()
@@ -350,8 +358,13 @@ class hcp_data_test_recon(torch.utils.data.Dataset):
                     curr_blk = datalr[temp_lr[0]:temp_lr[1]+1, temp_lr[2]:temp_lr[3]+1, temp_lr[4]:temp_lr[5]+1, ...]
                     curr_blk_hr = datahr[temp_hr[0]:temp_hr[1]+1, temp_hr[2]:temp_hr[3]+1, temp_hr[4]:temp_hr[5]+1, ...]
                     # print(curr_blk.shape,curr_blk_hr.shape)
-                    if((torch.numel(curr_blk) != 0 and (torch.count_nonzero(curr_blk).item()/torch.numel(curr_blk)) > self.thres) and 
-                      (torch.numel(curr_blk_hr) != 0 and (torch.count_nonzero(curr_blk_hr).item()/torch.numel(curr_blk_hr)) > self.thres)):
+                    if(self.enable_thres):
+                        if((torch.numel(curr_blk) != 0 and torch.count_nonzero(curr_blk)/torch.numel(curr_blk) > self.thres) and 
+                        (torch.numel(curr_blk_hr) != 0 and torch.count_nonzero(curr_blk_hr)/torch.numel(curr_blk_hr) > self.thres)):
+                            ind_block_lr.append(temp_lr)
+                            ind_block_hr.append(temp_hr)
+                            count = count + 1
+                    else:
                         ind_block_lr.append(temp_lr)
                         ind_block_hr.append(temp_hr)
                         count = count + 1
@@ -387,7 +400,7 @@ class hcp_data_test_recon(torch.utils.data.Dataset):
         
         vol = torch.from_numpy(loaded[idx]['vol0'])
         
-        x = np.around(np.random.uniform(1,1.9),decimals=1)
+        x = np.around(np.random.uniform(1,1.7),decimals=1)
         asy = 0.1
         curr_scale = np.around(np.random.uniform(x-asy,x+asy,3),decimals=1)
 
