@@ -122,8 +122,8 @@ class hcp_data(torch.utils.data.Dataset):
         vol_idx = self.ids[blk_idx]
         blk_idx = indx - self.blk_indx[blk_idx]
         if(self.debug):
-            return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...],self.scale[vol_idx],self.blks_ret_lr[vol_idx][blk_idx,...],self.blks_ret_hr[vol_idx][blk_idx,...],vol_idx
-        return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...],self.scale[vol_idx]
+            return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...],self.scale[vol_idx],self.blks_ret_lr[vol_idx][blk_idx,...],self.blks_ret_hr[vol_idx][blk_idx,...],vol_idx
+        return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...],self.scale[vol_idx]
         
 
     def preload_data(self,stable = False,blk_size = None):

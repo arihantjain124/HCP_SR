@@ -101,7 +101,8 @@ class Trainer():
                 
             if (batch in samples and self.curr_epoch >0):
             ## plotting
-                utility.plot_train_pred(pred,hr_tensor,self.logger,batch)
+                lr_tensor = torch.permute(lr_tensor,  (0,2,3,4,1))
+                utility.plot_train_pred(lr_tensor,hr_tensor,self.logger,batch)
                 
         self.loss.end_log(len(self.loader.training_data))
         self.error_last = self.loss.log[-1, -1]

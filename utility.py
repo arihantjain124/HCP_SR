@@ -201,6 +201,11 @@ def plot_train_pred(pred,hr,logger,iter):
     # print(pred.shape)
     hr = np.clip(hr.cpu().detach().numpy().squeeze(),0,1)
     fig, ax = plt.subplots(1,6)
+    for j in range(6):
+        ax[j].set_xticks([])
+        ax[j].set_yticks([])
+        
+        
     ax[0].set_title("pr_1")
     ax[1].set_title("pr_2")
     ax[2].set_title("pr_3")
@@ -218,14 +223,19 @@ def plot_train_pred(pred,hr,logger,iter):
 
     
 def logger_sampling(pred,logger,epoch,hr):
-
-    pred = np.clip(pred.cpu().detach().numpy(),0,1)
-    hr = np.clip(hr.cpu().detach().numpy(),0,1)
+    # print(type(pred.get()),pred.shape,type(hr),hr.shape)
+    pred = np.clip(pred.get(),0,1)
+    hr = np.clip(hr.get(),0,1)
     x,y,z = random.sample(range(40, 90), 3)
     fig, ax = plt.subplots(3,6)
     fa,hr_fa = pred[x,:,:,0],hr[x,:,:,0]
     adc,hr_adc = pred[x,:,:,1],hr[x,:,:,1]
     rgb,hr_rgb = pred[x,:,:,2:],hr[x,:,:,2:]
+    
+    for i in range(3):
+        for j in range(6):
+            ax[i][j].set_xticks([])
+            ax[i][j].set_yticks([])
     # print(fa.min(),fa.max())
     # print(adc.min(),adc.max())
     # print(rgb.min(),rgb.max())
@@ -273,8 +283,10 @@ def logger_sampling(pred,logger,epoch,hr):
 
 def compute_psnr_ssim(hr,pred,pnts,logger=None,epoch=None,mask=False):
     pred = recon(pred,pnts,vol_size=hr.shape)
-    if(mask):    
+    if(mask):   
+        pred = pred.to('cuda') 
         mask = (hr>0)
+        # print(mask.device,hr.device,pred.device)
         hr = cp.array(hr.squeeze()*mask)
         pred = cp.array(pred.squeeze()*mask)
     else:
