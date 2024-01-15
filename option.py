@@ -25,22 +25,24 @@ parser.add_argument("--ret_points", type=bool, default=False,
                     help="return box point of crops")
 parser.add_argument("--enable_thres", type=bool, default=True,
                     help="threshold")
-parser.add_argument("--enable_thres_test", type=bool, default=False,
+parser.add_argument("--enable_thres_test", type=bool, default=True,
                     help="threshold")
 parser.add_argument("--test_mask", type=bool, default=True,
                     help="threshold")
 parser.add_argument("--thres", type=float, default=0.1,
                     help="threshold for blk emptiness")
-parser.add_argument("--test_thres", type=float, default=0.05,
+parser.add_argument("--test_thres", type=float, default=0.1,
                     help="threshold for blk emptiness")
 parser.add_argument("--offset", type=int, default=20,
                     help="epoch with scale (1,1,1)")
 parser.add_argument("--gap", type=int, default=20,
                     help="number of epochs of gap between each scale change")
 
-parser.add_argument("--growth", type=int, default=64,
+parser.add_argument("--growth", type=int, default=32,
                     help="epoch with scale (1,1,1)")
 parser.add_argument("--no_vols", type=int, default=20,
+                    help="Number of Volumes to load")
+parser.add_argument("--test_vols", type=int, default=20,
                     help="Number of Volumes to load")
 
 
@@ -147,4 +149,4 @@ args.batch_size = 16
 args.sort = True
 args.cuda = True
 args.scale = (1,1,1)
-args.offset = 2
+args.offset = 2     

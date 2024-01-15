@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 
 class Model(nn.Module):
-    def __init__(self, args, ckp):
+    def __init__(self, args):
         super(Model, self).__init__()
         print('Making model...')
         self.precision = args.precision
@@ -19,12 +19,6 @@ class Model(nn.Module):
 
         if args.precision == 'half': self.model.half()
         
-        self.load(
-            ckp.dir,
-            pre_train=args.pre_train,
-            resume=args.resume,
-            cpu=args.cpu
-        )
 
     def forward(self, x ,sca):
         self.model.set_scale(sca)
@@ -55,31 +49,17 @@ class Model(nn.Module):
                 os.path.join(apath, 'model', 'model_{}.pt'.format(epoch))
             )
 
-    def load(self, apath, pre_train='.', resume=-1, cpu=False):
+    def load(self, apath, cpu=False):
         if cpu:
             kwargs = {'map_location': lambda storage, loc: storage}
         else:
             kwargs = {}
 
-        if resume == 0:
-            if pre_train!='None':
-                pretrained_dict = torch.load(pre_train)
-                if 'model' in pretrained_dict.keys():
-                    pretrained_dict =pretrained_dict['model']['sd'] 
-
-                model_dict = self.get_model().state_dict()
-                
-                pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
-                model_dict.update(pretrained_dict)
-                self.get_model().load_state_dict(model_dict)
-                print('load from pre-trained model')
-
-        elif resume > 0:
-            self.get_model().load_state_dict(
-                torch.load(
-                    os.path.join(apath, 'model', 'model_{}.pt'.format(resume)),
-                    **kwargs
-                ),
-                strict=False
-            )
-            print('load from model_' + str(resume) + '.pt')
+        self.get_model().load_state_dict(
+            torch.load(
+                apath,
+                **kwargs
+            ),
+            strict=False
+        )
+        print('load from model_' + str(apath) + '.pt')

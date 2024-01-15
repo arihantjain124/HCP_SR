@@ -13,9 +13,10 @@ class Data:
         self.pin_mem = args.pin_mem
         self.batch_size = 1
         self.ids = self.dataset_hcp.load_data(args.dir,ids)
-        self.train_vols = int(len(self.ids) * (args.train_set))
+        self.train_vols = args.no_vols
+        self.test_vols = args.test_vols
 
-        self.testing_dataset = self.dataset_hcp.hcp_data_test_recon(args,self.ids[self.train_vols:],debug=debug)
+        self.testing_dataset = self.dataset_hcp.hcp_data_test_recon(args,self.ids[-self.test_vols:],debug=debug)
         self.training_dataset = self.dataset_hcp.hcp_data(args,self.ids[:self.train_vols])
 
         self.testing_data = DataLoader(dataset=self.testing_dataset, batch_size=1,shuffle=True,pin_memory=self.pin_mem,drop_last=True,collate_fn=self.resize_test)
