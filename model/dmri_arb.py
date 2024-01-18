@@ -18,7 +18,7 @@ class SineAct(nn.Module):
         return torch.sin(x)
 
 class ImplicitDecoder(nn.Module):
-    def __init__(self, in_channels=16, hidden_dims=[64,32,16,16,8], output_dim = 5):
+    def __init__(self, in_channels=16, hidden_dims=[64,64,64,64,64], output_dim = 5):
         super().__init__()
 
         self.Q = nn.ModuleList()
