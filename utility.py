@@ -14,8 +14,7 @@ import torch.optim as optim
 import torch.optim.lr_scheduler as lrs
 from math import log10
 
-import cupy as cp
-import cucim.skimage.metrics as metrics
+import skimage.metrics as metrics
 import torch
 import torch.nn as nn
 import numpy as np
@@ -196,102 +195,139 @@ def compute_psnr(hr,pred):
 import random
 import matplotlib.pyplot as plt
 
-def plot_train_pred(pred,hr,logger,iter):
+
+
+def align(lr,hr,pred):
+    pos = lr.shape.index(min(lr.shape[:3]))
+    if(pos == 1):
+        lr = np.transpose(lr,(0,2,1,3))
+        hr = np.transpose(hr,(0,2,1,3))
+        pred = np.transpose(pred,(0,2,1,3))
+    elif(pos == 0):
+        lr = np.transpose(lr,(1,2,0,3))
+        hr = np.transpose(hr,(1,2,0,3))
+        pred = np.transpose(pred,(1,2,0,3))
+    return lr,hr,pred
+
+
+def plot_train_pred(lr,hr,pred,logger,iter,epoch):
+    lr = np.clip(lr.cpu().detach().numpy().squeeze(),0,1)
     pred = np.clip(pred.cpu().detach().numpy().squeeze(),0,1)
     # print(pred.shape)
     hr = np.clip(hr.cpu().detach().numpy().squeeze(),0,1)
-    fig, ax = plt.subplots(1,6)
-    for j in range(6):
-        ax[j].set_xticks([])
-        ax[j].set_yticks([])
-        
-        
-    ax[0].set_title("pr_1")
-    ax[1].set_title("pr_2")
-    ax[2].set_title("pr_3")
-    ax[3].set_title("gt_1")
-    ax[4].set_title("gt_2")
-    ax[5].set_title("gt_3")
-    ax[0].imshow(pred[:,:,0,0])
-    ax[1].imshow(pred[:,:,0,1])
-    ax[2].imshow(pred[:,:,0,2:])
-    ax[3].imshow(hr[:,:,0,0])
-    ax[4].imshow(hr[:,:,0,1])
-    ax[5].imshow(hr[:,:,0,2:])
-    
-    logger.add_figure("sample_train",fig,global_step = iter)
-
-    
-def logger_sampling(pred,logger,epoch,hr):
-    # print(type(pred.get()),pred.shape,type(hr),hr.shape)
-    pred = np.clip(pred.get(),0,1)
-    hr = np.clip(hr.get(),0,1)
-    x,y,z = random.sample(range(40, 90), 3)
-    fig, ax = plt.subplots(3,6)
-    fa,hr_fa = pred[x,:,:,0],hr[x,:,:,0]
-    adc,hr_adc = pred[x,:,:,1],hr[x,:,:,1]
-    rgb,hr_rgb = pred[x,:,:,2:],hr[x,:,:,2:]
-    
-    for i in range(3):
-        for j in range(6):
+    fig, ax = plt.subplots(2,7)
+    for i in range(2):
+        for j in range(7):
             ax[i][j].set_xticks([])
             ax[i][j].set_yticks([])
-    # print(fa.min(),fa.max())
-    # print(adc.min(),adc.max())
-    # print(rgb.min(),rgb.max())
-    # print(fa.shape,adc.shape,rgb.shape)
-    # print(type(fa),type(adc),type(rgb))
-    ax[0][0].set_title("FA")
-    ax[0][1].set_title("GT_FA")
-    ax[0][2].set_title("ADC")
-    ax[0][3].set_title("GT_ADC")
-    ax[0][4].set_title("RGB")
-    ax[0][5].set_title("GT_RGB")
+            
+    lr,hr,pred = align(lr,hr,pred)
     
+    for i in range(7):    
+        ax[0][i].imshow(lr[:,:,0,i])
     
-    ax[0][0].imshow(fa)
-    ax[0][1].imshow(hr_fa)
-    ax[0][2].imshow(adc)
-    ax[0][3].imshow(hr_adc)
-    ax[0][4].imshow(rgb)
-    ax[0][5].imshow(hr_rgb)
-
-    fa,hr_fa = pred[:,y,:,0],hr[:,y,:,0]
-    adc,hr_adc = pred[:,y,:,1],hr[:,y,:,1]
-    rgb,hr_rgb = pred[:,y,:,2:],hr[:,y,:,2:]
-    ax[1][0].imshow(fa)
-    ax[1][1].imshow(hr_fa)
-    ax[1][2].imshow(adc)
-    ax[1][3].imshow(hr_adc)
-    ax[1][4].imshow(rgb)
-    ax[1][5].imshow(hr_rgb)
+    ax[1][0].set_title("pred_adc")
+    ax[1][1].set_title("pred_fa")
+    ax[1][2].set_title("pred_rgb")
+    ax[1][3].set_title("hr_adc")
+    ax[1][4].set_title("hr_fa")
+    ax[1][5].set_title("hr_rgb")
+    
+    ax[1][0].imshow(pred[:,:,0,0])
+    ax[1][1].imshow(pred[:,:,0,1])
+    ax[1][2].imshow(pred[:,:,0,2:])
+    ax[1][3].imshow(hr[:,:,0,0])
+    ax[1][4].imshow(hr[:,:,0,1])
+    ax[1][5].imshow(hr[:,:,0,2:])
+    
+    logger.add_figure("Training",fig,global_step = (epoch*10000)+iter)
 
     
-    fa,hr_fa = pred[:,:,z,0],hr[:,:,z,0]
-    adc,hr_adc = pred[:,:,z,1],hr[:,:,z,1]
-    rgb,hr_rgb = pred[:,:,z,2:],hr[:,:,z,2:]
-    ax[2][0].imshow(fa)
-    ax[2][1].imshow(hr_fa)
-    ax[2][2].imshow(adc)
-    ax[2][3].imshow(hr_adc)
-    ax[2][4].imshow(rgb)
-    ax[2][5].imshow(hr_rgb)
+    
+
+
+def logger_sampling(hr,pred,lr,scale,logger,iter,epoch,hfen):
+    # print(type(pred.get()),pred.shape,type(hr),hr.shape)
+    lr = np.clip(lr,0,1)
+    hr = np.clip(hr,0,1)
+    pred = np.clip(pred,0,1)
+    fig, ax = plt.subplots(3,4)
+    
+    # print(lr.shape,hr.shape,pred.shape)
+    
+    fig.suptitle(f'scale: {scale},blk_size: {lr.shape[:3]},HFEN: {hfen}', fontsize=10)
+    
+
+    for i in range(3):
+        for j in range(4):
+            ax[i][j].set_xticks([])
+            ax[i][j].set_yticks([])
+    
+    ax[0][0].set_title("LR")
+    ax[0][1].set_title("HR")
+    ax[0][2].set_title("PRED")
+    ax[0][3].set_title("HR - PRED")
+    
+    lr,hr,pred = align(lr,hr,pred)
+    
+    ax[0][0].imshow(lr[:,:,0,0])
+    ax[0][1].imshow(hr[:,:,0,0])
+    ax[0][2].imshow(pred[:,:,0,0])
+    ax[0][3].imshow((hr-pred)[:,:,0,0])
+
+
+    ax[1][0].imshow(lr[:,:,0,1])
+    ax[1][1].imshow(hr[:,:,0,1])
+    ax[1][2].imshow(pred[:,:,0,1])
+    ax[1][3].imshow((hr-pred)[:,:,0,1])
+    
+    ax[2][0].imshow(lr[:,:,0,2:])
+    ax[2][1].imshow(hr[:,:,0,2:])
+    ax[2][2].imshow(pred[:,:,0,2:])
+    diff = np.clip((hr-pred),0,1)
+    ax[2][3].imshow(diff[:,:,0,2:])
     # fig.colorbar()
-    logger.add_figure("samples",fig,global_step = epoch)
+    logger.add_figure("Testing",fig,global_step = (epoch*10000)+iter)
 
 
+import numpy as np
+from scipy.ndimage import gaussian_laplace
 
-def compute_psnr_ssim(hr,pred,pnts,logger=None,epoch=None,mask=False):
-    pred = recon(pred,pnts,vol_size=hr.shape)
+def hfen_metric(reference, input_volume):
+    # Apply Laplacian of Gaussian (LoG) filter to reference and input volumes
+    log_reference = gaussian_laplace(reference, sigma=3)
+    log_input = gaussian_laplace(input_volume, sigma=3)
+
+    # Calculate the L2 norm of the difference between filtered volumes
+    diff = log_reference - log_input
+    l2_norm = np.linalg.norm(diff)
+
+    # Normalize by the norm of the LoG-filtered reference
+    norm_log_reference = np.linalg.norm(log_reference)
+    hfen_value = l2_norm / norm_log_reference
+
+    return hfen_value
+
+
+def compute_scores(hr,pred,out,scale,logger=None,iter=None,mask=False,epoch=None):
+    hr = hr.cpu().detach().numpy().squeeze()
+    pred = pred.cpu().detach().numpy().squeeze()
+    out = out.cpu().detach().numpy().squeeze()
     if(mask):   
-        pred = pred.to('cuda') 
         mask = (hr>0)
         # print(mask.device,hr.device,pred.device)
-        hr = cp.array(hr.squeeze()*mask)
-        pred = cp.array(pred.squeeze()*mask)
+        hr = hr.squeeze()*mask
+        pred = pred.squeeze()*mask
+        mask = (out>0)
+        out = out.squeeze()*mask
     else:
-        hr = cp.array(hr.squeeze())
-        pred = cp.array(pred.squeeze())
+        hr = hr.squeeze()
+        pred = pred.squeeze()
+        out = out.squeeze()
+        
+    psnr = float(metrics.peak_signal_noise_ratio(hr,pred,data_range=1))
+    hfen = hfen_metric(hr,pred)
+    
     if(logger != None):
-        logger_sampling(pred,logger,epoch,hr)
-    return float(metrics.peak_signal_noise_ratio(hr,pred,data_range=1)),abs(float(metrics.structural_similarity(hr,pred,channel_axis =3,data_range=1)))
+        logger_sampling(hr,pred,out,scale,logger,iter,epoch,hfen)
+    return psnr,hfen
