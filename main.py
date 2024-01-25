@@ -19,11 +19,11 @@ temp = ids[:total_vols]
 ids = temp
 # print(ids)
 if(args.var_blk_size):
-    args.run_name = f"{args.epochs}_epoch,{args.no_vols}_vols,{args.test_vols}_test_vols,blk_{args.block_size},loss_{args.loss},growth_{args.growth},desc_{args.var_blk_size}"
+    args.run_name = f"{args.batch_size}_batch,{args.no_vols}_vols,{args.test_vols}_test,blk_{args.block_size},loss_{args.loss},growth_{args.growth},ss{args.start_stable},opt_{args.optimizer},var_{args.var_blk_size}"
 elif (args.run_name == '..'):
-    args.run_name = f"{args.epochs}_epoch,{args.no_vols}_vols,{args.test_vols}_test_vols,blk_{args.block_size},loss_{args.loss},growth_{args.growth}"
+    args.run_name = f"{args.batch_size}_batch,{args.no_vols}_vols,{args.test_vols}_test,blk_{args.block_size},loss_{args.loss},growth_{args.growth},ss{args.start_stable},opt_{args.optimizer}"
 else:
-    args.run_name = f"{args.epochs}_epoch,{args.no_vols}_vols,{args.test_vols}_test_vols,blk_{args.block_size},loss_{args.loss},growth_{args.growth},{args.run_name}"
+    args.run_name = f"{args.batch_size}_batch,{args.no_vols}_vols,{args.test_vols}_test,blk_{args.block_size},loss_{args.loss},growth_{args.growth},ss{args.start_stable},opt_{args.optimizer},{args.run_name}"
 print(args.run_name)
 
 # print(args.test_block_size)

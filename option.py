@@ -1,19 +1,17 @@
 import argparse
 
 parser = argparse.ArgumentParser(description="DTI_ARB")
-parser.add_argument("--block_size", type=tuple, default=(32,32,4),
+parser.add_argument("--block_size", type=tuple, default=(32,32,8),
                     help="Block Size")
-parser.add_argument("--test_block_size", type=tuple, default=(32,32,4),
+parser.add_argument("--var_blk_size", type=bool, default=False,
                     help="Block Size")
-parser.add_argument("--stride", type=tuple, default=(2,2,2),
-                    help="Testing Dataset Stride")
-parser.add_argument("--crop_depth", type=int, default=1,
-                    help="crop across z-axis")
+parser.add_argument("--start_stable", type=bool, default=False,
+                    help="Block Size")
 parser.add_argument("--epochs", type=int, default=40,
                     help="Epochs")
 parser.add_argument("--dir", type=str,
                     help="dataset_directory")
-parser.add_argument("--batch_size", type=int,
+parser.add_argument("--batch_size", type=int , default= 16,
                     help="Batch_size")
 parser.add_argument("--sort", type=bool,
                     help="Sort Subject Ids")
@@ -25,18 +23,14 @@ parser.add_argument("--ret_points", type=bool, default=False,
                     help="return box point of crops")
 parser.add_argument("--enable_thres", type=bool, default=True,
                     help="threshold")
-parser.add_argument("--enable_thres_test", type=bool, default=True,
-                    help="threshold")
-parser.add_argument("--test_mask", type=bool, default=True,
-                    help="threshold")
-parser.add_argument("--thres", type=float, default=0.1,
+# parser.add_argument("--test_mask", type=bool, default=True,
+#                     help="threshold")
+parser.add_argument("--thres", type=float, default=0.3,
                     help="threshold for blk emptiness")
-parser.add_argument("--test_thres", type=float, default=0.1,
-                    help="threshold for blk emptiness")
-parser.add_argument("--offset", type=int, default=20,
+parser.add_argument("--offset", type=int, default=3,
                     help="epoch with scale (1,1,1)")
-parser.add_argument("--gap", type=int, default=20,
-                    help="number of epochs of gap between each scale change")
+# parser.add_argument("--gap", type=int, default=20,
+#                     help="number of epochs of gap between each scale change")
 
 parser.add_argument("--growth", type=int, default=32,
                     help="epoch with scale (1,1,1)")
@@ -47,15 +41,15 @@ parser.add_argument("--test_vols", type=int, default=20,
 
 
 # Optimization specifications
-parser.add_argument('--lr', type=float, default=0.0005,
+parser.add_argument('--lr', type=float, default=0.002,
                     help='learning rate')
 parser.add_argument('--max_lr', type=float, default=0.01,
                     help='learning rate')
-parser.add_argument('--lr_decay', type=int, default=5,
+parser.add_argument('--lr_decay', type=int, default=15,
                     help='learning rate decay per N epochs')
 parser.add_argument('--decay_type', type=str, default='step',
                     help='learning rate decay type')
-parser.add_argument('--gamma', type=float, default=0.5,
+parser.add_argument('--gamma', type=float, default=0.7,
                     help='learning rate decay factor for step decay')
 parser.add_argument('--optimizer', default='ADAM',
                     choices=('SGD', 'ADAM', 'RMSprop'),
@@ -117,8 +111,8 @@ parser.add_argument('--reset', action='store_true',
                     help='reset the training')
 parser.add_argument('--pin_mem', action='store_true',
                     help='pin memory for dataloader')
-parser.add_argument("--train_set", type=float, default=0.7,
-                    help="percentage of data to be used for training")
+# parser.add_argument("--train_set", type=float, default=0.7,
+#                     help="percentage of data to be used for training")
 
 
 # Model specifications
@@ -145,8 +139,7 @@ args = list(parser.parse_known_args())[0]
 args.preload = True
 args.debug = False
 args.dir = "/storage"
-args.batch_size = 16
 args.sort = True
 args.cuda = True
 args.scale = (1,1,1)
-args.offset = 2     
+args.offset = 3

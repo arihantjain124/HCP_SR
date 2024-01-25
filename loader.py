@@ -13,7 +13,6 @@ def load_path(base_dir,ids):
                         , "GT" : i + "/" + i[-6:] + "_GT.h5"}
     for i in base_dir_3t:
         path_3t[i[-6:]] = {"h5" : i + "/" + i[-6:] + ".h5"
-                        , "upsampled" : i + "/" + i[-6:] + "_upsampled.h5"
                         , "GT" : i + "/" + i[-6:] + "_GT.h5"}
     path = {'3T': path_3t, "7T":  path_7t}
     p = list(path_7t.keys())
@@ -29,8 +28,14 @@ def load_data(base_dir,ids):
         name = path['3T'][i]['h5']
         res_vol = h5py.File(name, 'r')
         # print(res_vol.keys())
+        
+        name = path['3T'][i]['GT']
+        res = h5py.File(name, 'r')
         loaded[i] = {'vol0':res_vol.get('volumes0')[:]
-                            ,'mask':res_vol.get('mask')[:]}
+                            ,'mask':res_vol.get('mask')[:],
+                    'ADC':res.get('ADC')[:],
+                    'FA':res.get('FA')[:] ,
+                    'color_FA':res.get('color_FA')[:]}
         
         name = path['7T'][i]['GT']
         res = h5py.File(name, 'r')
@@ -49,4 +54,4 @@ def load_data(base_dir,ids):
         loaded_gt[i]['mask'] = res.get('mask')[:]
         res_vol.close()
         res.close()
-        return loaded,loaded_gt
+    return loaded,loaded_gt
