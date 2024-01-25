@@ -19,7 +19,12 @@ class Data:
         # self.testing_dataset = self.dataset_hcp.hcp_data_test_recon(args,self.ids[-self.test_vols:],debug=debug)
         
         self.training_dataset = self.dataset_hcp.hcp_data(args,self.ids[:self.train_vols])
-        self.training_data = DataLoader(dataset=self.training_dataset, batch_size=16, shuffle=True, pin_memory=self.pin_mem, drop_last=True,collate_fn=self.resize)
+        
+        if(args.start_stable):
+            self.training_data = DataLoader(dataset=self.training_dataset, batch_size=16, shuffle=True, drop_last=True, pin_memory=self.pin_mem,collate_fn=self.resize)
+        else:
+            self.training_data = DataLoader(dataset=self.training_dataset, batch_size=1, shuffle=True, drop_last=True, pin_memory=self.pin_mem,collate_fn=self.resize)
+        
         
         self.testing_dataset = self.dataset_hcp.hcp_data(args,self.ids[self.train_vols:self.train_vols+args.test_vols],test = True)
         self.testing_data = DataLoader(dataset=self.testing_dataset, batch_size=1,shuffle=True,pin_memory=self.pin_mem,drop_last=True,collate_fn=self.resize_test)
