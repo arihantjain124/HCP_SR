@@ -13,6 +13,8 @@ parser.add_argument("--dir", type=str,
                     help="dataset_directory")
 parser.add_argument("--batch_size", type=int , default= 16,
                     help="Batch_size")
+parser.add_argument("--test_batch_size", type=int , default= 8,
+                    help="Batch_size")
 parser.add_argument("--sort", type=bool,
                     help="Sort Subject Ids")
 parser.add_argument("--debug", type=bool,
@@ -116,7 +118,7 @@ parser.add_argument('--pin_mem', action='store_true',
 
 
 # Model specifications
-parser.add_argument('--model', default='dmri_arb',
+parser.add_argument('--model', default='dmri_rdn',
                     help='model name')
 parser.add_argument('--act', type=str, default='relu',
                     help='activation function')
@@ -143,3 +145,4 @@ args.sort = True
 args.cuda = True
 args.scale = (1,1,1)
 args.offset = 3
+args.stable_epoch = 1

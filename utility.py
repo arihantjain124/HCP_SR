@@ -13,11 +13,15 @@ import torch
 import torch.optim as optim
 import torch.optim.lr_scheduler as lrs
 from math import log10
+import random
+import matplotlib.pyplot as plt
+
 
 import skimage.metrics as metrics
 import torch
 import torch.nn as nn
 import numpy as np
+from scipy.ndimage import gaussian_laplace
 
 class checkpoint():
     def __init__(self, args):
@@ -192,9 +196,6 @@ def compute_psnr(hr,pred):
     pred = cp.array(pred.squeeze())
     return float(metrics.peak_signal_noise_ratio(hr,pred,data_range=1))
 
-import random
-import matplotlib.pyplot as plt
-
 
 
 def align(lr,hr,pred):
@@ -211,10 +212,13 @@ def align(lr,hr,pred):
 
 
 def plot_train_pred(lr,hr,pred,logger,iter,epoch):
-    lr = np.clip(lr.cpu().detach().numpy().squeeze(),0,1)
-    pred = np.clip(pred.cpu().detach().numpy().squeeze(),0,1)
-    # print(pred.shape)
-    hr = np.clip(hr.cpu().detach().numpy().squeeze(),0,1)
+    
+    
+    lr = np.clip(lr.cpu().detach().numpy(),0,1)[0,...]
+    pred = np.clip(pred.cpu().detach().numpy(),0,1)[0,...]
+    hr = np.clip(hr.cpu().detach().numpy(),0,1)[0,...]
+    
+    
     fig, ax = plt.subplots(2,7)
     for i in range(2):
         for j in range(7):
@@ -247,13 +251,13 @@ def plot_train_pred(lr,hr,pred,logger,iter,epoch):
 
 
 def logger_sampling(hr,pred,lr,scale,logger,iter,epoch,hfen):
+    # print(lr.shape,hr.shape,pred.shape)
     # print(type(pred.get()),pred.shape,type(hr),hr.shape)
-    lr = np.clip(lr,0,1)
-    hr = np.clip(hr,0,1)
-    pred = np.clip(pred,0,1)
+    lr = np.clip(lr,0,1)[0,...]
+    hr = np.clip(hr,0,1)[0,...]
+    pred = np.clip(pred,0,1)[0,...]
     fig, ax = plt.subplots(3,4)
     
-    # print(lr.shape,hr.shape,pred.shape)
     
     fig.suptitle(f'scale: {scale},blk_size: {lr.shape[:3]},HFEN: {hfen}', fontsize=10)
     
@@ -290,8 +294,6 @@ def logger_sampling(hr,pred,lr,scale,logger,iter,epoch,hfen):
     logger.add_figure("Testing",fig,global_step = (epoch*10000)+iter)
 
 
-import numpy as np
-from scipy.ndimage import gaussian_laplace
 
 def hfen_metric(reference, input_volume):
     # Apply Laplacian of Gaussian (LoG) filter to reference and input volumes

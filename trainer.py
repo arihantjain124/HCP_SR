@@ -28,6 +28,7 @@ class Trainer():
         self.curr_epoch = 0
         self.var_blk_size = args.var_blk_size
         self.batch_size = args.batch_size
+        self.test_batch_size = args.test_batch_size
         self.start_stable = args.start_stable
         print(self.batch_size)
         self.desc_blk_size = [(32,32,8),(16,16,4)]
@@ -55,54 +56,68 @@ class Trainer():
         self.ckp.write_log('[Epoch {}]\tLearning rate: {:.2e}'.format(self.curr_epoch, Decimal(lr)))
         
         pbar = tqdm(total = len(self.loader.training_data))
-        num_samples = int(len(self.loader.training_data) * 0.1)
-        samples = random.sample(range(len(self.loader.training_data)), num_samples)
+        
         self.iter = 0
         self.optimizer.zero_grad()
         
-        for batch, (lr_tensor, hr_tensor,scale) in enumerate(self.loader.training_data):
+        lr_tensor = None
+        hr_tensor = None
+        curr_scale = None
+        for batch, (lr, hr,scale) in enumerate(self.loader.training_data):
             pbar.update(1)
-            lr_tensor = lr_tensor.to('cuda').float()  # ranges from [0, 1]
-            hr_tensor = hr_tensor.to('cuda').float()  # ranges from [0, 1]
+            ltensor = lr.to('cuda').float()  # ranges from [0, 1]
+            htensor = hr.to('cuda').float()  # ranges from [0, 1]
             
-            lr_tensor = torch.permute(lr_tensor, (0,4,1,2,3))
-            # inference
-            pred = self.model.forward(lr_tensor,scale)
-            pred = torch.permute(pred, (0,2,3,4,1)).float()
-
-            # loss function
-            loss = self.loss(pred,hr_tensor)
-            # backward
-            if loss.item() < self.args.skip_threshold * self.error_last:
-                loss.backward()
-                
-                if(self.logger != None):
-                    self.logger.add_scalar("Loss",loss.item(),self.cnt)
-                    self.cnt+=1
-            else:
-                print('Skip this batch {}! (Loss: {})'.format(
-                    batch + 1, loss.item()
-                ))
-
-            if(self.curr_epoch>2 and (batch%self.batch_size == 0) and (not self.var_blk_size)):
-                
-                self.optimizer.step()
-                self.optimizer.zero_grad()
-            
+            if(lr_tensor is None):
+                lr_tensor = ltensor.to('cuda')
+                hr_tensor = htensor.to('cuda')
+                curr_scale = scale
+                continue
+            elif(lr_tensor.shape[1:] == ltensor.shape[1:] and lr_tensor.shape[0]<self.batch_size and (curr_scale == scale).all()):
+                lr_tensor = torch.cat((lr_tensor,ltensor)).to('cuda')
+                hr_tensor = torch.cat((hr_tensor,htensor)).to('cuda')
+                continue
             else:
                 
-                self.optimizer.step()
                 self.optimizer.zero_grad()
-            
-            if (batch + 1) % self.args.print_every == 0:
+                
+                lr_tensor = torch.permute(lr_tensor, (0,4,1,2,3))
+                
+                # inference
+                pred = self.model.forward(lr_tensor,curr_scale)
+                
+                pred = torch.permute(pred, (0,2,3,4,1)).float()
+
+                # loss function
+                loss = self.loss(pred,hr_tensor)
+                
+                
+                # backward
+                if loss.item() < self.args.skip_threshold * self.error_last:
+                    loss.backward()
+                    
+                    if(self.logger != None):
+                        self.logger.add_scalar("Loss",loss.item(),self.cnt)
+                        self.cnt+=1
+                else:
+                    print('Skip this batch {}! (Loss: {})'.format(
+                        batch + 1, loss.item()
+                    ))
+                
                 pbar.set_description(f"{self.loss.display_loss(batch)}")
-                pbar.set_postfix({"scale":scale,"blk_size":list(lr_tensor.shape[2:])})
-                
-            if (batch in samples and self.curr_epoch >=self.args.offset ):
-            ## plotting
-                lr_tensor = torch.permute(lr_tensor,  (0,2,3,4,1))
-                utility.plot_train_pred(lr_tensor,hr_tensor,pred,self.logger,self.iter,self.curr_epoch)
-                self.iter +=1
+                pbar.set_postfix({"scale":scale,"blk_size":list(lr_tensor.shape)})
+                            
+                self.optimizer.step()
+            
+            
+                if (np.random.randint(2) == 1):
+                ## plotting                
+                    lr_tensor = torch.permute(lr_tensor, (0,2,3,4,1)).float()
+                    utility.plot_train_pred(lr_tensor,hr_tensor,pred,self.logger,self.iter,self.curr_epoch)
+                    self.iter +=1
+        
+            lr_tensor = None
+            
         self.loss.end_log(len(self.loader.training_data))
         self.error_last = self.loss.log[-1, -1]
         
@@ -110,19 +125,15 @@ class Trainer():
         # self.loss.step()
         pbar.close()
     
+    
+
     # train on integer scale factors (x2, x3, x4) for 1 epoch to maintain stability
-        if(self.start_stable):
-            if (self.curr_epoch+1) < self.args.offset and self.args.load == '.':
-                self.loader.rebuild(blk_size = self.args.block_size,type = "train",stable = True)
-                # print("stablizing")
+        if (self.curr_epoch+1) < self.args.stable_epoch:
+            self.loader.rebuild(type = "train",train_var = False)
             
-        if (((self.curr_epoch+1)%self.args.offset == 0)):
-            print("destablizing")
-            if(self.var_blk_size):
-                self.loader.rebuild(blk_size = self.desc_blk_size[self.ord],type = "train",stable = False,train_var = True)
-            else:
-                self.loader.rebuild(blk_size = self.args.block_size,type = "train",stable = False)
-        
+        elif (((self.curr_epoch+1)%self.args.offset == 0)):
+            self.loader.rebuild(type = "train",train_var = self.var_blk_size)
+            
         self.curr_epoch+=1
 
     def test(self):
@@ -131,33 +142,49 @@ class Trainer():
         eval_hfen_avg = []
         
         pbar = tqdm(total = len(self.loader.testing_data))
-        num_samples = int(len(self.loader.testing_data)*0.1)
-        samples = random.sample(range(len(self.loader.testing_data)), num_samples)
+        
         self.iter = 0
-        for iteration, (lr_tensor, hr_tensor,outs,scale) in enumerate(self.loader.testing_data, 1):
+        lr_tensor = None
+        
+        for _, (lr, hr,out,scale) in enumerate(self.loader.testing_data, 1):
             # print(lr_tensor.shape,hr_tensor.shape)
             pbar.update(1)
-            lr_tensor = lr_tensor.to(self.device)
-            hr_tensor = hr_tensor.to(self.device)
-            lr_tensor = torch.permute(lr_tensor, (0,4,1,2,3))
-                    
-            with torch.no_grad():
-                pred = self.model.forward(lr_tensor,scale)
-                pred = torch.permute(pred, (0,2,3,4,1)).float()
-            
-            
-            if(iteration in samples and self.logger != None):
-                # print("fig added")
-                psnr, hfen = utility.compute_scores(hr_tensor,pred,outs,scale,self.logger,self.iter,mask = True,epoch = self.curr_epoch)
-                self.iter +=1
-            else:
-                psnr, hfen = utility.compute_scores(hr_tensor,pred,outs,scale,mask = True)
-            
-            
-            eval_hfen_avg.append(hfen)
-            eval_psnr_avg.append(psnr)
-            pbar.set_postfix({"scale":scale,"blk_size":list(lr_tensor.shape[2:]),"hfen":hfen})
-            torch.cuda.empty_cache()
+            ltensor = lr.to('cuda').float()  # ranges from [0, 1]
+            htensor = hr.to('cuda').float()  # ranges from [0, 1]
+            otensor = out.to('cuda').float()
+            if(lr_tensor is None):
+                lr_tensor = ltensor.to('cuda')
+                hr_tensor = htensor.to('cuda')
+                out_tensor = otensor.to('cuda')
+                curr_scale = scale
+                continue
+            elif(lr_tensor.shape[1:] == ltensor.shape[1:] and lr_tensor.shape[0]<self.test_batch_size and (curr_scale == scale).all()):
+                lr_tensor = torch.cat((lr_tensor,ltensor)).to('cuda')
+                hr_tensor = torch.cat((hr_tensor,htensor)).to('cuda')
+                out_tensor = torch.cat((out_tensor,otensor)).to('cuda')
+                continue
+            elif(lr_tensor.shape[0]>1):
+                # print(lr_tensor.shape)
+                lr_tensor = torch.permute(lr_tensor, (0,4,1,2,3))
+                        
+                with torch.no_grad():
+                    pred = self.model.forward(lr_tensor,curr_scale)
+                    pred = torch.permute(pred, (0,2,3,4,1)).float()
+                
+                
+                if(self.logger != None and np.random.randint(2) == 1):
+                    # print("fig added")
+                    psnr, hfen = utility.compute_scores(hr_tensor,pred,out_tensor,scale,self.logger,self.iter,mask = True,epoch = self.curr_epoch)
+                    self.iter +=1
+                else:
+                    psnr, hfen = utility.compute_scores(hr_tensor,pred,out_tensor,scale,mask = True)
+                
+                
+                eval_hfen_avg.append(hfen)
+                eval_psnr_avg.append(psnr)
+                pbar.set_postfix({"scale":scale,"blk_size":list(lr_tensor.shape[2:]),"hfen":hfen})
+                torch.cuda.empty_cache()
+                lr_tensor = None
         
         # print(len(eval_hfen_avg))
         
@@ -180,8 +207,6 @@ class Trainer():
                 self.model.state_dict(),
                 os.path.join(self.ckp.dir, 'model', f"model_best_{self.args.run_name}.pt")
             )
-            
-        torch.cuda.empty_cache()
                 
 
     def save_model(self,epoch):

@@ -18,12 +18,10 @@ temp = ids[:total_vols]
 # temp.extend(ids[offset:args.test_vols+offset])
 ids = temp
 # print(ids)
-if(args.var_blk_size):
-    args.run_name = f"{args.batch_size}_batch,{args.no_vols}_vols,{args.test_vols}_test,blk_{args.block_size},loss_{args.loss},growth_{args.growth},ss{args.start_stable},opt_{args.optimizer},var_{args.var_blk_size}"
-elif (args.run_name == '..'):
-    args.run_name = f"{args.batch_size}_batch,{args.no_vols}_vols,{args.test_vols}_test,blk_{args.block_size},loss_{args.loss},growth_{args.growth},ss{args.start_stable},opt_{args.optimizer}"
+if (args.run_name == '..'):
+    args.run_name = f"{args.model},{args.batch_size}_batch,{args.no_vols}_vols,{args.test_vols}_test,blk_{args.block_size},loss_{args.loss},opt_{args.optimizer},var_{args.var_blk_size}"
 else:
-    args.run_name = f"{args.batch_size}_batch,{args.no_vols}_vols,{args.test_vols}_test,blk_{args.block_size},loss_{args.loss},growth_{args.growth},ss{args.start_stable},opt_{args.optimizer},{args.run_name}"
+    args.run_name = f"{args.model},{args.batch_size}_batch,{args.no_vols}_vols,{args.test_vols}_test,blk_{args.block_size},loss_{args.loss},opt_{args.optimizer},var_{args.var_blk_size},{args.run_name}"
 print(args.run_name)
 
 # print(args.test_block_size)
@@ -38,8 +36,7 @@ if __name__ == '__main__':
         t = Trainer(args, loader, model, loss, checkpoint,logger)
         while not t.terminate():
             t.train()
-            if(t.curr_epoch >2):
-                t.test()
+            t.test()
             # break
 
         # checkpoint.done()
