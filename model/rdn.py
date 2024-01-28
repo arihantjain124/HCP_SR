@@ -9,13 +9,13 @@ import torch.nn as nn
 import numpy as np
 
 
-def make_rdn(inchannel=7, RDNkSize=3, growth = 16, RDNconfig='C'):
+def make_rdn(in_chans=7, RDNkSize=3, growth = 16, RDNconfig='C'):
     args = Namespace()
     args.G0 = growth
     args.RDNkSize = RDNkSize
     args.RDNconfig = RDNconfig
 
-    args.n_colors = inchannel
+    args.n_colors = in_chans
     return RDN(args)
 
 class RDB_Conv(nn.Module):
@@ -81,8 +81,6 @@ class RDN(nn.Module):
         self.out_dim = self.G0
 
     def forward(self, x):
-        
-
         
         f__1 = self.SFENet1(x)
         x  = self.SFENet2(f__1)

@@ -58,10 +58,10 @@ class ImplicitDecoder(nn.Module):
         # print(x.shape,H_in, W_in,D_in,ratio.shape)
         return self.step(x)
 
-class DMRI_SR(nn.Module):
+class DMRI_RDN(nn.Module):
     def __init__(self,inch = 7,growth = 16):
         super().__init__()
-        self.encoder = make_rdn(inchannel=inch,growth = growth)
+        self.encoder = make_rdn(in_chans=inch,growth = growth)
         self.decoder = ImplicitDecoder(in_channels= growth)
     
     def set_scale(self, scale):
@@ -80,6 +80,7 @@ class DMRI_SR(nn.Module):
         feat = self.encoder(inp)
         # print(feat.shape)
         # latent = self.latent_layer(feat)
+        
         pred = self.decoder(feat,size)
         
         return pred

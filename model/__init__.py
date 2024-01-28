@@ -6,16 +6,20 @@ import torch.nn as nn
 class Model(nn.Module):
     def __init__(self, args):
         super(Model, self).__init__()
-        print('Making model...')
+        print('Making model... here')
         self.precision = args.precision
         self.cpu = args.cpu
         self.device = torch.device('cpu' if args.cpu else 'cuda')
         self.save_models = args.save_models
 
-        if args.model == 'dmri_arb':
+        if args.model == 'dmri_rdn':
             module = import_module('model.' + args.model.lower())
-            self.model = module.DMRI_SR(growth = args.growth).to(self.device)
+            self.model = module.DMRI_RDN(growth = args.growth).to(self.device)
             self.model.set_scale((1,1,1))
+        if args.model == 'dmri_rcan':
+            module = import_module('model.' + args.model.lower())
+            self.model = module.DMRI_RCAN().to(self.device)
+            
 
         if args.precision == 'half': self.model.half()
         
