@@ -2,6 +2,7 @@ import os
 from importlib import import_module
 import torch
 import torch.nn as nn
+import model.dmri_model as dmri_model
 
 class Model(nn.Module):
     def __init__(self, args):
@@ -13,12 +14,15 @@ class Model(nn.Module):
         self.save_models = args.save_models
 
         if args.model == 'dmri_rdn':
-            module = import_module('model.' + args.model.lower())
-            self.model = module.DMRI_RDN(growth = args.growth).to(self.device)
-            self.model.set_scale((1,1,1))
+            if args.model_type == '2d':    
+                self.model = dmri_model.DMRI_RDN_2d(growth=args.growth).to(self.device)
+            else:
+                self.model = dmri_model.DMRI_RDN_3d(growth=args.growth).to(self.device)
         if args.model == 'dmri_rcan':
-            module = import_module('model.' + args.model.lower())
-            self.model = module.DMRI_RCAN().to(self.device)
+            if args.model_type == '2d':    
+                self.model = dmri_model.DMRI_RCAN_2d(int_chans=args.growth).to(self.device)
+            else:
+                self.model = dmri_model.DMRI_RCAN_3d(int_chans=args.growth).to(self.device)
             
 
         if args.precision == 'half': self.model.half()

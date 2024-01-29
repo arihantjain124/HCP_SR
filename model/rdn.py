@@ -1,7 +1,6 @@
 # Residual Dense Network for Image Super-Resolution
 # https://arxiv.org/abs/1802.08797
 
-from model import common
 from argparse import Namespace
 
 import torch
@@ -53,12 +52,15 @@ class RDB(nn.Module):
 class RDN(nn.Module):
     def __init__(self, args):
         super(RDN, self).__init__()
+        self.args = args
         self.G0 = args.G0
         kSize = args.RDNkSize
 
         # number of RDB blocks, conv layers, out channels
         self.D, C, G = {
-            'C': (5, 10, 64),
+            'A': (20, 6, 32),
+            'B': (16, 8, 64),
+            'C': (5, 8, 32),
         }[args.RDNconfig]
 
         # Shallow feature extraction net
@@ -94,4 +96,3 @@ class RDN(nn.Module):
         x += f__1
 
         return x
-        # return self.UPNet(x)

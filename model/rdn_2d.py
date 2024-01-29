@@ -8,6 +8,15 @@ import torch
 import torch.nn as nn
 
 
+def make_rdn(in_chans=7, RDNkSize=3, growth = 16, RDNconfig='C'):
+    args = Namespace()
+    args.G0 = growth
+    args.RDNkSize = RDNkSize
+    args.RDNconfig = RDNconfig
+
+    args.n_colors = in_chans
+    return RDN(args)
+
 class RDB_Conv(nn.Module):
     def __init__(self, inChannels, growRate, kSize=3):
         super(RDB_Conv, self).__init__()
@@ -51,7 +60,7 @@ class RDN(nn.Module):
         self.D, C, G = {
             'A': (20, 6, 32),
             'B': (16, 8, 64),
-            'C': (5, 10, 64),
+            'C': (5, 8, 32),
         }[args.RDNconfig]
 
         # Shallow feature extraction net
@@ -85,19 +94,4 @@ class RDN(nn.Module):
         x = self.GFF(torch.cat(RDBs_out,1))
         x += f__1
 
-        if self.args.no_upsampling:
-            return x
-        else:
-            return self.UPNet(x)    
-
-def make_rdn(G0=64, RDNkSize=3, RDNconfig='C',
-             no_upsampling=True):
-    args = Namespace()
-    args.G0 = G0
-    args.RDNkSize = RDNkSize
-    args.RDNconfig = RDNconfig
-
-    args.no_upsampling = no_upsampling
-
-    args.n_colors = 7
-    return RDN(args)
+        return x
