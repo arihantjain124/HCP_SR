@@ -5,7 +5,7 @@ parser.add_argument("--block_size", type=tuple, default=(32,32,8),
                     help="Block Size")
 parser.add_argument("--var_blk_size", type=bool, default=False,
                     help="Block Size")
-parser.add_argument("--start_stable", type=bool, default=False,
+parser.add_argument("--start_var", type=bool, default=False,
                     help="Block Size")
 parser.add_argument("--epochs", type=int, default=40,
                     help="Epochs")
@@ -15,7 +15,7 @@ parser.add_argument("--batch_size", type=int , default= 16,
                     help="Batch_size")
 parser.add_argument("--test_batch_size", type=int , default= 8,
                     help="Batch_size")
-parser.add_argument("--sort", type=bool,
+parser.add_argument("--sort", type=bool,default=True,
                     help="Sort Subject Ids")
 parser.add_argument("--debug", type=bool,
                     help="Print additional input")
@@ -29,13 +29,7 @@ parser.add_argument("--enable_thres", type=bool, default=True,
 #                     help="threshold")
 parser.add_argument("--thres", type=float, default=0.3,
                     help="threshold for blk emptiness")
-parser.add_argument("--offset", type=int, default=3,
-                    help="epoch with scale (1,1,1)")
-# parser.add_argument("--gap", type=int, default=20,
-#                     help="number of epochs of gap between each scale change")
 
-parser.add_argument("--growth", type=int, default=32,
-                    help="epoch with scale (1,1,1)")
 parser.add_argument("--no_vols", type=int, default=20,
                     help="Number of Volumes to load")
 parser.add_argument("--test_vols", type=int, default=20,
@@ -43,15 +37,15 @@ parser.add_argument("--test_vols", type=int, default=20,
 
 
 # Optimization specifications
-parser.add_argument('--lr', type=float, default=0.002,
+parser.add_argument('--lr', type=float, default=0.0005,
                     help='learning rate')
 parser.add_argument('--max_lr', type=float, default=0.01,
                     help='learning rate')
-parser.add_argument('--lr_decay', type=int, default=15,
+parser.add_argument('--lr_decay', type=int, default=30,
                     help='learning rate decay per N epochs')
 parser.add_argument('--decay_type', type=str, default='step',
                     help='learning rate decay type')
-parser.add_argument('--gamma', type=float, default=0.7,
+parser.add_argument('--gamma', type=float, default=0.8,
                     help='learning rate decay factor for step decay')
 parser.add_argument('--optimizer', default='ADAM',
                     choices=('SGD', 'ADAM', 'RMSprop'),
@@ -120,6 +114,10 @@ parser.add_argument('--pin_mem', action='store_true',
 # Model specifications
 parser.add_argument('--model', default='dmri_rdn',
                     help='model name')
+parser.add_argument("--growth", type=int, default=32,
+                    help="epoch with scale (1,1,1)")
+parser.add_argument('--model_type', default='3d',
+                    help='model name')
 parser.add_argument('--act', type=str, default='relu',
                     help='activation function')
 parser.add_argument('--pre_train', type=str, default= 'None',
@@ -144,5 +142,5 @@ args.dir = "/storage"
 args.sort = True
 args.cuda = True
 args.scale = (1,1,1)
-args.offset = 3
+args.offset = 4
 args.stable_epoch = 1

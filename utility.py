@@ -228,8 +228,11 @@ def plot_train_pred(lr,hr,pred,logger,iter,epoch):
     lr,hr,pred = align(lr,hr,pred)
     
     for i in range(7):    
-        ax[0][i].imshow(lr[:,:,0,i])
-    
+        if(len(lr.shape) == 4):
+            ax[0][i].imshow(lr[:,:,0,i])
+        else:
+            ax[0][i].imshow(lr[:,:,i])
+            
     ax[1][0].set_title("pred_adc")
     ax[1][1].set_title("pred_fa")
     ax[1][2].set_title("pred_rgb")
@@ -237,12 +240,21 @@ def plot_train_pred(lr,hr,pred,logger,iter,epoch):
     ax[1][4].set_title("hr_fa")
     ax[1][5].set_title("hr_rgb")
     
-    ax[1][0].imshow(pred[:,:,0,0])
-    ax[1][1].imshow(pred[:,:,0,1])
-    ax[1][2].imshow(pred[:,:,0,2:])
-    ax[1][3].imshow(hr[:,:,0,0])
-    ax[1][4].imshow(hr[:,:,0,1])
-    ax[1][5].imshow(hr[:,:,0,2:])
+    if(len(lr.shape) == 4):
+        ax[1][0].imshow(pred[:,:,0,0])
+        ax[1][1].imshow(pred[:,:,0,1])
+        ax[1][2].imshow(pred[:,:,0,2:])
+        ax[1][3].imshow(hr[:,:,0,0])
+        ax[1][4].imshow(hr[:,:,0,1])
+        ax[1][5].imshow(hr[:,:,0,2:])
+    else:
+        ax[1][0].imshow(pred[:,:,0])
+        ax[1][1].imshow(pred[:,:,1])
+        ax[1][2].imshow(pred[:,:,2:])
+        ax[1][3].imshow(hr[:,:,0])
+        ax[1][4].imshow(hr[:,:,1])
+        ax[1][5].imshow(hr[:,:,2:])
+    
     
     logger.add_figure("Training",fig,global_step = (epoch*10000)+iter)
 
@@ -274,22 +286,41 @@ def logger_sampling(hr,pred,lr,scale,logger,iter,epoch,hfen):
     
     lr,hr,pred = align(lr,hr,pred)
     
-    ax[0][0].imshow(lr[:,:,0,0])
-    ax[0][1].imshow(hr[:,:,0,0])
-    ax[0][2].imshow(pred[:,:,0,0])
-    ax[0][3].imshow((hr-pred)[:,:,0,0])
+    if(len(lr.shape) == 4):
+        ax[0][0].imshow(lr[:,:,0,0])
+        ax[0][1].imshow(hr[:,:,0,0])
+        ax[0][2].imshow(pred[:,:,0,0])
+        ax[0][3].imshow((hr-pred)[:,:,0,0])
 
 
-    ax[1][0].imshow(lr[:,:,0,1])
-    ax[1][1].imshow(hr[:,:,0,1])
-    ax[1][2].imshow(pred[:,:,0,1])
-    ax[1][3].imshow((hr-pred)[:,:,0,1])
-    
-    ax[2][0].imshow(lr[:,:,0,2:])
-    ax[2][1].imshow(hr[:,:,0,2:])
-    ax[2][2].imshow(pred[:,:,0,2:])
-    diff = np.clip((hr-pred),0,1)
-    ax[2][3].imshow(diff[:,:,0,2:])
+        ax[1][0].imshow(lr[:,:,0,1])
+        ax[1][1].imshow(hr[:,:,0,1])
+        ax[1][2].imshow(pred[:,:,0,1])
+        ax[1][3].imshow((hr-pred)[:,:,0,1])
+        
+        ax[2][0].imshow(lr[:,:,0,2:])
+        ax[2][1].imshow(hr[:,:,0,2:])
+        ax[2][2].imshow(pred[:,:,0,2:])
+        diff = np.clip((hr-pred),0,1)
+        ax[2][3].imshow(diff[:,:,0,2:])
+    else:
+        
+        ax[0][0].imshow(lr[:,:,0])
+        ax[0][1].imshow(hr[:,:,0])
+        ax[0][2].imshow(pred[:,:,0])
+        ax[0][3].imshow((hr-pred)[:,:,0])
+
+
+        ax[1][0].imshow(lr[:,:,1])
+        ax[1][1].imshow(hr[:,:,1])
+        ax[1][2].imshow(pred[:,:,1])
+        ax[1][3].imshow((hr-pred)[:,:,1])
+        
+        ax[2][0].imshow(lr[:,:,2:])
+        ax[2][1].imshow(hr[:,:,2:])
+        ax[2][2].imshow(pred[:,:,2:])
+        diff = np.clip((hr-pred),0,1)
+        ax[2][3].imshow(diff[:,:,2:])
     # fig.colorbar()
     logger.add_figure("Testing",fig,global_step = (epoch*10000)+iter)
 

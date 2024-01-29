@@ -29,7 +29,6 @@ class Trainer():
         self.var_blk_size = args.var_blk_size
         self.batch_size = args.batch_size
         self.test_batch_size = args.test_batch_size
-        self.start_stable = args.start_stable
         print(self.batch_size)
         self.desc_blk_size = [(32,32,8),(16,16,4)]
         if(self.var_blk_size):
@@ -80,14 +79,17 @@ class Trainer():
             else:
                 
                 self.optimizer.zero_grad()
-                
-                lr_tensor = torch.permute(lr_tensor, (0,4,1,2,3))
-                
+                if(len(lr_tensor.shape) == 5):
+                    lr_tensor = torch.permute(lr_tensor, (0,4,1,2,3))
+                else:
+                    lr_tensor = torch.permute(lr_tensor, (0,3,1,2))
                 # inference
                 pred = self.model.forward(lr_tensor,curr_scale)
                 
-                pred = torch.permute(pred, (0,2,3,4,1)).float()
-
+                if(len(lr_tensor.shape) == 5):
+                    pred = torch.permute(pred, (0,2,3,4,1)).float()
+                else:
+                    pred = torch.permute(pred, (0,2,3,1)).float()
                 # loss function
                 loss = self.loss(pred,hr_tensor)
                 
@@ -112,7 +114,10 @@ class Trainer():
             
                 if (np.random.randint(2) == 1):
                 ## plotting                
-                    lr_tensor = torch.permute(lr_tensor, (0,2,3,4,1)).float()
+                    if(len(lr_tensor.shape) == 5):
+                        lr_tensor = torch.permute(lr_tensor, (0,2,3,4,1)).float()
+                    else:
+                        lr_tensor = torch.permute(lr_tensor, (0,2,3,1)).float()
                     utility.plot_train_pred(lr_tensor,hr_tensor,pred,self.logger,self.iter,self.curr_epoch)
                     self.iter +=1
         
@@ -164,12 +169,18 @@ class Trainer():
                 out_tensor = torch.cat((out_tensor,otensor)).to('cuda')
                 continue
             elif(lr_tensor.shape[0]>1):
-                # print(lr_tensor.shape)
-                lr_tensor = torch.permute(lr_tensor, (0,4,1,2,3))
+                
+                if(len(lr_tensor.shape) == 5):
+                    lr_tensor = torch.permute(lr_tensor, (0,4,1,2,3))
+                else:
+                    lr_tensor = torch.permute(lr_tensor, (0,3,1,2))
                         
                 with torch.no_grad():
                     pred = self.model.forward(lr_tensor,curr_scale)
-                    pred = torch.permute(pred, (0,2,3,4,1)).float()
+                    if(len(lr_tensor.shape) == 5):
+                        pred = torch.permute(pred, (0,2,3,4,1)).float()
+                    else:
+                        pred = torch.permute(pred, (0,2,3,1)).float()
                 
                 
                 if(self.logger != None and np.random.randint(2) == 1):
