@@ -98,16 +98,17 @@ def interpolate(data,size):
     
 
 class hcp_data(torch.utils.data.Dataset):
-    def __init__(self, opt,ids,test=False):
+    def __init__(self, opt,ids,test=False,start_var = False):
         super(hcp_data).__init__()
         self.blk_size = opt.block_size
-        self.var_blk_size = opt.var_blk_size
+        self.var_blk_size = start_var
         self.cnt = 0
         self.thres = opt.thres
         self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
         self.ids = ids
         self.debug = opt.debug
         self.enable_thres = opt.enable_thres
+        self.model_type = opt.model_type
         self.transform = tio.transforms.RescaleIntensity(masking_method=lambda x: x > 0)
         
         self.scale_const = None
@@ -266,13 +267,15 @@ class hcp_data(torch.utils.data.Dataset):
             x = np.around(np.random.uniform(1.2,2),decimals=1)
             asy = 0.1
             curr_scale = np.around(np.random.uniform(x-asy,x+asy,3),decimals=1)
-            
-            curr_blk_size = [np.random.randint(1,4)*2,np.random.randint(10,25)*2,np.random.randint(10,25)*2]
+            if(self.model_type == '2d'):
+                curr_blk_size = [1,np.random.randint(20,50),np.random.randint(20,50)]
+            else:    
+                curr_blk_size = [np.random.randint(2,8),np.random.randint(20,50),np.random.randint(20,50)]
             
             curr_blk_size = list(set(permutations(curr_blk_size)))[np.random.randint(0,3)]
             
             if(self.debug):
-                print(curr_blk_size)
+                print(idx,curr_blk_size)
             
         else:
             if self.scale_const is None:
@@ -287,8 +290,6 @@ class hcp_data(torch.utils.data.Dataset):
             self.cnt+=1
             if(self.cnt>2):
                 self.cnt = 0
-            
-
         
         if(min(curr_blk_size) == 1):
             curr_scale[np.where(np.asarray(curr_blk_size) == 1)[0][0]] = 1
@@ -300,9 +301,6 @@ class hcp_data(torch.utils.data.Dataset):
         adc = interpolate(torch.from_numpy(loaded_gt[idx]['ADC']),size)
         fa = interpolate(torch.from_numpy(loaded_gt[idx]['FA']),size)
         rgb = interpolate(torch.from_numpy(loaded_gt[idx]['color_FA']),size)
-        
-        # vol = self.norm(vol)
-        # adc,fa,rgb = self.norm(adc),self.norm(fa),self.norm(rgb)
 
         curr_blk = self.blk_points_pair(vol,vol_hr,blk_size=curr_blk_size,scale=curr_scale)
         

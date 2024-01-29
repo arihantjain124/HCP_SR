@@ -19,7 +19,10 @@ class Data:
         self.training_dataset = self.dataset_hcp.hcp_data(args,self.ids[:self.train_vols])
         self.training_data = DataLoader(dataset=self.training_dataset, batch_size=1, drop_last=True, pin_memory=self.pin_mem,collate_fn=self.resize)
         
-        self.testing_dataset = self.dataset_hcp.hcp_data(args,self.ids[self.train_vols:self.train_vols+args.test_vols],test = True)
+        if(args.model == 'dmri_rdn'):
+            self.testing_dataset = self.dataset_hcp.hcp_data(args,self.ids[self.train_vols:self.train_vols+args.test_vols],test = True,start_var = True)
+        else:
+            self.testing_dataset = self.dataset_hcp.hcp_data(args,self.ids[self.train_vols:self.train_vols+args.test_vols],test = True)
         self.testing_data = DataLoader(dataset=self.testing_dataset, batch_size=1,pin_memory=self.pin_mem,drop_last=True,collate_fn=self.resize_test)
         
         if(args.debug):
