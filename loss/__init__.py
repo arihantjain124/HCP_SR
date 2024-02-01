@@ -11,6 +11,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class Loss(nn.modules.loss._Loss):
     def __init__(self, args, ckp):
         super(Loss, self).__init__()
@@ -24,18 +25,8 @@ class Loss(nn.modules.loss._Loss):
                 loss_function = nn.MSELoss()
             elif loss_type == 'L1':
                 loss_function = nn.L1Loss()
-            
-            # elif loss_type.find('GAN') >= 0:
-            #     module = import_module('loss.adversarial')
-            #     loss_function = getattr(module, 'Adversarial')(
-            #         args,
-            #         loss_type
-            #     )
-            # elif loss_type =="KLoss":
-            #     module = import_module('loss.kloss')
-            #     loss_function = getattr(module, 'KLoss')(
-            #         args
-            #     )
+            elif loss_type == 'TV':
+                loss_function = nn.MSELoss()
             self.loss.append({
                 'type': loss_type,
                 'weight': float(weight),
@@ -58,7 +49,7 @@ class Loss(nn.modules.loss._Loss):
         
         if args.load != '.': self.load(ckp.dir, cpu=args.cpu)
 
-    def forward(self, pred,hr):
+    def forward(self, pred,hr,pred_tv,hr_tv):
         losses = []
         for i, l in enumerate(self.loss):
             if l['function'] is not None:
@@ -72,11 +63,11 @@ class Loss(nn.modules.loss._Loss):
                     effective_loss = l['weight'] * loss
                     losses.append(effective_loss)
                     self.log[-1, i] += effective_loss.item()
-                # elif l['type'] == 'KLoss':
-                #     loss = l['function'](sr, FSsr, hr, shape1, shape2)
-                #     effective_loss = l['weight'] * loss
-                #     losses.append(effective_loss)
-                #     self.log[-1, i] += effective_loss.item()
+                elif l['type'] == 'TV':
+                    loss = 1*l['function'](pred_tv,hr_tv)
+                    effective_loss = l['weight'] * loss
+                    losses.append(effective_loss)
+                    self.log[-1, i] += effective_loss.item()
 
         loss_sum = sum(losses)
         if len(self.loss) > 1:
