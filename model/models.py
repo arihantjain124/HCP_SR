@@ -152,13 +152,15 @@ class ConvBlock(nn.Module):
         return f'ConvBlock(in_chans={self.in_chans}, out_chans={self.out_chans}, ' \
             f'drop_prob={self.drop_prob})'
             
+            
+            
 class ConvBlock_3d(nn.Module):
     """
     A Convolutional Block that consists of two convolution layers each followed by
     instance normalization, relu activation and dropout.
     """
 
-    def __init__(self, in_chans, out_chans, drop_prob,attention,attention_type,reduction): # cSE,scSE
+    def __init__(self, in_chans, out_chans, drop_prob = 0 ,attention = True,attention_type = 'cSE',reduction = 16): # cSE,scSE
         """
         Args:
             in_chans (int): Number of channels in the input.
@@ -176,11 +178,7 @@ class ConvBlock_3d(nn.Module):
         self.layers = nn.Sequential(
             nn.Conv3d(in_chans, out_chans, kernel_size=3, padding=1),
             nn.InstanceNorm3d(out_chans),
-            nn.ReLU(),
-            nn.Dropout3d(drop_prob),
-            nn.Conv3d(out_chans, out_chans, kernel_size=3, padding=1),
-            nn.InstanceNorm3d(out_chans),
-            nn.ReLU(),
+            nn.LeakyReLU(),
             nn.Dropout3d(drop_prob)
         )
         
@@ -198,12 +196,13 @@ class ConvBlock_3d(nn.Module):
             (torch.Tensor): Output tensor of shape [batch_size, self.out_chans, height, width]
 
         """
+        
         out = self.layers(input)
         
         if self.attention:
             out = self.attention_layer(out)
         
-        return out
+        return torch.cat((input, out), 1)
 
     def __repr__(self):
         return f'ConvBlock(in_chans={self.in_chans}, out_chans={self.out_chans}, ' \

@@ -23,7 +23,8 @@ class Model(nn.Module):
                 self.model = dmri_model.DMRI_RCAN_2d(int_chans=args.growth).to(self.device)
             else:
                 self.model = dmri_model.DMRI_RCAN_3d(int_chans=args.growth).to(self.device)
-            
+        else:
+            self.model = dmri_model.DMRI_arb(growth=args.growth).to(self.device)
 
         if args.precision == 'half': self.model.half()
         

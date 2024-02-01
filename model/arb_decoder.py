@@ -29,7 +29,7 @@ class ImplicitDecoder_3d(nn.Module):
         
         for hidden_dim in hidden_dims:
             self.K.append(nn.Sequential(nn.Conv3d(last_dim_K, hidden_dim, 1),
-                                        nn.ReLU(),
+                                        nn.LeakyReLU(),
                                         ResBlock_3d(channels = hidden_dim, nConvLayers = 4)
                                         ))    
             self.Q.append(nn.Sequential(nn.Conv3d(last_dim_Q, hidden_dim, 1),
@@ -40,11 +40,11 @@ class ImplicitDecoder_3d(nn.Module):
         self.last_layer = nn.Conv3d(hidden_dims[-1], out_chans, 1)
         
         self.in_branch = nn.Sequential(nn.Conv3d(in_channels * 27, hidden_dims[-2], 1),
-                            nn.ReLU(),
+                            nn.LeakyReLU(),
                             nn.Conv3d(hidden_dims[-2],hidden_dims[-1], 1),
-                            nn.ReLU(),
+                            nn.LeakyReLU(),
                             nn.Conv3d(hidden_dims[-1],out_chans, 1),
-                            nn.ReLU())
+                            nn.LeakyReLU())
         
     def _make_pos_encoding(self, x, size): 
         B, C, H, W, D = x.shape
@@ -96,7 +96,7 @@ class ImplicitDecoder_3d(nn.Module):
         
         # print(syn_inp.shape,x.shape)
         pred = self.step(x, syn_inp)
-        return pred
+        return pred,syn_inp
     
 class ImplicitDecoder_2d(nn.Module):
     def __init__(self, in_channels=64, hidden_dims=[64, 64, 64, 64, 64],out_chans= 5):

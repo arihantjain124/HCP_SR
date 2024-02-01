@@ -6,16 +6,16 @@ from argparse import Namespace
 import torch
 import torch.nn as nn
 import numpy as np
+from model.models import ConvBlock_3d
 
-
-def make_rdn(in_chans=7, RDNkSize=3, growth = 16, RDNconfig='C'):
+def make_rdn(in_chans=7, RDNkSize=3, growth = 16, RDNconfig='C',enc = 'rdb'):
     args = Namespace()
     args.G0 = growth
     args.RDNkSize = RDNkSize
     args.RDNconfig = RDNconfig
 
     args.n_colors = in_chans
-    return RDN(args)
+    return RDN(args,enc)
 
 class RDB_Conv(nn.Module):
     def __init__(self, inChannels, growRate, kSize=3):
@@ -24,7 +24,7 @@ class RDB_Conv(nn.Module):
         G  = growRate
         self.conv = nn.Sequential(*[
             nn.Conv3d(Cin, G, kSize, padding=(kSize-1)//2, stride=1),
-            nn.ReLU()
+            nn.LeakyReLU()
         ])
 
     def forward(self, x):
@@ -32,7 +32,7 @@ class RDB_Conv(nn.Module):
         return torch.cat((x, out), 1)
 
 class RDB(nn.Module):
-    def __init__(self, growRate0, growRate, nConvLayers, kSize=3):
+    def __init__(self, growRate0, growRate, nConvLayers,encoder, kSize=3):
         super(RDB, self).__init__()
         G0 = growRate0
         G  = growRate
@@ -40,7 +40,11 @@ class RDB(nn.Module):
         
         convs = []
         for c in range(C):
-            convs.append(RDB_Conv(G0 + c*G, G))
+            if(encoder == 'rdb'):
+                convs.append(RDB_Conv(G0 + c*G, G))
+            else:
+                convs.append(ConvBlock_3d(G0 + c*G, G))
+        
         self.convs = nn.Sequential(*convs)
         
         # Local Feature Fusion
@@ -50,7 +54,7 @@ class RDB(nn.Module):
         return self.LFF(self.convs(x)) + x
 
 class RDN(nn.Module):
-    def __init__(self, args):
+    def __init__(self, args,encoder = 'rdn'):
         super(RDN, self).__init__()
         self.args = args
         self.G0 = args.G0
@@ -58,9 +62,9 @@ class RDN(nn.Module):
 
         # number of RDB blocks, conv layers, out channels
         self.D, C, G = {
-            'A': (20, 6, 32),
-            'B': (16, 8, 64),
-            'C': (5, 8, 32),
+            'A': (3, 4, 16),
+            'B': (4, 6, 32),
+            'C': (5, 8, 64),
         }[args.RDNconfig]
 
         # Shallow feature extraction net
@@ -71,7 +75,7 @@ class RDN(nn.Module):
         self.RDBs = nn.ModuleList()
         for i in range(self.D):
             self.RDBs.append(
-                RDB(growRate0 = self.G0 , growRate = G, nConvLayers = C)
+                RDB(growRate0 = self.G0 , growRate = G, nConvLayers = C,encoder = encoder)
             )
 
         # Global Feature Fusion

@@ -13,6 +13,9 @@ import h5py
 import os
 import torchio as tio
 from itertools import permutations 
+
+from dipy.io.gradients import read_bvals_bvecs
+from dipy.core.gradients import gradient_table
 np.seterr(all="ignore")
 
 loaded = {}
@@ -26,10 +29,12 @@ def load_path(base_dir,ids):
     path_3t = {}
     for i in base_dir_7t:
         path_7t[i[-6:]] = {"h5" : i + "/" + i[-6:] + ".h5"
-                        , "GT" : i + "/" + i[-6:] + "_GT.h5"}
+                        , "GT" : i + "/" + i[-6:] + "_GT.h5",
+                        "bvals" : i + "/T1w/Diffusion_7T/bvals" , "bvecs" : i + "/T1w/Diffusion_7T/bvecs"}
     for i in base_dir_3t:
         path_3t[i[-6:]] = {"h5" : i + "/" + i[-6:] + ".h5"
-                        , "GT" : i + "/" + i[-6:] + "_GT.h5"}
+                        , "GT" : i + "/" + i[-6:] + "_GT.h5",
+                        "bvals" : i + "/T1w/Diffusion/bvals" , "bvecs" : i + "/T1w/Diffusion/bvecs"}
     path = {'3T': path_3t, "7T":  path_7t}
     p = list(path_7t.keys())
     q = list(path_3t.keys())
@@ -49,11 +54,14 @@ def load_data(base_dir,ids):
         
         name = path['3T'][i]['GT']
         res = h5py.File(name, 'r')
+        
         loaded[i] = {'vol0':res_vol.get('volumes0')[:]
                             ,'mask':res_vol.get('mask')[:],
                     'ADC':res.get('ADC')[:],
                     'FA':res.get('FA')[:] ,
-                    'color_FA':res.get('color_FA')[:]}
+                    'color_FA':res.get('color_FA')[:],
+                    'bvals':res_vol.get('bvals0')[:],
+                    'bvecs':res_vol.get('bvecs0')[:]}
         
         name = path['7T'][i]['GT']
         
@@ -81,6 +89,9 @@ def load_data(base_dir,ids):
         act_ids.append(i)
     return act_ids
 
+
+
+
 def interpolate(data,size):
 #     print(data.shape)
     if(len(data.shape)==3):
@@ -95,8 +106,8 @@ def interpolate(data,size):
     if(len(data.shape)==3):
         interpolated = torch.squeeze(interpolated)
     return torch.squeeze(interpolated)
-    
 
+    
 class hcp_data(torch.utils.data.Dataset):
     def __init__(self, opt,ids,test=False,start_var = False):
         super(hcp_data).__init__()
@@ -129,16 +140,30 @@ class hcp_data(torch.utils.data.Dataset):
         blk_idx = np.searchsorted(self.blk_indx, indx)
         vol_idx = self.ids[blk_idx]
         blk_idx = indx - self.blk_indx[blk_idx]
+        inp,hr,scale,gtab = self.collate(vol_idx,blk_idx)
         
-        # if(self.debug):
-        #     return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...],self.scale[vol_idx],self.blks_ret_lr[vol_idx][blk_idx,...],self.blks_ret_hr[vol_idx][blk_idx,...],vol_idx
+        if(self.debug):
+            return inp,hr,scale,gtab,self.blks_ret_lr[vol_idx][blk_idx,...],self.blks_ret_hr[vol_idx][blk_idx,...],vol_idx
         
         if(self.test):    
-            return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...],self.scale[vol_idx],self.loaded_adc_lr[vol_idx][blk_idx,...],self.loaded_fa_lr[vol_idx][blk_idx,...],self.loaded_rgb_lr[vol_idx][blk_idx,...]
+            return inp,hr,scale,gtab,self.loaded_adc_lr[vol_idx][blk_idx,...],self.loaded_fa_lr[vol_idx][blk_idx,...],self.loaded_rgb_lr[vol_idx][blk_idx,...]
         
-        return self.loaded_blk[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...],self.scale[vol_idx]
+        return inp,hr,scale,gtab
         
 
+    def collate(self,vol_idx,blk_idx):
+        
+        data = self.loaded_blk[vol_idx][blk_idx,...],self.loaded_adc[vol_idx][blk_idx,...],self.loaded_fa[vol_idx][blk_idx,...],self.loaded_rgb[vol_idx][blk_idx,...]
+        
+        inp =torch.from_numpy(np.stack(data[0]))
+        if (self.model_type == '2d'):
+            dims = 2
+        else:
+            dims = 3
+        hr = np.concatenate([np.expand_dims(data[1],axis = dims),np.expand_dims(data[2],axis = dims),data[3]], axis = dims)
+        
+        return inp,hr,self.scale[vol_idx],(loaded[vol_idx]['bvals'],loaded[vol_idx]['bvecs'])
+        
     def preload_data(self,blk_size = None,scale = None,var = None,test = None):
         
         
@@ -303,8 +328,8 @@ class hcp_data(torch.utils.data.Dataset):
         rgb = interpolate(torch.from_numpy(loaded_gt[idx]['color_FA']),size)
 
         curr_blk = self.blk_points_pair(vol,vol_hr,blk_size=curr_blk_size,scale=curr_scale)
-        
-        curr_scale = curr_scale[curr_scale>1]
+        if(not self.debug):
+            curr_scale = curr_scale[curr_scale>1]
         
         self.blk_indx.append(curr_blk[2])
         
