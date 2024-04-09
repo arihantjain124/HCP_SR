@@ -27,13 +27,6 @@ class Trainer():
         self.scheduler = utility.make_scheduler(args, self.optimizer)
         self.curr_epoch = 0
         self.var_blk_size = args.var_blk_size
-        self.batch_size = args.batch_size
-        self.test_batch_size = args.test_batch_size
-        print(self.batch_size)
-        self.desc_blk_size = [(32,32,8),(16,16,4)]
-        if(self.var_blk_size):
-            self.ord = 0
-            self.last_5 = []
 
         if self.args.load != '.':
             self.optimizer.load_state_dict(
@@ -58,68 +51,67 @@ class Trainer():
         
         self.iter = 0
         self.optimizer.zero_grad()
+                
+        num_samples = int(len(self.loader.training_data) * 0.1)
+        samples = random.sample(range(len(self.loader.training_data)), num_samples)
         
-        lr_tensor = None
-        hr_tensor = None
-        curr_scale = None
-        for batch, (lr, hr,scale) in enumerate(self.loader.training_data):
+        
+        for batch, (lr,hr,scale,tv) in enumerate(self.loader.training_data):
             pbar.update(1)
-            ltensor = lr.to('cuda').float()  # ranges from [0, 1]
-            htensor = hr.to('cuda').float()  # ranges from [0, 1]
             
-            if(lr_tensor is None):
-                lr_tensor = ltensor.to('cuda')
-                hr_tensor = htensor.to('cuda')
-                curr_scale = scale
-                continue
-            elif(lr_tensor.shape[1:] == ltensor.shape[1:] and lr_tensor.shape[0]<self.batch_size and (curr_scale == scale).all()):
-                lr_tensor = torch.cat((lr_tensor,ltensor)).to('cuda')
-                hr_tensor = torch.cat((hr_tensor,htensor)).to('cuda')
-                continue
+            lr_tensor = lr.squeeze().to('cuda').float()  # ranges from [0, 1]
+            hr_tensor = hr.squeeze().to('cuda').float()  # ranges from [0, 1]
+            tv_tensor = tv.squeeze().to('cuda').float()  # ranges from [0, 1]
+            # print(lr_tensor.shape,hr_tensor.shape,scale)
+            scale = np.asarray(scale[0,:])
+            self.optimizer.zero_grad()
+            
+            
+            if(len(lr_tensor.shape) == 5):
+                lr_tensor = torch.permute(lr_tensor, (0,4,1,2,3))
             else:
-                
-                self.optimizer.zero_grad()
-                if(len(lr_tensor.shape) == 5):
-                    lr_tensor = torch.permute(lr_tensor, (0,4,1,2,3))
-                else:
-                    lr_tensor = torch.permute(lr_tensor, (0,3,1,2))
-                # inference
-                pred = self.model.forward(lr_tensor,curr_scale)
-                
-                if(len(lr_tensor.shape) == 5):
-                    pred = torch.permute(pred, (0,2,3,4,1)).float()
-                else:
-                    pred = torch.permute(pred, (0,2,3,1)).float()
-                # loss function
-                loss = self.loss(pred,hr_tensor)
-                
-                
-                # backward
-                if loss.item() < self.args.skip_threshold * self.error_last:
-                    loss.backward()
-                    
-                    if(self.logger != None):
-                        self.logger.add_scalar("Loss",loss.item(),self.cnt)
-                        self.cnt+=1
-                else:
-                    print('Skip this batch {}! (Loss: {})'.format(
-                        batch + 1, loss.item()
-                    ))
-                
-                pbar.set_description(f"{self.loss.display_loss(batch)}")
-                pbar.set_postfix({"scale":scale,"blk_size":list(lr_tensor.shape)})
-                            
-                self.optimizer.step()
+                lr_tensor = torch.permute(lr_tensor, (0,3,1,2))
+            # inference
+            pred,pred_tv = self.model.forward(lr_tensor,scale)
+            
+            if(len(lr_tensor.shape) == 5):
+                pred = torch.permute(pred, (0,2,3,4,1)).float()
+                pred_tv = torch.permute(pred_tv, (0,2,3,4,1)).float()
+            else:
+                pred = torch.permute(pred, (0,2,3,1)).float()
+                pred_tv = torch.permute(pred_tv, (0,2,3,1)).float()
+            # loss function
             
             
-                if (np.random.randint(2) == 1):
-                ## plotting                
-                    if(len(lr_tensor.shape) == 5):
-                        lr_tensor = torch.permute(lr_tensor, (0,2,3,4,1)).float()
-                    else:
-                        lr_tensor = torch.permute(lr_tensor, (0,2,3,1)).float()
-                    utility.plot_train_pred(lr_tensor,hr_tensor,pred,self.logger,self.iter,self.curr_epoch)
-                    self.iter +=1
+            loss = self.loss(pred,hr_tensor,pred_tv,tv_tensor)
+            
+            
+            # backward
+            if loss.item() < self.args.skip_threshold * self.error_last:
+                loss.backward()
+                
+                if(self.logger != None):
+                    self.logger.add_scalar("Loss",loss.item(),self.cnt)
+                    self.cnt+=1
+            else:
+                print('Skip this batch {}! (Loss: {})'.format(
+                    batch + 1, loss.item()
+                ))
+            
+            pbar.set_description(f"{self.loss.display_loss(batch)}")
+            pbar.set_postfix({"scale":scale,"blk_size":list(lr_tensor.shape)})
+                        
+            self.optimizer.step()
+        
+        
+            if (batch in samples):
+            ## plotting                
+                if(len(lr_tensor.shape) == 5):
+                    lr_tensor = torch.permute(lr_tensor, (0,2,3,4,1)).float()
+                else:
+                    lr_tensor = torch.permute(lr_tensor, (0,2,3,1)).float()
+                utility.plot_train_pred(lr_tensor,hr_tensor,pred,self.logger,self.iter,self.curr_epoch)
+                self.iter +=1
         
             lr_tensor = None
             
@@ -138,6 +130,7 @@ class Trainer():
             
         elif (((self.curr_epoch+1)%self.args.offset == 0)):
             self.loader.rebuild(type = "train",train_var = self.var_blk_size)
+            self.loader.rebuild(type = "test",train_var = self.var_blk_size)
             
         self.curr_epoch+=1
 
@@ -149,53 +142,45 @@ class Trainer():
         pbar = tqdm(total = len(self.loader.testing_data))
         
         self.iter = 0
-        lr_tensor = None
+        num_samples = int(len(self.loader.testing_data) * 0.1)
+        samples = random.sample(range(len(self.loader.testing_data)), num_samples)
         
-        for _, (lr, hr,out,scale) in enumerate(self.loader.testing_data, 1):
-            # print(lr_tensor.shape,hr_tensor.shape)
+        for _, (lr, hr,scale,out) in enumerate(self.loader.testing_data, 1):
+            # print(lr.shape,hr.shape)
             pbar.update(1)
-            ltensor = lr.to('cuda').float()  # ranges from [0, 1]
-            htensor = hr.to('cuda').float()  # ranges from [0, 1]
-            otensor = out.to('cuda').float()
-            if(lr_tensor is None):
-                lr_tensor = ltensor.to('cuda')
-                hr_tensor = htensor.to('cuda')
-                out_tensor = otensor.to('cuda')
-                curr_scale = scale
-                continue
-            elif(lr_tensor.shape[1:] == ltensor.shape[1:] and lr_tensor.shape[0]<self.test_batch_size and (curr_scale == scale).all()):
-                lr_tensor = torch.cat((lr_tensor,ltensor)).to('cuda')
-                hr_tensor = torch.cat((hr_tensor,htensor)).to('cuda')
-                out_tensor = torch.cat((out_tensor,otensor)).to('cuda')
-                continue
-            elif(lr_tensor.shape[0]>1):
-                
+            lr_tensor = lr.squeeze().to('cuda').float()  # ranges from [0, 1]
+            hr_tensor = hr.squeeze().to('cuda').float()  # ranges from [0, 1]
+            out_tensor = out.squeeze().to('cuda').float()
+            scale = np.asarray(scale[0,:])
+            if(len(lr_tensor.shape) == 5):
+                lr_tensor = torch.permute(lr_tensor, (0,4,1,2,3))
+                out = torch.permute(out_tensor, (0,4,1,2,3))
+            else:
+                lr_tensor = torch.permute(lr_tensor, (0,3,1,2))
+            # print(lr_tensor.shape,out_tensor.shape,hr_tensor.shape)
+            with torch.no_grad():
+                pred,_ = self.model(lr_tensor,scale)
+                # pred = torch.nn.functional.interpolate(out,hr_tensor.shape[1:-1])
                 if(len(lr_tensor.shape) == 5):
-                    lr_tensor = torch.permute(lr_tensor, (0,4,1,2,3))
+                    pred = torch.permute(pred, (0,2,3,4,1)).float()
                 else:
-                    lr_tensor = torch.permute(lr_tensor, (0,3,1,2))
-                        
-                with torch.no_grad():
-                    pred = self.model.forward(lr_tensor,curr_scale)
-                    if(len(lr_tensor.shape) == 5):
-                        pred = torch.permute(pred, (0,2,3,4,1)).float()
-                    else:
-                        pred = torch.permute(pred, (0,2,3,1)).float()
-                
-                
-                if(self.logger != None and np.random.randint(2) == 1):
-                    # print("fig added")
-                    psnr, hfen = utility.compute_scores(hr_tensor,pred,out_tensor,scale,self.logger,self.iter,mask = True,epoch = self.curr_epoch)
-                    self.iter +=1
-                else:
-                    psnr, hfen = utility.compute_scores(hr_tensor,pred,out_tensor,scale,mask = True)
-                
-                
-                eval_hfen_avg.append(hfen)
-                eval_psnr_avg.append(psnr)
-                pbar.set_postfix({"scale":scale,"blk_size":list(lr_tensor.shape[2:]),"hfen":hfen})
-                torch.cuda.empty_cache()
-                lr_tensor = None
+                    pred = torch.permute(pred, (0,2,3,1)).float()
+            
+            
+            if(self.logger != None and np.random.randint(2) == 1):
+                out = torch.permute(out_tensor, (0,2,3,4,1)).float()
+                # print("fig added")
+                psnr, hfen = utility.compute_scores(hr_tensor,pred,out_tensor,scale,self.logger,self.iter,mask = True,epoch = self.curr_epoch)
+                self.iter +=1
+            else:
+                psnr, hfen = utility.compute_scores(hr_tensor,pred,out_tensor,scale,mask = True)
+            
+            
+            eval_hfen_avg.append(hfen)
+            eval_psnr_avg.append(psnr)
+            pbar.set_postfix({"scale":scale,"blk_size":list(lr_tensor.shape[2:]),"hfen":hfen})
+            torch.cuda.empty_cache()
+            lr_tensor = None
         
         # print(len(eval_hfen_avg))
         
@@ -211,6 +196,7 @@ class Trainer():
             self.logger.add_scalar("PSNR_avg",eval_psnr_avg,self.test_cnt)
             self.test_cnt+=1
         
+        # self.loader.rebuild(type = "test")
         
         if self.psnr_max is None or self.psnr_max < eval_psnr_avg:
             self.psnr_max = eval_psnr_avg

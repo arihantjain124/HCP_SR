@@ -259,16 +259,15 @@ def plot_train_pred(lr,hr,pred,logger,iter,epoch):
     logger.add_figure("Training",fig,global_step = (epoch*10000)+iter)
 
     
-    
-
-
 def logger_sampling(hr,pred,lr,scale,logger,iter,epoch,hfen):
     # print(lr.shape,hr.shape,pred.shape)
     # print(type(pred.get()),pred.shape,type(hr),hr.shape)
     lr = np.clip(lr,0,1)[0,...]
-    hr = np.clip(hr,0,1)[0,...]
     pred = np.clip(pred,0,1)[0,...]
+    hr = np.clip(hr,0,1)[0,...]
+    
     fig, ax = plt.subplots(3,4)
+    # print(lr.shape,hr.shape)
     
     
     fig.suptitle(f'scale: {scale},blk_size: {lr.shape[:3]},HFEN: {hfen}', fontsize=10)

@@ -18,7 +18,7 @@ import data.utils_metrics as utils_met
 import cucim.skimage.metrics as met
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from model import dmri_arb
+from Code.HCP_SR.model import dmri_rdn
 #########################
 # torch.backends.cudnn.benchmark = False
 # torch.backends.cudnn.deterministic = True
@@ -177,7 +177,7 @@ for run_id, (models,lr,batch_size,block_size,test_blk_size) in enumerate(product
     # args.scale = scale
     print("run id:", run_id + 1)
     if models == 'arb':
-        model = dmri_arb.DMRI_SR()
+        model = dmri_rdn.DMRI_SR()
         model.set_scale((1,1,1))
         
     print(f' model name {models} , num_params = {print_network(model)}')

@@ -16,10 +16,10 @@ class Data:
         self.train_vols = args.no_vols
         self.test_vols = args.test_vols
 
-        self.training_dataset = self.dataset_hcp.hcp_data(args,self.ids[:self.train_vols])
+        self.training_dataset = self.dataset_hcp.hcp_data(args,self.ids[:self.train_vols],start_var = args.start_var)
         self.training_data = DataLoader(dataset=self.training_dataset, batch_size=1, drop_last=True,shuffle = True,pin_memory=self.pin_mem)
         
-        if(args.model == 'dmri_rdn'):
+        if(args.model == 'dmri_rdn' or args.model == 'dmri_arb'):
             self.testing_dataset = self.dataset_hcp.hcp_data(args,self.ids[self.train_vols:self.train_vols+args.test_vols],test = True,start_var = True)
         else:
             self.testing_dataset = self.dataset_hcp.hcp_data(args,self.ids[self.train_vols:self.train_vols+args.test_vols],test = True)
@@ -37,7 +37,7 @@ class Data:
             self.training_dataset.preload_data(blk_size = blk_size,var = train_var)
             self.training_data = DataLoader(dataset=self.training_dataset, batch_size=1,drop_last=True,shuffle = True, pin_memory=self.pin_mem)
         if type == "test":
-            self.testing_dataset.preload_data(test=True)
+            self.testing_dataset.preload_data(test=True,var = True)
             self.testing_data = DataLoader(dataset=self.testing_dataset, batch_size=1,drop_last=True,shuffle = True,pin_memory=self.pin_mem)
 
 

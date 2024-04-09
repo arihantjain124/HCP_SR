@@ -178,7 +178,7 @@ class ConvBlock_3d(nn.Module):
         self.layers = nn.Sequential(
             nn.Conv3d(in_chans, out_chans, kernel_size=3, padding=1),
             nn.InstanceNorm3d(out_chans),
-            nn.LeakyReLU(),
+            nn.ReLU(),
             nn.Dropout3d(drop_prob)
         )
         

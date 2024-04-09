@@ -10,22 +10,23 @@ from model.resblock import ResBlock
 import unfoldNd
 from model.models import CSEUnetModel_3d,CSEUnetModel
 from model.arb_decoder import ImplicitDecoder_3d,ImplicitDecoder_2d
-
+import numpy as np
 
 
 class DMRI_arb(nn.Module):
-    def __init__(self,in_chans = 7,int_chans = 32):
+    def __init__(self,in_chans = 7,int_chans = 32,encoder_type = 'rdb',drop_prob = 0):
         super().__init__()
-        self.encoder = make_rdn(in_chans=in_chans,growth = int_chans,enc= 'conv')
+        self.encoder = make_rdn(in_chans=in_chans,growth = int_chans,enc= encoder_type,drop_prob=drop_prob)
+        # print(self.encoder)
         self.decoder = ImplicitDecoder_3d(in_channels= int_chans)
     
     def set_scale(self, scale):
-        self.scale = scale
+        self.scale = np.asarray(scale)
 
     def forward(self, inp):
-        
+        # print(inp.shape)
         B,C,H,W,D = inp.shape
-        
+        # print(self.scale)
         H_hr = round(H*self.scale[0])
         W_hr = round(W*self.scale[1])
         D_hr = round(D*self.scale[2])
@@ -34,9 +35,9 @@ class DMRI_arb(nn.Module):
         
         feat = self.encoder(inp)
         
-        pred = self.decoder(feat,size)
+        pred,tv = self.decoder(feat,size)
         
-        return pred
+        return pred,tv
     
 
 class DMRI_RCAN_3d(nn.Module):

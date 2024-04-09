@@ -8,11 +8,12 @@ import torch.nn as nn
 import numpy as np
 from model.models import ConvBlock_3d
 
-def make_rdn(in_chans=7, RDNkSize=3, growth = 16, RDNconfig='C',enc = 'rdb'):
+def make_rdn(in_chans=7, RDNkSize=3, growth = 16, RDNconfig='C',enc = 'rdb',drop_prob = 0):
     args = Namespace()
     args.G0 = growth
     args.RDNkSize = RDNkSize
     args.RDNconfig = RDNconfig
+    args.drop_prob = drop_prob
 
     args.n_colors = in_chans
     return RDN(args,enc)
@@ -24,7 +25,7 @@ class RDB_Conv(nn.Module):
         G  = growRate
         self.conv = nn.Sequential(*[
             nn.Conv3d(Cin, G, kSize, padding=(kSize-1)//2, stride=1),
-            nn.LeakyReLU()
+            nn.ReLU()
         ])
 
     def forward(self, x):
@@ -32,7 +33,7 @@ class RDB_Conv(nn.Module):
         return torch.cat((x, out), 1)
 
 class RDB(nn.Module):
-    def __init__(self, growRate0, growRate, nConvLayers,encoder, kSize=3):
+    def __init__(self, growRate0, growRate, nConvLayers,encoder,drop_prob = 0, kSize=3):
         super(RDB, self).__init__()
         G0 = growRate0
         G  = growRate
@@ -43,7 +44,7 @@ class RDB(nn.Module):
             if(encoder == 'rdb'):
                 convs.append(RDB_Conv(G0 + c*G, G))
             else:
-                convs.append(ConvBlock_3d(G0 + c*G, G))
+                convs.append(ConvBlock_3d(G0 + c*G, G,drop_prob = drop_prob))
         
         self.convs = nn.Sequential(*convs)
         
@@ -54,7 +55,7 @@ class RDB(nn.Module):
         return self.LFF(self.convs(x)) + x
 
 class RDN(nn.Module):
-    def __init__(self, args,encoder = 'rdn'):
+    def __init__(self, args,encoder = 'rdb'):
         super(RDN, self).__init__()
         self.args = args
         self.G0 = args.G0
@@ -62,9 +63,9 @@ class RDN(nn.Module):
 
         # number of RDB blocks, conv layers, out channels
         self.D, C, G = {
-            'A': (3, 4, 16),
-            'B': (4, 6, 32),
-            'C': (5, 8, 64),
+            'A': (20, 6, 32),
+            'B': (16, 8, 64),
+            'C': (5, 8, 32),
         }[args.RDNconfig]
 
         # Shallow feature extraction net
@@ -75,7 +76,7 @@ class RDN(nn.Module):
         self.RDBs = nn.ModuleList()
         for i in range(self.D):
             self.RDBs.append(
-                RDB(growRate0 = self.G0 , growRate = G, nConvLayers = C,encoder = encoder)
+                RDB(growRate0 = self.G0 , growRate = G, nConvLayers = C,encoder = encoder,drop_prob = self.args.drop_prob)
             )
 
         # Global Feature Fusion

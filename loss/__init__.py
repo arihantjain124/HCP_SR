@@ -49,7 +49,7 @@ class Loss(nn.modules.loss._Loss):
         
         if args.load != '.': self.load(ckp.dir, cpu=args.cpu)
 
-    def forward(self, pred,hr,pred_tv,hr_tv):
+    def forward(self, pred,hr,pred_tv = None,hr_tv = None):
         losses = []
         for i, l in enumerate(self.loss):
             if l['function'] is not None:

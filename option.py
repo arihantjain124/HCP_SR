@@ -1,13 +1,15 @@
 import argparse
 
 parser = argparse.ArgumentParser(description="DTI_ARB")
-parser.add_argument("--block_size", type=tuple, default=(32,32,8),
+parser.add_argument("--block_size", type=tuple, default=(32,32,4),
                     help="Block Size")
-parser.add_argument("--var_blk_size", type=bool, default=False,
+parser.add_argument("--var_blk_size", type=bool, default=True,
                     help="Block Size")
+# parser.add_argument("--enc", type=str, default='rdn',
+#                     help="Encoder Type")
 parser.add_argument("--start_var", type=bool, default=False,
                     help="Block Size")
-parser.add_argument("--epochs", type=int, default=40,
+parser.add_argument("--epochs", type=int, default=100,
                     help="Epochs")
 parser.add_argument("--dir", type=str,
                     help="dataset_directory")
@@ -37,11 +39,11 @@ parser.add_argument("--test_vols", type=int, default=20,
 
 
 # Optimization specifications
-parser.add_argument('--lr', type=float, default=0.0005,
+parser.add_argument('--lr', type=float, default=0.005,
                     help='learning rate')
 parser.add_argument('--max_lr', type=float, default=0.01,
                     help='learning rate')
-parser.add_argument('--lr_decay', type=int, default=30,
+parser.add_argument('--lr_decay', type=int, default=18,
                     help='learning rate decay per N epochs')
 parser.add_argument('--decay_type', type=str, default='step',
                     help='learning rate decay type')
@@ -114,6 +116,10 @@ parser.add_argument('--pin_mem', action='store_true',
 # Model specifications
 parser.add_argument('--model', default='dmri_rdn',
                     help='model name')
+parser.add_argument('--encoder', default='rdb',
+                    help='model name')
+parser.add_argument('--drop_prob', default=0,
+                    help='model name')
 parser.add_argument("--growth", type=int, default=32,
                     help="epoch with scale (1,1,1)")
 parser.add_argument('--model_type', default='3d',
@@ -142,5 +148,5 @@ args.dir = "/storage"
 args.sort = True
 args.cuda = True
 args.scale = (1,1,1)
-args.offset = 4
+args.offset = 3
 args.stable_epoch = 1
