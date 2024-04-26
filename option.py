@@ -7,7 +7,7 @@ parser.add_argument("--var_blk_size", type=bool, default=True,
                     help="Block Size")
 # parser.add_argument("--enc", type=str, default='rdn',
 #                     help="Encoder Type")
-parser.add_argument("--start_var", type=bool, default=False,
+parser.add_argument("--start_var", type=bool, default=True,
                     help="Block Size")
 parser.add_argument("--epochs", type=int, default=100,
                     help="Epochs")
@@ -36,7 +36,6 @@ parser.add_argument("--no_vols", type=int, default=20,
                     help="Number of Volumes to load")
 parser.add_argument("--test_vols", type=int, default=20,
                     help="Number of Volumes to load")
-
 
 # Optimization specifications
 parser.add_argument('--lr', type=float, default=0.005,
@@ -75,7 +74,7 @@ parser.add_argument('--skip_threshold', type=float, default='1e6',
 # Log specifications
 parser.add_argument('--run_name', type=str, default='..',
                     help='file name to save')
-parser.add_argument('--save', type=str, default='DTIArbNet',
+parser.add_argument('--save', type=str, default='DTIArb',
                     help='file name to save')
 parser.add_argument('--load', type=str, default='.',
                     help='file name to load')
@@ -150,3 +149,4 @@ args.cuda = True
 args.scale = (1,1,1)
 args.offset = 3
 args.stable_epoch = 1
+args.tv_en = False

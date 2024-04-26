@@ -18,11 +18,11 @@ class Model(nn.Module):
                 self.model = dmri_model.DMRI_RDN_2d(growth=args.growth).to(self.device)
             else:
                 self.model = dmri_model.DMRI_RDN_3d(growth=args.growth).to(self.device)
-        if args.model == 'dmri_rcan':
-            if args.model_type == '2d':    
-                self.model = dmri_model.DMRI_RCAN_2d(int_chans=args.growth).to(self.device)
-            else:
-                self.model = dmri_model.DMRI_RCAN_3d(int_chans=args.growth).to(self.device)
+        # if args.model == 'dmri_rcan':
+        #     if args.model_type == '2d':    
+        #         self.model = dmri_model.DMRI_RCAN_2d(int_chans=args.growth).to(self.device)
+        #     else:
+        #         self.model = dmri_model.DMRI_RCAN_3d(int_chans=args.growth).to(self.device)
         else:
             self.model = dmri_model.DMRI_arb(int_chans=args.growth,encoder_type=args.encoder,drop_prob = args.drop_prob).to(self.device)
 

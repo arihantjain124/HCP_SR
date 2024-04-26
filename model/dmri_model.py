@@ -43,6 +43,7 @@ class DMRI_arb(nn.Module):
 class DMRI_RCAN_3d(nn.Module):
     def __init__(self,in_chans = 7,int_chans = 32):
         super().__init__()
+        
         self.encoder = CSEUnetModel_3d(in_chans=in_chans,out_chans=32,chans=int_chans,num_pool_layers=3,drop_prob = 0,attention_type='cSE',reduction=16)
         
         self.decoder = ImplicitDecoder_3d(in_channels= 32)

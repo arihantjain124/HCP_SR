@@ -42,11 +42,11 @@ class ImplicitDecoder_3d(nn.Module):
         self.last_layer = nn.Conv3d(hidden_dims[-1] , out_chans , 1)
         
         self.in_branch = nn.Sequential(nn.Conv3d(in_channels * 27, hidden_dims[-2], 1),
-                            nn.LeakyReLU(),
+                            nn.ReLU(),
                             nn.Conv3d(hidden_dims[-2],hidden_dims[-1], 1),
-                            nn.LeakyReLU(),
+                            nn.ReLU(),
                             nn.Conv3d(hidden_dims[-1],out_chans, 1),
-                            nn.LeakyReLU())
+                            nn.ReLU())
         
         self.tensor_val = nn.Sequential(nn.Conv3d(hidden_dims[-1], hidden_dims[-2], 1),
                             nn.ReLU(),

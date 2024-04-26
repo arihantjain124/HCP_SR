@@ -118,6 +118,7 @@ class hcp_data(torch.utils.data.Dataset):
         self.debug = opt.debug
         self.enable_thres = opt.enable_thres
         self.model_type = opt.model_type
+        self.tv_en = opt.tv_en
         self.transform = tio.transforms.RescaleIntensity(masking_method=lambda x: x > 0)
         self.tv_transform = tio.transforms.RescaleIntensity()
         self.batch_size = opt.batch_size
@@ -166,9 +167,15 @@ class hcp_data(torch.utils.data.Dataset):
             data = self.loaded_adc_lr[vol_idx][blk_idx],self.loaded_fa_lr[vol_idx][blk_idx],self.loaded_rgb_lr[vol_idx][blk_idx]
             out = np.concatenate([np.expand_dims(data[0],axis = dims),np.expand_dims(data[1],axis = dims),data[2]], axis = dims)
             return inp,hr,self.scale[vol_idx],out
-        else:
-            tv = torch.from_numpy(np.stack(self.loaded_tv[vol_idx][blk_idx]))
+        
+        elif(self.tv_en):
+            
+            tv = (self.loaded_tv[vol_idx],vol_idx)
             return inp,hr,self.scale[vol_idx],tv
+
+        else:
+            # tv = torch.from_numpy(np.stack(self.loaded_tv[vol_idx][blk_idx]))
+            return inp,hr,self.scale[vol_idx]
         
     def preload_data(self,blk_size = None,scale = None,var = None,test = None):
         
@@ -207,7 +214,7 @@ class hcp_data(torch.utils.data.Dataset):
             if(self.test):
                 self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i],self.scale[i],self.blks_ret_lr[i],self.blks_ret_hr[i],self.loaded_adc_lr[i],self.loaded_fa_lr[i],self.loaded_rgb_lr[i] = self.pre_proc(i)
             else:
-                self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i],self.loaded_tv[i],self.scale[i],self.blks_ret_lr[i],self.blks_ret_hr[i] = self.pre_proc(i)
+                self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i],self.scale[i],self.blks_ret_lr[i],self.blks_ret_hr[i],self.loaded_tv[i] = self.pre_proc(i)
             if(self.debug == True):
                 print(i,"loaded")
         self.blk_indx = np.cumsum(self.blk_indx)
@@ -295,9 +302,7 @@ class hcp_data(torch.utils.data.Dataset):
             return torch.squeeze(temp)
         return self.transform(data)
     
-    def pre_proc(self,idx):
-
-        vol = torch.from_numpy(loaded[idx]['vol0'])
+    def size_scale_set(self,idx):
         
         if self.var_blk_size:
             x = np.around(np.random.uniform(1.2,2),decimals=1)
@@ -307,9 +312,11 @@ class hcp_data(torch.utils.data.Dataset):
                 curr_blk_size = [1,np.random.randint(20,50),np.random.randint(20,50)]
             else:    
                 curr_blk_size = [np.random.randint(2,8),np.random.randint(20,50),np.random.randint(20,50)]
-            
+
+            ### Randomizing AXES
             curr_blk_size = list(set(permutations(curr_blk_size)))[np.random.randint(0,3)]
-            
+            ###
+
             if(self.debug):
                 print(idx,curr_blk_size)
             
@@ -329,7 +336,15 @@ class hcp_data(torch.utils.data.Dataset):
         
         if(min(curr_blk_size) == 1):
             curr_scale[np.where(np.asarray(curr_blk_size) == 1)[0][0]] = 1
+
+        return curr_scale,curr_blk_size
     
+    def pre_proc(self,idx):
+
+        vol = torch.from_numpy(loaded[idx]['vol0'])
+
+        curr_scale,curr_blk_size = self.size_scale_set(idx)
+
         size = [int(curr_scale[i] * vol.shape[i]) for i in range(3)]
         
         # print(curr_blk_size,curr_scale)
@@ -337,7 +352,10 @@ class hcp_data(torch.utils.data.Dataset):
         adc = interpolate(torch.from_numpy(loaded_gt[idx]['ADC']),size)
         fa = interpolate(torch.from_numpy(loaded_gt[idx]['FA']),size)
         rgb = interpolate(torch.from_numpy(loaded_gt[idx]['color_FA']),size)
-        tv = self.tv_transform(interpolate(torch.from_numpy(loaded_gt[idx]['tensor_vals']),size))
+
+
+        ## testing
+        tv = torch.from_numpy(loaded_gt[idx]['tensor_vals'])
         
 
         curr_blk = self.blk_points_pair(vol,vol_hr,blk_size=curr_blk_size,scale=curr_scale)
@@ -353,6 +371,8 @@ class hcp_data(torch.utils.data.Dataset):
         blks_fa = torch.split(self.extract_block(fa,curr_blk[1])[:drop_last,...],self.batch_size)
         blks_rgb = torch.split(self.extract_block(rgb,curr_blk[1])[:drop_last,...],self.batch_size)
         # print(len(blks_rgb))
+
+        ## Co - ordinates for the cropping 
         curr_blk_lr = torch.split(torch.from_numpy(curr_blk[0])[:drop_last,...],self.batch_size)
         curr_blk_hr = torch.split(torch.from_numpy(curr_blk[1])[:drop_last,...],self.batch_size)
         
@@ -367,8 +387,8 @@ class hcp_data(torch.utils.data.Dataset):
             # print(blks_lr_adc.shape,blks_lr_fa.shape,blks_lr_rgb.shape)
             return blks_img,blks_adc,blks_fa,blks_rgb,curr_scale,curr_blk_lr,curr_blk_hr,blks_lr_adc,blks_lr_fa,blks_lr_rgb
         else:
-            blks_tv = torch.split(self.extract_block(tv,curr_blk[1])[:drop_last,...],self.batch_size)
-            return blks_img,blks_adc,blks_fa,blks_rgb,blks_tv,curr_scale,curr_blk_lr,curr_blk_hr
+            # blks_tv = torch.split(self.extract_block(tv,curr_blk[1])[:drop_last,...],self.batch_size)
+            return blks_img,blks_adc,blks_fa,blks_rgb,curr_scale,curr_blk_lr,curr_blk_hr,tv
         
         # return blks_img,blks_adc,blks_fa,blks_rgb,blks_tv,curr_scale,curr_blk_lr,curr_blk_hr
     
