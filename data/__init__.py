@@ -20,7 +20,7 @@ class Data:
         self.training_data = DataLoader(dataset=self.training_dataset, batch_size=1, drop_last=True,shuffle = True,pin_memory=self.pin_mem)
         
         if(args.model == 'dmri_rdn' or args.model == 'dmri_arb'):
-            self.testing_dataset = self.dataset_hcp.hcp_data(args,self.ids[self.train_vols:self.train_vols+args.test_vols],test = True,start_var = True)
+            self.testing_dataset = self.dataset_hcp.hcp_data(args,self.ids[self.train_vols:self.train_vols+args.test_vols],test = True)
         else:
             self.testing_dataset = self.dataset_hcp.hcp_data(args,self.ids[self.train_vols:self.train_vols+args.test_vols],test = True)
             
@@ -32,13 +32,29 @@ class Data:
         
         print("Loading Done")
 
-    def rebuild(self,type,blk_size = None,train_var = False):
-        if type == "train":
-            self.training_dataset.preload_data(blk_size = blk_size,var = train_var)
-            self.training_data = DataLoader(dataset=self.training_dataset, batch_size=1,drop_last=True,shuffle = True, pin_memory=self.pin_mem)
-        if type == "test":
-            self.testing_dataset.preload_data(test=True,var = True)
-            self.testing_data = DataLoader(dataset=self.testing_dataset, batch_size=1,drop_last=True,shuffle = True,pin_memory=self.pin_mem)
+    def rebuild(self,blk_size = None,var = False):
+        t = {}
+        t['range'] = self.training_dataset.range 
+        t['asy'] = self.training_dataset.asy
 
+        if(np.random.randint(2) == 0):
 
+            self.training_dataset.scale_range(t['range'] + 0.1)
+            self.testing_dataset.scale_range(t['range'] + 0.1)
+            
+        else:
+            if(t['asy'] > 0.3):
+                self.training_dataset.set_asy(t['asy'] - 0.1)
+                self.testing_dataset.set_asy(t['asy'] - 0.1)
+            else:
+                self.training_dataset.set_asy(t['asy'] + 0.1)
+                self.testing_dataset.set_asy(t['asy'] + 0.1)
+            
+        self.training_dataset.preload_data(blk_size = blk_size,var = var)
+        self.testing_dataset.preload_data(test=True,var = var)
+        
+        self.training_data = DataLoader(dataset=self.training_dataset, batch_size=1,drop_last=True,shuffle = True, pin_memory=self.pin_mem)
+        self.testing_data = DataLoader(dataset=self.testing_dataset, batch_size=1,drop_last=True,shuffle = True,pin_memory=self.pin_mem)
+
+        return t
 

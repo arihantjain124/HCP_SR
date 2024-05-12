@@ -8,116 +8,62 @@ from model.rdn import make_rdn
 from model.rdn_2d import make_rdn as make_rdn_2d
 from model.resblock import ResBlock
 import unfoldNd
-from model.models import CSEUnetModel_3d,CSEUnetModel
 from model.arb_decoder import ImplicitDecoder_3d,ImplicitDecoder_2d
 import numpy as np
 
 
 class DMRI_arb(nn.Module):
-    def __init__(self,in_chans = 7,int_chans = 32,encoder_type = 'rdb',drop_prob = 0):
+    def __init__(self,in_chans = 7,int_chans = 32,encoder_type = 'rdb',drop_prob = 0,tv = False,attn = False):
         super().__init__()
-        self.encoder = make_rdn(in_chans=in_chans,growth = int_chans,enc= encoder_type,drop_prob=drop_prob)
+        self.encoder = make_rdn(in_chans=in_chans,growth = int_chans,enc= encoder_type,drop_prob=drop_prob,attn = attn)
         # print(self.encoder)
-        self.decoder = ImplicitDecoder_3d(in_channels= int_chans)
-    
-    def set_scale(self, scale):
-        self.scale = np.asarray(scale)
+        self.decoder = ImplicitDecoder_3d(in_channels= int_chans,tv = tv)
+        self.tv = tv
 
-    def forward(self, inp):
+
+    def forward(self, inp,scale):
+        B,C,H,W,D = inp.shape
+        scale = np.asarray(scale)
+        H_hr = round(H*scale[0])
+        W_hr = round(W*scale[1])
+        D_hr = round(D*scale[2])
+        
+        size = [H_hr, W_hr,D_hr]
         # print(inp.shape)
-        B,C,H,W,D = inp.shape
         # print(self.scale)
-        H_hr = round(H*self.scale[0])
-        W_hr = round(W*self.scale[1])
-        D_hr = round(D*self.scale[2])
-        
-        size = [H_hr, W_hr,D_hr]
-        
         feat = self.encoder(inp)
         
-        pred,tv = self.decoder(feat,size)
-        
-        return pred,tv
-    
-
-class DMRI_RCAN_3d(nn.Module):
-    def __init__(self,in_chans = 7,int_chans = 32):
-        super().__init__()
-        
-        self.encoder = CSEUnetModel_3d(in_chans=in_chans,out_chans=32,chans=int_chans,num_pool_layers=3,drop_prob = 0,attention_type='cSE',reduction=16)
-        
-        self.decoder = ImplicitDecoder_3d(in_channels= 32)
-    
-    def set_scale(self, scale):
-        self.scale = scale
-
-    def forward(self, inp):
-        
-        B,C,H,W,D = inp.shape
-        
-        H_hr = round(H*self.scale[0])
-        W_hr = round(W*self.scale[1])
-        D_hr = round(D*self.scale[2])
-        
-        size = [H_hr, W_hr,D_hr]
-        
-        feat = self.encoder(inp)
-        
+        # feat = self.encoder((inp-0.5)/0.5)
         pred = self.decoder(feat,size)
-        
         return pred
-    
-
-class DMRI_RCAN_2d(nn.Module):
-    def __init__(self,in_chans = 7,int_chans = 32):
-        super().__init__()
-        self.encoder = CSEUnetModel(in_chans=in_chans,out_chans=64,chans=int_chans,num_pool_layers=3,drop_prob = 0,attention_type='cSE',reduction=16)
-        self.decoder = ImplicitDecoder_2d(in_channels= 64) 
-    
-    def set_scale(self, scale):
-        self.scale = scale
-
-    def forward(self, inp):
-        
-        B,C,H,W = inp.shape
-        # print(self.scale)
-        H_hr = round(H*self.scale[0])
-        W_hr = round(W*self.scale[1])
-        
-        size = [H_hr, W_hr]
-        
-        feat = self.encoder(inp)
-        
-        
-        pred = self.decoder(feat,size)
-        
-        return pred
-
+        # if self.tv:
+        #     return pred[0]*0.5+0.5,pred[1]*0.5+0.5
+        # else:
+        #     return pred*0.5+0.5
 
 class DMRI_RDN_3d(nn.Module):
-    def __init__(self,inch = 7,growth = 16):
+    def __init__(self,inch = 7,growth = 16,tv = False,attn = False):
         super().__init__()
-        self.encoder = make_rdn(in_chans=inch,growth = growth)
-        self.decoder = ImplicitDecoder_3d(in_channels= growth)
+        self.encoder = make_rdn(in_chans=inch,growth = growth,attn = attn)
+        self.decoder = ImplicitDecoder_3d(in_channels= growth,tv = tv)
     
-    def set_scale(self, scale):
-        self.scale = scale
-
-    def forward(self, inp):
+    def forward(self, inp,scale):
         
         B,C,H,W,D = inp.shape
-        
-        H_hr = round(H*self.scale[0])
-        W_hr = round(W*self.scale[1])
-        D_hr = round(D*self.scale[2])
+        scale = np.asarray(scale)
+
+        H_hr = round(H*scale[0])
+        W_hr = round(W*scale[1])
+        D_hr = round(D*scale[2])
         
         size = [H_hr, W_hr,D_hr]
         
-        feat = self.encoder(inp)
+
         
+        feat = self.encoder((inp-0.5)/0.5)
         pred = self.decoder(feat,size)
-        
-        return pred
+
+        return pred*0.5+0.5
       
     
 class DMRI_RDN_2d(nn.Module):

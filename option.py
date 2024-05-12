@@ -3,11 +3,11 @@ import argparse
 parser = argparse.ArgumentParser(description="DTI_ARB")
 parser.add_argument("--block_size", type=tuple, default=(32,32,4),
                     help="Block Size")
-parser.add_argument("--var_blk_size", type=bool, default=True,
+parser.add_argument("--var_blk_size", type=bool, default=False,
                     help="Block Size")
 # parser.add_argument("--enc", type=str, default='rdn',
 #                     help="Encoder Type")
-parser.add_argument("--start_var", type=bool, default=True,
+parser.add_argument("--start_var", type=bool, default=False,
                     help="Block Size")
 parser.add_argument("--epochs", type=int, default=100,
                     help="Epochs")
@@ -29,8 +29,14 @@ parser.add_argument("--enable_thres", type=bool, default=True,
                     help="threshold")
 # parser.add_argument("--test_mask", type=bool, default=True,
 #                     help="threshold")
-parser.add_argument("--thres", type=float, default=0.3,
+parser.add_argument("--thres", type=float, default=0.7,
                     help="threshold for blk emptiness")
+
+parser.add_argument("--patience", type=int, default=3,
+                    help="epochs before range increases")
+
+parser.add_argument("--patience_thres", type=float, default=0.5,
+                    help="epochs before range increases")
 
 parser.add_argument("--no_vols", type=int, default=20,
                     help="Number of Volumes to load")
@@ -116,6 +122,10 @@ parser.add_argument('--pin_mem', action='store_true',
 parser.add_argument('--model', default='dmri_rdn',
                     help='model name')
 parser.add_argument('--encoder', default='rdb',
+                    help='model name')
+parser.add_argument('--tensor_val', type=bool, default=False,
+                    help='model name')
+parser.add_argument('--attention', type=bool, default=False,
                     help='model name')
 parser.add_argument('--drop_prob', default=0,
                     help='model name')

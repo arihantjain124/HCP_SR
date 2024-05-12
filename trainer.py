@@ -76,14 +76,15 @@ class Trainer():
                 lr = torch.permute(lr_tensor, (0,3,1,2))
 
             # inference
-            pred,pred_tv = self.model.forward(lr,scale)
+            pred = self.model.forward(lr,scale)
             
             if(len(lr_tensor.shape) == 5):
+                # print(pred.shape,lr.shape)
                 pred_tensor = torch.permute(pred, (0,2,3,4,1)).float()
-                pred_tv_tensor = torch.permute(pred_tv, (0,2,3,4,1)).float()
+                # pred_tv_tensor = torch.permute(pred_tv, (0,2,3,4,1)).float()
             else:
                 pred_tensor = torch.permute(pred, (0,2,3,1)).float()
-                pred_tv_tensor = torch.permute(pred_tv, (0,2,3,1)).float()
+                # pred_tv_tensor = torch.permute(pred_tv, (0,2,3,1)).float()
             # loss function
             
             loss = self.loss(pred_tensor,hr_tensor)
@@ -127,12 +128,12 @@ class Trainer():
     
 
     # train on integer scale factors (x2, x3, x4) for 1 epoch to maintain stability
-        if (self.curr_epoch+1) < self.args.stable_epoch:
-            self.loader.rebuild(type = "train",train_var = False)
+        # if (self.curr_epoch+1) < self.args.stable_epoch:
+        #     self.loader.rebuild(type = "train",train_var = False)
             
-        elif (((self.curr_epoch+1)%self.args.offset == 0)):
-            self.loader.rebuild(type = "train",train_var = self.var_blk_size)
-            self.loader.rebuild(type = "test",train_var = self.var_blk_size)
+        # elif (((self.curr_epoch+1)%self.args.offset == 0)):
+        #     self.loader.rebuild(type = "train",train_var = self.var_blk_size)
+        #     self.loader.rebuild(type = "test",train_var = self.var_blk_size)
             
         self.curr_epoch+=1
 
@@ -165,7 +166,7 @@ class Trainer():
                 
             
             with torch.no_grad():
-                pred,_ = self.model(lr,scale)
+                pred = self.model(lr,scale)
                 # pred = torch.nn.functional.interpolate(out,hr_tensor.shape[1:-1])
                 if(len(lr_tensor.shape) == 5):
                     pred_tensor = torch.permute(pred, (0,2,3,4,1)).float()
@@ -173,7 +174,7 @@ class Trainer():
                     pred_tensor = torch.permute(pred, (0,2,3,1)).float()
             
             
-            if(self.logger != None and np.random.randint(2) == 1):
+            if(self.logger != None and np.random.randint(4) == 1):
                 # print("fig added")
                 psnr, hfen = utility.compute_scores(hr_tensor,pred_tensor,out_tensor,scale,self.logger,self.iter,mask = True,epoch = self.curr_epoch)
                 self.iter +=1
@@ -203,12 +204,20 @@ class Trainer():
         
         # self.loader.rebuild(type = "test")
         
-        if self.psnr_max is None or self.psnr_max < eval_psnr_avg:
+        if self.psnr_max is None or self.psnr_max < (eval_psnr_avg + self.args.patience_thres):
             self.psnr_max = eval_psnr_avg
             torch.save(
                 self.model.state_dict(),
                 os.path.join(self.ckp.dir, 'model', f"model_best_{self.args.run_name}.pt")
             )
+        else:
+            self.patience_count +=1
+            if(self.patience_count > self.args.patience):
+                self.patience_count = 0
+                t = self.loader.rebuild()
+                self.logger.add_scalar("range",t['range'],self.test_cnt)
+                self.logger.add_scalar("asy",t['asy'],self.test_cnt)
+        
                 
 
     def save_model(self,epoch):

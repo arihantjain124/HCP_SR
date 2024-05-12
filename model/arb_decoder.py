@@ -17,11 +17,11 @@ class SineAct(nn.Module):
         return torch.sin(x)
 
 class ImplicitDecoder_3d(nn.Module):
-    def __init__(self, in_channels=64, hidden_dims=[64, 64, 64, 64, 64, 64],out_chans= 5):
+    def __init__(self, in_channels=64, hidden_dims=[64, 64, 64, 64, 64, 64],out_chans= 5,tv = False):
         super().__init__()
 
         last_dim_K = in_channels * 27
-        
+        self.tv = tv
         last_dim_Q = 4
         
         self.K = nn.ModuleList()
@@ -30,7 +30,8 @@ class ImplicitDecoder_3d(nn.Module):
         for hidden_dim in hidden_dims:
             self.K.append(nn.Sequential(nn.Conv3d(last_dim_K, hidden_dim, 1),
                                         nn.ReLU(),
-                                        ResBlock_3d(channels = hidden_dim, nConvLayers = 3)
+                                        nn.InstanceNorm3d(hidden_dim,affine = True)
+                                        # ResBlock_3d(channels = hidden_dim, nConvLayers = 3)
                                         ))    
             
             self.Q.append(nn.Sequential(nn.Conv3d(last_dim_Q, hidden_dim, 1),
@@ -47,14 +48,14 @@ class ImplicitDecoder_3d(nn.Module):
                             nn.ReLU(),
                             nn.Conv3d(hidden_dims[-1],out_chans, 1),
                             nn.ReLU())
-        
-        self.tensor_val = nn.Sequential(nn.Conv3d(hidden_dims[-1], hidden_dims[-2], 1),
-                            nn.ReLU(),
-                            nn.Conv3d(hidden_dims[-2],hidden_dims[-1], 1),
-                            nn.ReLU(),
-                            nn.Conv3d(hidden_dims[-1],6, 1),
-                            nn.ReLU())
-        
+        if self.tv:
+            self.tensor_val = nn.Sequential(nn.Conv3d(hidden_dims[-1], hidden_dims[-2], 1),
+                                nn.ReLU(),
+                                nn.Conv3d(hidden_dims[-2],hidden_dims[-1], 1),
+                                nn.ReLU(),
+                                nn.Conv3d(hidden_dims[-1],6, 1),
+                                nn.ReLU())
+            
     def step(self,  x, syn_inp):
         
         q = syn_inp
@@ -65,11 +66,14 @@ class ImplicitDecoder_3d(nn.Module):
             k = self.K[i](k)
             q = k*self.Q[i](q)
             
-        tv = self.tensor_val(q)
         
         out = self.last_layer(q)
         
-        return out + self.in_branch(x) ,tv
+        if self.tv:
+            tv = self.tensor_val(q)
+            return out + self.in_branch(x) ,tv
+        else:
+            return out + self.in_branch(x)
     
     def _make_pos_encoding(self, x, size): 
         B, C, H, W, D = x.shape
@@ -104,8 +108,7 @@ class ImplicitDecoder_3d(nn.Module):
         x = F.interpolate(unfoldNd.unfoldNd(x, 3, padding=1).view(B, C*27, H_in, W_in,D_in), size=ratio.shape[-3:],mode = "trilinear")
         
         # print(syn_inp.shape,x.shape)
-        pred,tv = self.step(x, syn_inp)
-        return pred,tv
+        return self.step(x, syn_inp)
     
 class ImplicitDecoder_2d(nn.Module):
     def __init__(self, in_channels=64, hidden_dims=[64, 64, 64, 64, 64],out_chans= 5):

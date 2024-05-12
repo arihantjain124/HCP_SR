@@ -116,6 +116,8 @@ class hcp_data(torch.utils.data.Dataset):
         self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
         self.ids = ids
         self.debug = opt.debug
+        self.range = 0.0
+        self.asy = 0
         self.enable_thres = opt.enable_thres
         self.model_type = opt.model_type
         self.tv_en = opt.tv_en
@@ -177,8 +179,14 @@ class hcp_data(torch.utils.data.Dataset):
             # tv = torch.from_numpy(np.stack(self.loaded_tv[vol_idx][blk_idx]))
             return inp,hr,self.scale[vol_idx]
         
+    def scale_range(self,range):
+        self.range = range
+
+    
+    def set_asy(self,asy):
+        self.asy = asy
+
     def preload_data(self,blk_size = None,scale = None,var = None,test = None):
-        
         
         if blk_size is not None:
             self.blk_size = blk_size
@@ -303,15 +311,15 @@ class hcp_data(torch.utils.data.Dataset):
         return self.transform(data)
     
     def size_scale_set(self,idx):
-        
+
         if self.var_blk_size:
-            x = np.around(np.random.uniform(1.2,2),decimals=1)
-            asy = 0.1
+            x = np.around(np.random.uniform(1,1+self.range),decimals=1)
+            asy = self.asy
             curr_scale = np.around(np.random.uniform(x-asy,x+asy,3),decimals=1)
             if(self.model_type == '2d'):
-                curr_blk_size = [1,np.random.randint(20,50),np.random.randint(20,50)]
+                curr_blk_size = [1,np.random.randint(24,62),np.random.randint(24,62)]
             else:    
-                curr_blk_size = [np.random.randint(2,8),np.random.randint(20,50),np.random.randint(20,50)]
+                curr_blk_size = [np.random.randint(1,8),np.random.randint(24,62),np.random.randint(24,62)]
 
             ### Randomizing AXES
             curr_blk_size = list(set(permutations(curr_blk_size)))[np.random.randint(0,3)]
@@ -322,8 +330,8 @@ class hcp_data(torch.utils.data.Dataset):
             
         else:
             if self.scale_const is None:
-                x = np.around(np.random.uniform(1.2,2),decimals=1)
-                asy = 0.1
+                x = np.around(np.random.uniform(1,1+self.range),decimals=1)
+                asy = self.asy
                 curr_scale = np.around(np.random.uniform(x-asy,x+asy,3),decimals=1)
             else:
                 curr_scale = self.scale_const
@@ -360,8 +368,8 @@ class hcp_data(torch.utils.data.Dataset):
 
         curr_blk = self.blk_points_pair(vol,vol_hr,blk_size=curr_blk_size,scale=curr_scale)
         
-        if(not self.debug):
-            curr_scale = curr_scale[curr_scale>1]
+        # if(not self.debug):
+        #     curr_scale = curr_scale[curr_scale>1]
         
         drop_last = (curr_blk[2]//self.batch_size)*self.batch_size
         
