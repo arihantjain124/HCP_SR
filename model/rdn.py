@@ -26,7 +26,7 @@ class RDB_Conv(nn.Module):
         G  = growRate
         self.conv = nn.Sequential(*[
             nn.Conv3d(Cin, G, kSize, padding=(kSize-1)//2, stride=1),
-            nn.ReLU()
+            nn.LeakyReLU()
         ])
 
     def forward(self, x):
@@ -45,7 +45,7 @@ class ConvBlock_3d(nn.Module):
         self.layers = nn.Sequential(
             nn.Conv3d(in_chans, out_chans, kernel_size=3, padding=1),
             nn.InstanceNorm3d(out_chans),
-            nn.ReLU(),
+            nn.LeakyReLU(),
             nn.Dropout3d(drop_prob)
         )
 
@@ -59,7 +59,7 @@ class ConvBlock_3d(nn.Module):
 
 
 class RDB(nn.Module):
-    def __init__(self, growRate0, growRate, nConvLayers,encoder,drop_prob = 0,attention_type = 'cSE',reduction = 8,attention = False):
+    def __init__(self, growRate0, growRate, nConvLayers,encoder,drop_prob = 0,attention_type = 'cSE',reduction = 16,attention = False):
         super(RDB, self).__init__()
         G0 = growRate0
         G  = growRate
@@ -102,7 +102,7 @@ class RDN(nn.Module):
         self.D, C, G = {
             'A': (3, 5, 16),
             'B': (4, 7, 32),
-            'C': (5, 5, 32),
+            'C': (5, 8, 32),
         }[args.RDNconfig]
 
         # Shallow feature extraction net

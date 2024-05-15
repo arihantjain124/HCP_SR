@@ -13,9 +13,9 @@ parser.add_argument("--epochs", type=int, default=100,
                     help="Epochs")
 parser.add_argument("--dir", type=str,
                     help="dataset_directory")
-parser.add_argument("--batch_size", type=int , default= 16,
+parser.add_argument("--batch_size", type=int , default= 8,
                     help="Batch_size")
-parser.add_argument("--test_batch_size", type=int , default= 8,
+parser.add_argument("--test_batch_size", type=int , default= 16,
                     help="Batch_size")
 parser.add_argument("--sort", type=bool,default=True,
                     help="Sort Subject Ids")
@@ -29,7 +29,7 @@ parser.add_argument("--enable_thres", type=bool, default=True,
                     help="threshold")
 # parser.add_argument("--test_mask", type=bool, default=True,
 #                     help="threshold")
-parser.add_argument("--thres", type=float, default=0.7,
+parser.add_argument("--thres", type=float, default=0.6,
                     help="threshold for blk emptiness")
 
 parser.add_argument("--patience", type=int, default=3,
@@ -38,9 +38,9 @@ parser.add_argument("--patience", type=int, default=3,
 parser.add_argument("--patience_thres", type=float, default=0.5,
                     help="epochs before range increases")
 
-parser.add_argument("--no_vols", type=int, default=20,
+parser.add_argument("--no_vols", type=int, default=30,
                     help="Number of Volumes to load")
-parser.add_argument("--test_vols", type=int, default=20,
+parser.add_argument("--test_vols", type=int, default=15,
                     help="Number of Volumes to load")
 
 # Optimization specifications

@@ -17,7 +17,7 @@ class SineAct(nn.Module):
         return torch.sin(x)
 
 class ImplicitDecoder_3d(nn.Module):
-    def __init__(self, in_channels=64, hidden_dims=[64, 64, 64, 64, 64, 64],out_chans= 5,tv = False):
+    def __init__(self, in_channels=64, hidden_dims=[64, 32, 16, 16, 32, 64],out_chans= 5,tv = False):
         super().__init__()
 
         last_dim_K = in_channels * 27
@@ -29,7 +29,7 @@ class ImplicitDecoder_3d(nn.Module):
         
         for hidden_dim in hidden_dims:
             self.K.append(nn.Sequential(nn.Conv3d(last_dim_K, hidden_dim, 1),
-                                        nn.ReLU(),
+                                        nn.LeakyReLU(),
                                         nn.InstanceNorm3d(hidden_dim,affine = True)
                                         # ResBlock_3d(channels = hidden_dim, nConvLayers = 3)
                                         ))    
@@ -42,12 +42,6 @@ class ImplicitDecoder_3d(nn.Module):
             
         self.last_layer = nn.Conv3d(hidden_dims[-1] , out_chans , 1)
         
-        self.in_branch = nn.Sequential(nn.Conv3d(in_channels * 27, hidden_dims[-2], 1),
-                            nn.ReLU(),
-                            nn.Conv3d(hidden_dims[-2],hidden_dims[-1], 1),
-                            nn.ReLU(),
-                            nn.Conv3d(hidden_dims[-1],out_chans, 1),
-                            nn.ReLU())
         if self.tv:
             self.tensor_val = nn.Sequential(nn.Conv3d(hidden_dims[-1], hidden_dims[-2], 1),
                                 nn.ReLU(),
@@ -71,11 +65,11 @@ class ImplicitDecoder_3d(nn.Module):
         
         if self.tv:
             tv = self.tensor_val(q)
-            return out + self.in_branch(x) ,tv
+            return out ,tv
         else:
-            return out + self.in_branch(x)
-    
+            return out     
     def _make_pos_encoding(self, x, size): 
+
         B, C, H, W, D = x.shape
         H_up, W_up, D_up = size 
         h_idx = -1 + 1/H + 2/H * torch.arange(H, device=x.device).float()

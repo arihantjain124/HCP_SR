@@ -347,7 +347,7 @@ def compute_scores(hr,pred,out,scale,logger=None,iter=None,mask=False,epoch=None
     out = out.cpu().detach().numpy().squeeze()
     if(mask):   
         mask = (hr>0)
-        # print(mask.device,hr.device,pred.device)
+        # print(mask.shape,hr.shape,pred.shape)
         hr = hr.squeeze()*mask
         pred = pred.squeeze()*mask
         mask = (out>0)

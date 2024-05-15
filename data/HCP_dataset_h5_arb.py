@@ -107,7 +107,7 @@ def interpolate(data,size):
     return torch.squeeze(interpolated)
 
 class hcp_data(torch.utils.data.Dataset):
-    def __init__(self, opt,ids,test=False,start_var = False):
+    def __init__(self, opt,ids,test=False,start_var = False,batch_size = 8):
         super(hcp_data).__init__()
         self.blk_size = opt.block_size
         self.var_blk_size = start_var
@@ -116,14 +116,14 @@ class hcp_data(torch.utils.data.Dataset):
         self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
         self.ids = ids
         self.debug = opt.debug
-        self.range = 0.0
+        self.range = 0
         self.asy = 0
         self.enable_thres = opt.enable_thres
         self.model_type = opt.model_type
         self.tv_en = opt.tv_en
         self.transform = tio.transforms.RescaleIntensity(masking_method=lambda x: x > 0)
         self.tv_transform = tio.transforms.RescaleIntensity()
-        self.batch_size = opt.batch_size
+        self.batch_size = batch_size
         self.scale_const = None
         
         if(opt.sort == True):

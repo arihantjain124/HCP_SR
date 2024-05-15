@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from argparse import Namespace
-import random 
+
 import math
 from model.rdn import make_rdn
 from model.rdn_2d import make_rdn as make_rdn_2d
@@ -32,9 +32,10 @@ class DMRI_arb(nn.Module):
         # print(inp.shape)
         # print(self.scale)
         feat = self.encoder(inp)
-        
         # feat = self.encoder((inp-0.5)/0.5)
+
         pred = self.decoder(feat,size)
+
         return pred
         # if self.tv:
         #     return pred[0]*0.5+0.5,pred[1]*0.5+0.5
@@ -59,11 +60,13 @@ class DMRI_RDN_3d(nn.Module):
         size = [H_hr, W_hr,D_hr]
         
 
-        
-        feat = self.encoder((inp-0.5)/0.5)
+        feat = self.encoder(inp)
+        #feat = self.encoder((inp-0.5)/0.5)
+        # print(size)
         pred = self.decoder(feat,size)
 
-        return pred*0.5+0.5
+        return pred
+        # return pred*0.5+0.5
       
     
 class DMRI_RDN_2d(nn.Module):
