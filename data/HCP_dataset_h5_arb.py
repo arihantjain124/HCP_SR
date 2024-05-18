@@ -145,7 +145,7 @@ class hcp_data(torch.utils.data.Dataset):
             blk_idx = indx
         else:
             blk_idx = indx - self.blk_indx[blk_idx-1] - 1
-        
+
 #         print(vol_idx,blk_idx)
         if(self.debug):
             return self.collate(vol_idx,blk_idx),(self.blks_ret_lr[vol_idx][blk_idx],self.blks_ret_hr[vol_idx][blk_idx])
@@ -153,10 +153,38 @@ class hcp_data(torch.utils.data.Dataset):
             return self.collate(vol_idx,blk_idx)
         
 
+    def _make_pos_encoding(self,blk): 
+
+        blk = [ [i.item() for i in list(blk[j]) ] for j in range(len(blk))]
+        
+        res = []
+        for n in range(len(blk)):
+            blk_x1,blk_x2,blk_y1,blk_y2,blk_z1,blk_z2 = blk[n]
+            # print(blk[n])
+            t = []
+            for i in range(blk_x1,blk_x2+1):
+                l = []
+                for j in range(blk_y1,blk_y2+1):
+                    q = []
+                    for k in range(blk_z1,blk_z2+1):
+                        q.append((i,j,k))
+                    l.append(q)
+                t.append(l)
+            res.append(t)
+
+
+        res = torch.from_numpy(np.asarray(res))
+        res = torch.permute(res, (0,4,1,2,3))
+    
+        return res
+
     def collate(self,vol_idx,blk_idx):
         
         data = self.loaded_blk[vol_idx][blk_idx],self.loaded_adc[vol_idx][blk_idx],self.loaded_fa[vol_idx][blk_idx],self.loaded_rgb[vol_idx][blk_idx]
-        
+        coor = self.blks_ret_lr[vol_idx][blk_idx],self.blks_ret_hr[vol_idx][blk_idx]
+
+        coor_hr = self._make_pos_encoding(coor[1])
+
         inp = torch.from_numpy(np.stack(data[0]))
         if (self.model_type == '2d'):
             dims = 3
@@ -168,16 +196,16 @@ class hcp_data(torch.utils.data.Dataset):
         if(self.test):
             data = self.loaded_adc_lr[vol_idx][blk_idx],self.loaded_fa_lr[vol_idx][blk_idx],self.loaded_rgb_lr[vol_idx][blk_idx]
             out = np.concatenate([np.expand_dims(data[0],axis = dims),np.expand_dims(data[1],axis = dims),data[2]], axis = dims)
-            return inp,hr,self.scale[vol_idx],out
+            return inp,hr,self.scale[vol_idx],coor_hr,out
         
-        elif(self.tv_en):
+        # elif(self.tv_en):
             
-            tv = (self.loaded_tv[vol_idx],vol_idx)
-            return inp,hr,self.scale[vol_idx],tv
+        #     tv = (self.loaded_tv[vol_idx],vol_idx)
+        #     return inp,hr,self.scale[vol_idx],tv
 
         else:
             # tv = torch.from_numpy(np.stack(self.loaded_tv[vol_idx][blk_idx]))
-            return inp,hr,self.scale[vol_idx]
+            return inp,hr,self.scale[vol_idx],coor_hr
         
     def scale_range(self,range):
         self.range = range
@@ -385,9 +413,9 @@ class hcp_data(torch.utils.data.Dataset):
         curr_blk_hr = torch.split(torch.from_numpy(curr_blk[1])[:drop_last,...],self.batch_size)
         
         self.blk_indx.append((curr_blk[2]//self.batch_size)-1)
-        
+
 #         print(blks_rgb.shape)
-        
+
         if(self.test):
             blks_lr_adc = torch.split(self.extract_block(torch.from_numpy(loaded[idx]['ADC']),curr_blk[0])[:drop_last,...],self.batch_size)
             blks_lr_fa = torch.split(self.extract_block(torch.from_numpy(loaded[idx]['FA']),curr_blk[0])[:drop_last,...],self.batch_size)
@@ -399,4 +427,4 @@ class hcp_data(torch.utils.data.Dataset):
             return blks_img,blks_adc,blks_fa,blks_rgb,curr_scale,curr_blk_lr,curr_blk_hr,tv
         
         # return blks_img,blks_adc,blks_fa,blks_rgb,blks_tv,curr_scale,curr_blk_lr,curr_blk_hr
-    
+

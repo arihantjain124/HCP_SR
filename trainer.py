@@ -9,6 +9,7 @@ import torch.nn.functional as F
 import torch.optim.lr_scheduler as lrs
 
 
+# +
 class Trainer():
     def __init__(self, args, loader, my_model, my_loss, ckp,logger = None):
         self.args = args
@@ -47,15 +48,18 @@ class Trainer():
         
         self.iter = 0
 
-        self.optimizer.zero_grad()
+        # self.optimizer.zero_grad()
                 
         
-        for batch, (lr,hr,scale) in enumerate(self.loader.training_data):
+        for batch, (lr,hr,scale,rel_coor) in enumerate(self.loader.training_data):
 
+            self.optimizer.zero_grad()
             pbar.update(1)
             
             lr_tensor = lr.squeeze().to('cuda').float()  # ranges from [0, 1]
             hr_tensor = hr.squeeze().to('cuda').float()  # ranges from [0, 1]
+            
+            rel_coor = rel_coor.squeeze().to('cuda').float()
             scale = np.asarray(scale[0,:])
 
 
@@ -131,12 +135,13 @@ class Trainer():
         self.iter = 0
         # samples = random.sample(range(len(self.loader.testing_data)), num_samples)
         
-        for _, (lr, hr,scale,out) in enumerate(self.loader.testing_data, 1):
+        for _, (lr, hr,scale,rel_coor,out) in enumerate(self.loader.testing_data, 1):
             # print(lr.shape,hr.shape)
             pbar.update(1)
             lr_tensor = lr.squeeze().to('cuda').float()  # ranges from [0, 1]
             hr_tensor = hr.squeeze().to('cuda').float()  # ranges from [0, 1]
             out_tensor = out.squeeze().to('cuda').float()
+            rel_coor = rel_coor.squeeze().to('cuda').float()
             scale = np.asarray(scale[0,:])
 
             # print(lr_tensor.shape,out_tensor.shape,hr_tensor.shape)
@@ -187,19 +192,19 @@ class Trainer():
             self.test_cnt+=1
         
         
-        if self.psnr_max is None or self.psnr_max < (eval_psnr_avg + self.args.patience_thres):
-            self.psnr_max = eval_psnr_avg
-            torch.save(
-                self.model.state_dict(),
-                os.path.join(self.ckp.dir, 'model', f"model_best_{self.args.run_name}.pt")
-            )
-        else:
-            self.patience_count +=1
-            if(self.patience_count > self.args.patience):
-                self.patience_count = 0
-                t = self.loader.rebuild()
-                self.logger.add_scalar("range",t['range'],self.test_cnt)
-                self.logger.add_scalar("asy",t['asy'],self.test_cnt)
+#         if self.psnr_max is None or self.psnr_max < (eval_psnr_avg + self.args.patience_thres):
+        self.psnr_max = eval_psnr_avg
+        torch.save(
+            self.model.state_dict(),
+            os.path.join(self.ckp.dir, 'model', f"model_best_{self.args.run_name}.pt")
+        )
+#         else:
+        self.patience_count +=1
+        if(self.patience_count > self.args.patience):
+            self.patience_count = 0
+            t = self.loader.rebuild()
+            self.logger.add_scalar("range",t['range'],self.test_cnt)
+            self.logger.add_scalar("asy",t['asy'],self.test_cnt)
         
                 
 

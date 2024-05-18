@@ -21,7 +21,7 @@ class DMRI_arb(nn.Module):
         self.tv = tv
 
 
-    def forward(self, inp,scale):
+    def forward(self, inp,scale,rel_coor):
         B,C,H,W,D = inp.shape
         scale = np.asarray(scale)
         H_hr = round(H*scale[0])
@@ -34,7 +34,7 @@ class DMRI_arb(nn.Module):
         feat = self.encoder(inp)
         # feat = self.encoder((inp-0.5)/0.5)
 
-        pred = self.decoder(feat,size)
+        pred = self.decoder(feat,size,rel_coor)
 
         return pred
         # if self.tv:
@@ -48,7 +48,7 @@ class DMRI_RDN_3d(nn.Module):
         self.encoder = make_rdn(in_chans=inch,growth = growth,attn = attn)
         self.decoder = ImplicitDecoder_3d(in_channels= growth,tv = tv)
     
-    def forward(self, inp,scale):
+    def forward(self, inp,scale,rel_coor):
         
         B,C,H,W,D = inp.shape
         scale = np.asarray(scale)
@@ -63,7 +63,7 @@ class DMRI_RDN_3d(nn.Module):
         feat = self.encoder(inp)
         #feat = self.encoder((inp-0.5)/0.5)
         # print(size)
-        pred = self.decoder(feat,size)
+        pred = self.decoder(feat,size,rel_coor)
 
         return pred
         # return pred*0.5+0.5

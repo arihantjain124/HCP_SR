@@ -27,9 +27,9 @@ class Model(nn.Module):
         if args.precision == 'half': self.model.half()
         
 
-    def forward(self, x ,sca):
+    def forward(self, x ,sca,rel_coor = None):
         # print(x.shape,sca)
-        return self.model(x,sca)
+        return self.model(x,sca,rel_coor)
 
     def get_model(self):
         return self.model

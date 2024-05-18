@@ -31,6 +31,8 @@ parser.add_argument("--enable_thres", type=bool, default=True,
 #                     help="threshold")
 parser.add_argument("--thres", type=float, default=0.6,
                     help="threshold for blk emptiness")
+parser.add_argument("--rel_coord", type=bool, default=False,
+                    help="using coordinates")
 
 parser.add_argument("--patience", type=int, default=3,
                     help="epochs before range increases")
@@ -38,9 +40,9 @@ parser.add_argument("--patience", type=int, default=3,
 parser.add_argument("--patience_thres", type=float, default=0.5,
                     help="epochs before range increases")
 
-parser.add_argument("--no_vols", type=int, default=30,
+parser.add_argument("--no_vols", type=int, default=10,
                     help="Number of Volumes to load")
-parser.add_argument("--test_vols", type=int, default=15,
+parser.add_argument("--test_vols", type=int, default=10,
                     help="Number of Volumes to load")
 
 # Optimization specifications

@@ -14,6 +14,8 @@ class Data:
         self.ids = self.dataset_hcp.load_data(args.dir,ids)
         self.train_vols = args.no_vols
         self.test_vols = args.test_vols
+        self.flag_range = True
+        self.flag_asy = True
 
         self.training_dataset = self.dataset_hcp.hcp_data(args,self.ids[:self.train_vols],start_var = args.start_var,batch_size=args.batch_size)
         self.testing_dataset = self.dataset_hcp.hcp_data(args,self.ids[self.train_vols:self.train_vols+args.test_vols],test = True,batch_size=args.test_batch_size)    
@@ -33,12 +35,25 @@ class Data:
         t['asy'] = self.training_dataset.asy
 
         if(np.random.randint(2) == 0):
-            if(t['range'] < 2):
+            if(t['range'] == 2):
+                self.flag_range = False
+            elif(t['range'] == 1):
+                self.flag_range = True
+                
+            if(self.flag_range):
                 self.training_dataset.scale_range(t['range'] + 0.1)
                 self.testing_dataset.scale_range(t['range'] + 0.1)
+            else:
+                self.training_dataset.scale_range(t['range'] - 0.1)
+                self.testing_dataset.scale_range(t['range'] - 0.1)
             
         else:
-            if(t['asy'] > 0.3):
+            if(t['asy'] == 0.8):
+                self.flag_asy = False
+            elif(t['asy'] == 0.1):
+                self.flag_asy = True
+                
+            if(self.flag_asy):
                 self.training_dataset.set_asy(t['asy'] - 0.1)
                 self.testing_dataset.set_asy(t['asy'] - 0.1)
             else:
