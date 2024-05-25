@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 from model.attention import cSELayer_3d,scSELayer
-   
+
 def make_rdn(in_chans=7, RDNkSize=3, growth = 16, RDNconfig='C',enc = 'rdb',drop_prob = 0,attn = False):
     args = Namespace()
     args.G0 = growth
@@ -32,7 +32,7 @@ class RDB_Conv(nn.Module):
     def forward(self, x):
         out = self.conv(x)
         return torch.cat((x, out), 1)
-    
+
 class ConvBlock_3d(nn.Module):
     def __init__(self, in_chans, out_chans, drop_prob = 0):
         """
@@ -103,6 +103,7 @@ class RDN(nn.Module):
             'A': (3, 5, 16),
             'B': (4, 7, 32),
             'C': (5, 8, 32),
+            'D': (8, 8, 32)
         }[args.RDNconfig]
 
         # Shallow feature extraction net

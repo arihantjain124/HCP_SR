@@ -15,15 +15,16 @@ class Model(nn.Module):
         self.tensor_val = args.tensor_val
         self.attention = args.attention
 
-        if args.model == 'dmri_rdn':
-            if args.model_type == '2d':    
-                self.model = dmri_model.DMRI_RDN_2d(growth=args.growth,tv = self.tensor_val).to(self.device)
-            else:
-                self.model = dmri_model.DMRI_RDN_3d(growth=args.growth,tv = self.tensor_val,attn = self.attention).to(self.device)
-        elif args.model == 'dmri_arb':
-            self.model = dmri_model.DMRI_arb(int_chans=args.growth,encoder_type=args.encoder,drop_prob = args.drop_prob,tv = self.tensor_val,attn = self.attention).to(self.device)
+        # if args.model == 'dmri_rdn':
+        if args.model_type == '2d':
+            self.model = dmri_model.DMRI_arb_2d(int_chans=args.growth,encoder_type=args.encoder,drop_prob = args.drop_prob,tv = self.tensor_val,attn = self.attention).to(self.device)    
+        #         self.model = dmri_model.DMRI_RDN_2d(growth=args.growth,tv = self.tensor_val).to(self.device)
+        #     else:
+        #         self.model = dmri_model.DMRI_RDN_3d(growth=args.growth,tv = self.tensor_val,attn = self.attention).to(self.device)
         else:
-            print("check model name")
+            self.model = dmri_model.DMRI_arb(int_chans=args.growth,encoder_type=args.encoder,drop_prob = args.drop_prob,tv = self.tensor_val,attn = self.attention).to(self.device)
+        # else:
+        #     print("check model name")
         if args.precision == 'half': self.model.half()
         
 

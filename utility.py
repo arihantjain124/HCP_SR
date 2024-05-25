@@ -23,50 +23,61 @@ import torch.nn as nn
 import numpy as np
 from scipy.ndimage import gaussian_laplace
 
+# +
 class checkpoint():
     def __init__(self, args):
         self.args = args
         self.ok = True
         self.log = torch.Tensor()
+        
         now = datetime.datetime.now().strftime('%Y-%m-%d-%H:%M:%S')
 
         if args.load == '.':
             if args.save == '.': args.save = now
-            self.dir = './experiment/' + args.save
+            self.dir = './experiment/' + args.save + '/' + self.args.run_name
         else:
-            self.dir = './experiment/' + args.load
+            self.dir = './experiment/' + args.load + '/' + self.args.run_name
             if not os.path.exists(self.dir):
                 args.load = '.'
             else:
                 self.log = torch.load(self.dir + '/psnr_log.pt')
                 print('Continue from epoch {}...'.format(len(self.log)))
 
-        if args.reset:
-            os.system('rm -rf ' + self.dir)
-            args.load = '.'
+#         if args.reset:
+#             os.system('rm -rf ' + self.dir)
+#             args.load = '.'
 
         def _make_dir(path):
             if not os.path.exists(path): os.makedirs(path)
 
+        if(os.path.exists(self.dir)):
+            self.dir = self.dir + now[-4]
+            
         _make_dir(self.dir)
         _make_dir(self.dir + '/model')
-        _make_dir(self.dir + '/results')
+        _make_dir(self.dir + '/optimizer')
+#         _make_dir(self.dir + '/results')
 
         open_type = 'a' if os.path.exists(self.dir + '/log.txt') else 'w'
         self.log_file = open(self.dir + '/log.txt', open_type)
         with open(self.dir + '/config.txt', open_type) as f:
-            f.write(now + '\n\n')
+            f.write(now + '\n' + args.run_name + '\n\n')
             for arg in vars(args):
                 f.write('{}: {}\n'.format(arg, getattr(args, arg)))
             f.write('\n')
 
     def save(self, trainer, epoch, is_best=False):
+        
         trainer.model.save(self.dir, epoch, is_best=is_best)
-        trainer.loss.save(self.dir)
-        trainer.loss.plot_loss(self.dir, epoch)
+        
 
-        self.plot_psnr(epoch)
-        torch.save(self.log, os.path.join(self.dir, 'psnr_log.pt'))
+    #         trainer.loss.save(self.dir)
+#         trainer.loss.plot_loss(self.dir, epoch)
+#         self.plot_psnr(epoch)        
+#         torch.save(self.log, os.path.join(self.dir, 'psnr_log.pt'))
+
+
+
         torch.save(
             trainer.optimizer.state_dict(),
             os.path.join(self.dir, 'optimizer.pt')
@@ -111,9 +122,8 @@ class checkpoint():
             ndarr = normalized.byte().permute(1, 2, 0).cpu().numpy()
             misc.imsave('{}{}.png'.format(filename, p), ndarr)
 
-def quantize(img, rgb_range):
-    pixel_range = 255 / rgb_range
-    return img.mul(pixel_range).clamp(0, 255).round().div(pixel_range)
+
+# -
 
 def save_fig(x, y, pred, fig_name, srresult):
         f, ax = plt.subplots(1, 3, figsize=(30, 10))
@@ -171,7 +181,7 @@ def make_scheduler(args, my_optimizer):
         scheduler = lrs.OneCycleLR(
             my_optimizer,
             max_lr = args.max_lr,
-            steps_per_epoch  = steps_per_epoch,
+            steps_per_epoch  = args.steps_per_epoch,
             epochs = args.epochs
         )
     # scheduler.step(args.start_epoch - 1)
@@ -185,7 +195,7 @@ def recon(x,lr,vol_size):
     for i in range(num_blk):
         vol[lr[i][0]:lr[i][1]+1,lr[i][2]:lr[i][3]+1,lr[i][4]:lr[i][5]+1,...] = x[i,...]
     return vol
-        
+
 def compute_ssim(hr,pred):
     hr = cp.array(hr.squeeze())
     pred = cp.array(pred.squeeze())
@@ -195,7 +205,6 @@ def compute_psnr(hr,pred):
     hr = cp.array(hr.squeeze())
     pred = cp.array(pred.squeeze())
     return float(metrics.peak_signal_noise_ratio(hr,pred,data_range=1))
-
 
 
 def align(lr,hr,pred):
@@ -258,7 +267,7 @@ def plot_train_pred(lr,hr,pred,logger,iter,epoch):
     
     logger.add_figure("Training",fig,global_step = (epoch*10000)+iter)
 
-    
+
 def logger_sampling(hr,pred,lr,scale,logger,iter,epoch,hfen):
     # print(lr.shape,hr.shape,pred.shape)
     # print(type(pred.get()),pred.shape,type(hr),hr.shape)
@@ -322,7 +331,6 @@ def logger_sampling(hr,pred,lr,scale,logger,iter,epoch,hfen):
         ax[2][3].imshow(diff[:,:,2:])
     # fig.colorbar()
     logger.add_figure("Testing",fig,global_step = (epoch*10000)+iter)
-
 
 
 def hfen_metric(reference, input_volume):

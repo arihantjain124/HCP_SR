@@ -31,34 +31,37 @@ class Data:
 
     def rebuild(self,blk_size = None,var = False):
         t = {}
-        t['range'] = self.training_dataset.range 
-        t['asy'] = self.training_dataset.asy
+        t['range'] = float(self.training_dataset.range) 
+        t['asy'] = float(self.training_dataset.asy)
 
         if(np.random.randint(2) == 0):
-            if(t['range'] == 2):
+            if(t['range'] > 1):
                 self.flag_range = False
-            elif(t['range'] == 1):
+            elif(t['range'] < 0.1):
                 self.flag_range = True
                 
             if(self.flag_range):
-                self.training_dataset.scale_range(t['range'] + 0.1)
-                self.testing_dataset.scale_range(t['range'] + 0.1)
+                t['range'] = t['range'] + 0.1
             else:
-                self.training_dataset.scale_range(t['range'] - 0.1)
-                self.testing_dataset.scale_range(t['range'] - 0.1)
+                t['range'] = t['range'] - 0.1
             
         else:
-            if(t['asy'] == 0.8):
+            if(t['asy'] > 0.4):
                 self.flag_asy = False
-            elif(t['asy'] == 0.1):
+            elif(t['asy'] < 0):
                 self.flag_asy = True
                 
             if(self.flag_asy):
-                self.training_dataset.set_asy(t['asy'] - 0.1)
-                self.testing_dataset.set_asy(t['asy'] - 0.1)
+                t['asy'] = t['asy'] + 0.1
+                
             else:
-                self.training_dataset.set_asy(t['asy'] + 0.1)
-                self.testing_dataset.set_asy(t['asy'] + 0.1)
+                t['asy'] = t['asy'] - 0.1
+                
+        
+        self.training_dataset.scale_range(t['range'])
+        self.testing_dataset.scale_range(t['range'])
+        self.training_dataset.set_asy(t['asy'])
+        self.testing_dataset.set_asy(t['asy'])
             
         self.training_dataset.preload_data(blk_size = blk_size,var = var)
         self.testing_dataset.preload_data(test=True,var = var)

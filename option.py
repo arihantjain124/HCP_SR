@@ -13,7 +13,7 @@ parser.add_argument("--epochs", type=int, default=100,
                     help="Epochs")
 parser.add_argument("--dir", type=str,
                     help="dataset_directory")
-parser.add_argument("--batch_size", type=int , default= 8,
+parser.add_argument("--batch_size", type=int , default= 16,
                     help="Batch_size")
 parser.add_argument("--test_batch_size", type=int , default= 16,
                     help="Batch_size")
@@ -37,7 +37,7 @@ parser.add_argument("--rel_coord", type=bool, default=False,
 parser.add_argument("--patience", type=int, default=3,
                     help="epochs before range increases")
 
-parser.add_argument("--patience_thres", type=float, default=0.5,
+parser.add_argument("--patience_thres", type=float, default=0.2,
                     help="epochs before range increases")
 
 parser.add_argument("--no_vols", type=int, default=10,

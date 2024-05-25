@@ -40,20 +40,33 @@ class ImplicitDecoder_3d(nn.Module):
             last_dim_Q = hidden_dim
             
         self.last_layer = nn.Conv3d(hidden_dims[-1] , out_chans , 1)
-        
+
+        self.fa_adc = nn.Sequential(nn.Conv3d(2, hidden_dims[-2]//2, 1),
+                                nn.LeakyReLU(),
+                                nn.Conv3d(hidden_dims[-2]//2,hidden_dims[-1]//2, 1),
+                                nn.LeakyReLU(),
+                                nn.Conv3d(hidden_dims[-1]//2,2, 1),
+                                nn.ReLU())
+
+        self.rgb = nn.Sequential(nn.Conv3d(3, hidden_dims[-2]//2, 1),
+                                nn.LeakyReLU(),
+                                nn.Conv3d(hidden_dims[-2]//2,hidden_dims[-1]//2, 1),
+                                nn.LeakyReLU(),
+                                nn.Conv3d(hidden_dims[-1]//2,3, 1),
+                                nn.ReLU())
         if self.tv:
             self.tensor_val = nn.Sequential(nn.Conv3d(hidden_dims[-1], hidden_dims[-2], 1),
-                                nn.ReLU(),
+                                nn.LeakyReLU(),
                                 nn.Conv3d(hidden_dims[-2],hidden_dims[-1], 1),
-                                nn.ReLU(),
+                                nn.LeakyReLU(),
                                 nn.Conv3d(hidden_dims[-1],6, 1),
-                                nn.ReLU())
+                                nn.LeakyReLU())
             
     def step(self,  x, rel_coor):
         
         k = x
         q = rel_coor
-        
+        # print(q.shape)
         if(q == None):
             for i in range(len(self.K)):
                 k = self.K[i](k)
@@ -70,6 +83,9 @@ class ImplicitDecoder_3d(nn.Module):
         
             out = self.last_layer(q)
         
+        out = out + torch.cat([self.fa_adc(out[:,:2,:,:,:]), self.rgb(out[:,2:,:,:,:])], dim = 1)
+
+
         if self.tv:
             tv = self.tensor_val(q)
             return out ,tv
@@ -89,7 +105,7 @@ class ImplicitDecoder_3d(nn.Module):
         
         # print(syn_inp.shape,x.shape)
         return self.step(x, rel_coord)
-    
+
 class ImplicitDecoder_2d(nn.Module):
     def __init__(self, in_channels=64, hidden_dims=[64, 64, 64, 64, 64],out_chans= 5):
         super().__init__()
@@ -168,5 +184,5 @@ class ImplicitDecoder_2d(nn.Module):
         # print(syn_inp.shape,x.shape)
         pred = self.step(x, syn_inp)
         return pred
-    
+
     

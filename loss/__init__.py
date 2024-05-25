@@ -41,6 +41,10 @@ class Loss(nn.modules.loss._Loss):
                 print('{:.3f} * {}'.format(l['weight'], l['type']))
                 self.loss_module.append(l['function'])
 
+                
+        
+        self.log = torch.Tensor()
+
         device = torch.device('cpu' if args.cpu else 'cuda')
         self.loss_module.to(device)
         if args.precision == 'half': self.loss_module.half()
@@ -55,19 +59,20 @@ class Loss(nn.modules.loss._Loss):
                     loss = 1*l['function'](pred, hr)
                     effective_loss = l['weight'] * loss
                     losses.append(effective_loss)
-
+                    self.log[-1, i] += effective_loss.item()
                 elif l['type'] == 'MSE':
                     loss = 1*l['function'](pred, hr)
                     effective_loss = l['weight'] * loss
                     losses.append(effective_loss)
-
+                    self.log[-1, i] += effective_loss.item()
                 elif l['type'] == 'TV':
                     loss = 1*l['function'](pred_tv,hr_tv)
                     effective_loss = l['weight'] * loss
                     losses.append(effective_loss)
-                    
-
+                    self.log[-1, i] += effective_loss.item()
         loss_sum = sum(losses)
+        if len(self.loss) > 1:
+            self.log[-1, -1] += loss_sum.item()
 
         return loss_sum
 
@@ -76,13 +81,29 @@ class Loss(nn.modules.loss._Loss):
             if hasattr(l, 'scheduler'):
                 l.scheduler.step()
 
-
+    
+    def start_log(self):
+        self.log = torch.cat((self.log, torch.zeros(1, len(self.loss))))
+    
+    
+    def end_log(self, n_batches):
+        self.log[-1].div_(n_batches)
+        
+        
+    def display_loss(self, batch):
+        n_samples = batch + 1
+        log = []
+        for l, c in zip(self.loss, self.log[-1]):
+            log.append('[{}: {:.4f}]'.format(l['type'], c / n_samples))
+        return ''.join(log)
+    
+    
     def get_loss_module(self):
         return self.loss_module
 
     def save(self, apath):
         torch.save(self.state_dict(), os.path.join(apath, 'loss.pt'))
-        torch.save(self.log, os.path.join(apath, 'loss_log.pt'))
+#         torch.save(self.log, os.path.join(apath, 'loss_log.pt'))
 
     def load(self, apath, cpu=False):
         if cpu:

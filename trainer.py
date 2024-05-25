@@ -9,7 +9,6 @@ import torch.nn.functional as F
 import torch.optim.lr_scheduler as lrs
 
 
-# +
 class Trainer():
     def __init__(self, args, loader, my_model, my_loss, ckp,logger = None):
         self.args = args
@@ -36,7 +35,7 @@ class Trainer():
         self.psnr_max = None
 
     def train(self):
-
+        self.loss.start_log()
         self.model.train()
         
         lr = self.scheduler.get_last_lr()[0]
@@ -62,7 +61,7 @@ class Trainer():
             rel_coor = rel_coor.squeeze().to('cuda').float()
             scale = np.asarray(scale[0,:])
 
-
+            # print(rel_coor.shape)
             # tv_tensor = tv.squeeze().to('cuda').float()  # ranges from [0, 1]
             
             # print(lr_tensor.shape,hr_tensor.shape,scale)
@@ -74,7 +73,7 @@ class Trainer():
 
 
             # inference
-            pred = self.model.forward(lr,scale)
+            pred = self.model.forward(lr,scale,rel_coor)
 
 
             if(len(lr_tensor.shape) == 5):
@@ -95,25 +94,26 @@ class Trainer():
             # backward
             if loss.item() < self.args.skip_threshold * self.error_last:
                 loss.backward()
-                
+                self.optimizer.step()
                 if(self.logger != None):
                     self.logger.add_scalar("Loss",loss.item(),self.cnt)
                     self.cnt+=1
             
-            pbar.set_description(f"{loss.item()}")
+            
+            pbar.set_description(f"{self.loss.display_loss(batch)}")
             pbar.set_postfix({"scale":scale,"blk_size":list(lr_tensor.shape),"non_zero":len(pred_tensor[pred_tensor>0])})
                         
-            self.optimizer.step()
-        
+            
         
             if(self.logger != None and np.random.randint(4) == 1):
             ## plotting                
                 utility.plot_train_pred(lr_tensor,hr_tensor,pred_tensor,self.logger,self.iter,self.curr_epoch)
                 self.iter +=1
-                # print(self.iter)
-        
-            # lr_tensor = None
             
+        
+        self.loss.end_log(len(self.loader.training_data))
+        self.error_last = self.loss.log[-1, -1]
+        
         
         # self.scheduler.step()
         self.loss.step()
@@ -155,7 +155,7 @@ class Trainer():
             
             with torch.no_grad():
                 
-                pred = self.model.forward(lr,scale)
+                pred = self.model.forward(lr,scale,rel_coor)
                 # pred = self.model.forward(lr,scale)
                 # pred = torch.nn.functional.interpolate(out,hr_tensor.shape[1:-1])
                 if(len(lr_tensor.shape) == 5):
@@ -166,10 +166,10 @@ class Trainer():
             # print()
             if(self.logger != None and np.random.randint(4) == 1):
                 # print("fig added")
-                psnr, hfen = utility.compute_scores(hr_tensor,pred_tensor,out_tensor,scale,self.logger,self.iter,mask = False,epoch = self.curr_epoch)
+                psnr, hfen = utility.compute_scores(hr_tensor,pred_tensor,out_tensor,scale,self.logger,self.iter,mask = True,epoch = self.curr_epoch)
                 self.iter +=1
             else:
-                psnr, hfen = utility.compute_scores(hr_tensor,pred_tensor,out_tensor,scale,mask = False)
+                psnr, hfen = utility.compute_scores(hr_tensor,pred_tensor,out_tensor,scale,mask = True)
             
             
             eval_hfen_avg.append(hfen)
@@ -179,27 +179,39 @@ class Trainer():
             lr_tensor = None
         
         # print(len(eval_hfen_avg))
+        eval_hfen_avg = np.mean(eval_hfen_avg)
+        eval_psnr_avg = np.mean(eval_psnr_avg)
         
         if(self.logger != None):
             self.logger.add_histogram("HFEN_hist",np.asarray(eval_hfen_avg),self.test_cnt)
             self.logger.add_histogram("PSNR_hist",np.asarray(eval_psnr_avg),self.test_cnt)
             
-            eval_hfen_avg = np.mean(eval_hfen_avg)
-            eval_psnr_avg = np.mean(eval_psnr_avg)
         
             self.logger.add_scalar("HFEN_avg",eval_hfen_avg,self.test_cnt)
             self.logger.add_scalar("PSNR_avg",eval_psnr_avg,self.test_cnt)
             self.test_cnt+=1
         
         
-#         if self.psnr_max is None or self.psnr_max < (eval_psnr_avg + self.args.patience_thres):
-        self.psnr_max = eval_psnr_avg
-        torch.save(
-            self.model.state_dict(),
-            os.path.join(self.ckp.dir, 'model', f"model_best_{self.args.run_name}.pt")
-        )
-#         else:
-        self.patience_count +=1
+        if self.psnr_max is None:
+            self.psnr_max = eval_psnr_avg
+
+        elif (self.psnr_max + self.args.patience_thres) < eval_psnr_avg:
+
+            self.patience_count = 0
+            self.psnr_max = eval_psnr_avg
+            
+            torch.save(
+                self.model.state_dict(),
+                os.path.join(self.ckp.dir ,"model", 'model_{}_{:.4f}_{:.4f}.pt'.format(self.curr_epoch,eval_hfen_avg,eval_psnr_avg))
+            )
+            torch.save(
+                self.optimizer.state_dict(),
+                os.path.join(self.ckp.dir ,"optimizer",'optimizer_{}.pt'.format(self.curr_epoch))
+            )
+        else:
+            if (self.psnr_max - self.args.patience_thres) < eval_psnr_avg:
+                self.patience_count +=1
+        
         if(self.patience_count > self.args.patience):
             self.patience_count = 0
             t = self.loader.rebuild()
