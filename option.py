@@ -1,22 +1,27 @@
 import argparse
 
+# +
 parser = argparse.ArgumentParser(description="DTI_ARB")
+
 parser.add_argument("--block_size", type=tuple, default=(32,32,4),
                     help="Block Size")
 parser.add_argument("--var_blk_size", type=bool, default=False,
                     help="Block Size")
 # parser.add_argument("--enc", type=str, default='rdn',
 #                     help="Encoder Type")
-parser.add_argument("--start_var", type=bool, default=False,
+parser.add_argument("--start_var", type=bool, default=True,
                     help="Block Size")
+
 parser.add_argument("--epochs", type=int, default=100,
                     help="Epochs")
 parser.add_argument("--dir", type=str,
                     help="dataset_directory")
-parser.add_argument("--batch_size", type=int , default= 16,
+
+parser.add_argument("--batch_size", type=int , default= 8,
                     help="Batch_size")
-parser.add_argument("--test_batch_size", type=int , default= 16,
-                    help="Batch_size")
+# parser.add_argument("--test_batch_size", type=int , default= 8,
+#                     help="Batch_size")
+
 parser.add_argument("--sort", type=bool,default=True,
                     help="Sort Subject Ids")
 parser.add_argument("--debug", type=bool,
@@ -27,17 +32,13 @@ parser.add_argument("--ret_points", type=bool, default=False,
                     help="return box point of crops")
 parser.add_argument("--enable_thres", type=bool, default=True,
                     help="threshold")
-# parser.add_argument("--test_mask", type=bool, default=True,
-#                     help="threshold")
 parser.add_argument("--thres", type=float, default=0.6,
                     help="threshold for blk emptiness")
 parser.add_argument("--rel_coord", type=bool, default=False,
                     help="using coordinates")
+# -
 
 parser.add_argument("--patience", type=int, default=3,
-                    help="epochs before range increases")
-
-parser.add_argument("--patience_thres", type=float, default=0.2,
                     help="epochs before range increases")
 
 parser.add_argument("--no_vols", type=int, default=10,
@@ -50,7 +51,7 @@ parser.add_argument('--lr', type=float, default=0.005,
                     help='learning rate')
 parser.add_argument('--max_lr', type=float, default=0.01,
                     help='learning rate')
-parser.add_argument('--lr_decay', type=int, default=18,
+parser.add_argument('--lr_decay', type=int, default=20,
                     help='learning rate decay per N epochs')
 parser.add_argument('--decay_type', type=str, default='step',
                     help='learning rate decay type')
@@ -120,25 +121,43 @@ parser.add_argument('--pin_mem', action='store_true',
 #                     help="percentage of data to be used for training")
 
 
+# +
 # Model specifications
+
 parser.add_argument('--model', default='dmri_rdn',
                     help='model name')
+
+parser.add_argument('--in_chans', default=7,
+                    help='model name')
+
 parser.add_argument('--encoder', default='rdb',
                     help='model name')
-parser.add_argument('--tensor_val', type=bool, default=False,
-                    help='model name')
+parser.add_argument('--tv', type=bool, default=False,
+                    help='use tensor vals during training')
 parser.add_argument('--attention', type=bool, default=False,
                     help='model name')
 parser.add_argument('--drop_prob', default=0,
                     help='model name')
 parser.add_argument("--growth", type=int, default=32,
                     help="epoch with scale (1,1,1)")
+
 parser.add_argument('--model_type', default='3d',
                     help='model name')
-parser.add_argument('--act', type=str, default='relu',
-                    help='activation function')
-parser.add_argument('--pre_train', type=str, default= 'None',
-                    help='pre-trained model directory')
+
+
+parser.add_argument('--out_chans', default=5,
+                    help="rdn config")
+
+parser.add_argument('--RDNconfig', default='C',
+                    help="rdn config")
+
+
+# parser.add_argument('--act', type=str, default='relu',
+#                     help='activation function')
+
+# parser.add_argument('--pre_train', type=str, default= 'None',
+#                     help='pre-trained model directory')
+
 # parser.add_argument('--extend', type=str, default='.',
 #                     help='pre-trained model directory')
 # parser.add_argument('--res_scale', type=float, default=1,
@@ -150,6 +169,7 @@ parser.add_argument('--pre_train', type=str, default= 'None',
 parser.add_argument('--precision', type=str, default='single',
                     choices=('single', 'half'),
                     help='FP precision for test (single | half)')
+# -
 
 
 args = list(parser.parse_known_args())[0]
@@ -161,4 +181,4 @@ args.cuda = True
 args.scale = (1,1,1)
 args.offset = 3
 args.stable_epoch = 1
-args.tv_en = False
+# args.tv = False

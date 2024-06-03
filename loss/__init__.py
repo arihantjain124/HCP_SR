@@ -10,7 +10,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
+from .dcel import DCELoss
 
 class Loss(nn.modules.loss._Loss):
     def __init__(self, args, ckp):
@@ -25,6 +25,8 @@ class Loss(nn.modules.loss._Loss):
                 loss_function = nn.MSELoss()
             elif loss_type == 'L1':
                 loss_function = nn.L1Loss()
+            elif loss_type == 'DCE':
+                loss_function = DCELoss()
             elif loss_type == 'TV':
                 loss_function = nn.MSELoss()
             self.loss.append({
@@ -61,6 +63,11 @@ class Loss(nn.modules.loss._Loss):
                     losses.append(effective_loss)
                     self.log[-1, i] += effective_loss.item()
                 elif l['type'] == 'MSE':
+                    loss = 1*l['function'](pred, hr)
+                    effective_loss = l['weight'] * loss
+                    losses.append(effective_loss)
+                    self.log[-1, i] += effective_loss.item()
+                elif l['type'] == 'DCE':
                     loss = 1*l['function'](pred, hr)
                     effective_loss = l['weight'] * loss
                     losses.append(effective_loss)
