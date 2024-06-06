@@ -108,6 +108,8 @@ class CBAM_3d(nn.Module):
         super(CBAM_3d, self).__init__()
         self.ca = ChannelAttention_3d(inplanes, ratio)
         self.sa = SpatialAttention_3d(kernel_size)
+
+        
     def forward(self, x):
         out = x*self.ca(x)
         result = out*self.sa(out)
@@ -119,7 +121,7 @@ class ChannelAttention_3d(nn.Module):
     def __init__(self, in_planes, ratio=16):
         super(ChannelAttention_3d, self).__init__()
         self.avg_pool = nn.AdaptiveAvgPool3d(1)
-        self.max_pool = nn.AdaptiveAvgPool3d(1)
+        self.max_pool = nn.AdaptiveMaxPool3d(1) 
  
         self.fc1 = nn.Conv3d(in_planes, in_planes // ratio, 1, bias=False)
         self.relu1 = nn.ReLU()
@@ -144,6 +146,7 @@ class SpatialAttention_3d(nn.Module):
  
         self.conv1 = nn.Conv3d(2, 1, kernel_size, padding=padding, bias=False)
         self.sigmoid = nn.Sigmoid()
+
     def forward(self, x):
         avg_out = torch.mean(x, dim=1, keepdim=True)
         max_out,_ = torch.max(x, dim=1, keepdim=True)

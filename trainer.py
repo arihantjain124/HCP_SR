@@ -1,3 +1,4 @@
+# +
 import os
 import utility
 import torch
@@ -92,7 +93,7 @@ class Trainer():
             
             
             # backward
-            if loss.item() < self.args.skip_threshold * self.error_last:
+            if loss.item() < (self.args.skip_threshold * self.error_last):
                 loss.backward()
                 self.optimizer.step()
                 if(self.logger != None):
@@ -191,13 +192,9 @@ class Trainer():
             self.logger.add_scalar("PSNR_avg",eval_psnr_avg,self.test_cnt)
             self.test_cnt+=1
         
-        
-        if self.psnr_max is None:
-            self.psnr_max = eval_psnr_avg
 
-        elif (self.psnr_max + self.args.patience_thres) < eval_psnr_avg:
+        if self.psnr_max is None or self.psnr_max < eval_psnr_avg:
 
-            self.patience_count = 0
             self.psnr_max = eval_psnr_avg
             
             torch.save(
@@ -208,15 +205,13 @@ class Trainer():
                 self.optimizer.state_dict(),
                 os.path.join(self.ckp.dir ,"optimizer",'optimizer_{}.pt'.format(self.curr_epoch))
             )
-        else:
-            if (self.psnr_max - self.args.patience_thres) < eval_psnr_avg:
-                self.patience_count +=1
         
-        if(self.patience_count > self.args.patience):
+        if((self.curr_epoch - 1) > self.args.patience):
             self.patience_count = 0
             t = self.loader.rebuild()
-            self.logger.add_scalar("range",t['range'],self.test_cnt)
+            self.logger.add_scalar("sca",t['sca'],self.test_cnt)
             self.logger.add_scalar("asy",t['asy'],self.test_cnt)
+            self.logger.add_scalar("var",t['var'],self.test_cnt)
         
                 
 
@@ -236,3 +231,4 @@ class Trainer():
 
     def terminate(self):
         return self.curr_epoch >= self.args.epochs
+

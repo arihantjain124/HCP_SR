@@ -12,34 +12,29 @@ import numpy as np
 
 
 class DMRI_arb(nn.Module):
-    def __init__(self,in_chans = 7,int_chans = 32,encoder_type = 'rdb',drop_prob = 0,tv = False,attn = False):
+    def __init__(self,args):
         super().__init__()
-        self.encoder = make_rdn(in_chans=in_chans,growth = int_chans,enc= encoder_type,drop_prob=drop_prob,attn = attn)
+        self.encoder = make_rdn(args)
         # print(self.encoder)
-        self.decoder = ImplicitDecoder_3d(in_channels= int_chans,tv = tv)
-        self.tv = tv
+        self.decoder = ImplicitDecoder_3d(args)
+        self.tv = args.tv
 
 
     def forward(self, inp,scale,rel_coor):
 
         B,C,H,W,D = inp.shape
         scale = np.asarray(scale)
-        H_hr = round(H*scale[0])
-        W_hr = round(W*scale[1])
-        D_hr = round(D*scale[2])
+        # print(scale)
+        H_hr = round(H*float(scale[0]))
+        W_hr = round(W*float(scale[1]))
+        D_hr = round(D*float(scale[2]))
         
         size = [H_hr, W_hr,D_hr]
         
         feat = self.encoder(inp)
         
-        pred = self.decoder(feat,size,rel_coor)
-        
-        return pred
-        # if self.tv:
-        #     return (pred[0]*0.5+0.5),(pred[1]*0.5+0.5)
-        # else:
-        #     return (pred*0.5+0.5)
-    
+        return self.decoder(feat,size,rel_coor)
+
 class DMRI_arb_2d(nn.Module):
     def __init__(self,inch = 7,growth = 16):
         super().__init__()

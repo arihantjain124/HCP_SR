@@ -1,3 +1,4 @@
+# +
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -17,11 +18,13 @@ class SineAct(nn.Module):
         return torch.sin(x)
 
 class ImplicitDecoder_3d(nn.Module):
-    def __init__(self, in_channels=64, hidden_dims=[64,64,64,64,64],out_chans= 5,tv = False):
+    def __init__(self, args,hidden_dims=[64,64,64,64,64]):
         super().__init__()
-
+        
+        in_channels = args.growth
+        self.tv = args.tv
+        out_chans = args.out_chans
         last_dim_K = in_channels * 27
-        self.tv = tv
         last_dim_Q = 3
         
         self.K = nn.ModuleList()
@@ -35,7 +38,7 @@ class ImplicitDecoder_3d(nn.Module):
             
             self.Q.append(nn.Sequential(nn.Conv3d(last_dim_Q, hidden_dim, 1),
                                         SineAct()))
-            
+                
             last_dim_K = hidden_dim
             last_dim_Q = hidden_dim
             
@@ -97,7 +100,7 @@ class ImplicitDecoder_3d(nn.Module):
     
     def forward(self, x, size,rel_coord):
 
-        B, C, H_in, W_in,D_in = x.shape
+        B, C, H_in, W_in,D_in = x.shapes
     
         ratio = (x.new_tensor([math.sqrt((H_in*W_in*D_in)/(size[0]*size[1]*size[2]))]).view(1, -1, 1, 1).expand(B, -1, *size))
 
@@ -105,6 +108,8 @@ class ImplicitDecoder_3d(nn.Module):
         
         # print(syn_inp.shape,x.shape)
         return self.step(x, rel_coord)
+    
+    
 
 class ImplicitDecoder_2d(nn.Module):
     def __init__(self, in_channels=64, hidden_dims=[64, 64, 64, 64, 64],out_chans= 5):
@@ -186,3 +191,4 @@ class ImplicitDecoder_2d(nn.Module):
         return pred
 
     
+

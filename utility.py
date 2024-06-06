@@ -17,6 +17,7 @@ import random
 import matplotlib.pyplot as plt
 
 
+import json
 import skimage.metrics as metrics
 import torch
 import torch.nn as nn
@@ -51,7 +52,7 @@ class checkpoint():
             if not os.path.exists(path): os.makedirs(path)
 
         if(os.path.exists(self.dir)):
-            self.dir = self.dir + now[-4]
+            self.dir = self.dir + now[6:]
             
         _make_dir(self.dir)
         _make_dir(self.dir + '/model')
@@ -60,11 +61,15 @@ class checkpoint():
 
         open_type = 'a' if os.path.exists(self.dir + '/log.txt') else 'w'
         self.log_file = open(self.dir + '/log.txt', open_type)
-        with open(self.dir + '/config.txt', open_type) as f:
-            f.write(now + '\n' + args.run_name + '\n\n')
-            for arg in vars(args):
-                f.write('{}: {}\n'.format(arg, getattr(args, arg)))
-            f.write('\n')
+        # with open(self.dir + '/config.txt', open_type) as f:
+        #     f.write(now + '\n' + args.run_name + '\n\n')
+        #     for arg in vars(args):
+        #         f.write('{}: {}\n'.format(arg, getattr(args, arg)))
+        #     f.write('\n')
+
+        with open(self.dir + '/config.txt', 'w') as f:
+            json.dump(self.args.__dict__, f, indent=2)
+
 
     def save(self, trainer, epoch, is_best=False):
         

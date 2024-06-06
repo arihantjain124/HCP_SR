@@ -34,6 +34,9 @@ parser.add_argument("--enable_thres", type=bool, default=True,
                     help="threshold")
 parser.add_argument("--thres", type=float, default=0.6,
                     help="threshold for blk emptiness")
+parser.add_argument("--psnr_sim", type=int, default=22,
+                    help="threshold for blk emptiness")
+
 parser.add_argument("--rel_coord", type=bool, default=False,
                     help="using coordinates")
 # -
@@ -76,7 +79,7 @@ parser.add_argument('--start_epoch', type=int, default=0,
 # Loss specifications
 parser.add_argument('--loss', type=str, default='1*MSE',
                     help='loss function configuration')
-parser.add_argument('--skip_threshold', type=float, default='1e6',
+parser.add_argument('--skip_threshold', type=float, default='100',
                     help='skipping batch that has large error')
 
 

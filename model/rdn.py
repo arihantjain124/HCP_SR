@@ -8,33 +8,34 @@ import torch.nn as nn
 import numpy as np
 from model.attention import cSELayer_3d,scSELayer
 
-def make_rdn(in_chans=7, RDNkSize=3, growth = 16, RDNconfig='C',enc = 'rdb',drop_prob = 0,attn = False):
+def make_rdn(arg, RDNkSize=3):
+    
     args = Namespace()
-    args.G0 = growth
+    args.G0 = arg.growth
     args.RDNkSize = RDNkSize
-    args.RDNconfig = RDNconfig
-    args.drop_prob = drop_prob
-    args.attn = attn
+    args.RDNconfig = arg.RDNconfig
+    args.attn = arg.attention
+    args.enc = arg.encoder
 
-    args.n_colors = in_chans
-    return RDN(args,enc)
+    args.n_colors = arg.in_chans
+    return RDN(args)
 
-class RDB_Conv(nn.Module):
-    def __init__(self, inChannels, growRate, kSize=3):
-        super(RDB_Conv, self).__init__()
-        Cin = inChannels
-        G  = growRate
-        self.conv = nn.Sequential(*[
-            nn.Conv3d(Cin, G, kSize, padding=(kSize-1)//2, stride=1),
-            nn.LeakyReLU()
-        ])
+# class RDB_Conv(nn.Module):
+#     def __init__(self, inChannels, growRate, kSize=3):
+#         super(RDB_Conv, self).__init__()
+#         Cin = inChannels
+#         G  = growRate
+#         self.conv = nn.Sequential(*[
+#             nn.Conv3d(Cin, G, kSize, padding=(kSize-1)//2, stride=1),
+#             nn.LeakyReLU()
+#         ])
 
-    def forward(self, x):
-        out = self.conv(x)
-        return torch.cat((x, out), 1)
+#     def forward(self, x):
+#         out = self.conv(x)
+#         return torch.cat((x, out), 1)
 
 class ConvBlock_3d(nn.Module):
-    def __init__(self, in_chans, out_chans, drop_prob = 0):
+    def __init__(self, in_chans, out_chans):
         """
         Args:
             in_chans (int): Number of channels in the input.
@@ -44,9 +45,8 @@ class ConvBlock_3d(nn.Module):
         super().__init__()
         self.layers = nn.Sequential(
             nn.Conv3d(in_chans, out_chans, kernel_size=3, padding=1),
-            nn.InstanceNorm3d(out_chans),
-            nn.LeakyReLU(),
-            nn.Dropout3d(drop_prob)
+            nn.InstanceNorm3d(out_chans,affine=True),
+            nn.LeakyReLU()
         )
 
 
@@ -67,10 +67,7 @@ class RDB(nn.Module):
         
         convs = []
         for c in range(C):
-            if(encoder == 'rdb'):
-                convs.append(RDB_Conv(G0 + c*G, G))
-            else:
-                convs.append(ConvBlock_3d(G0 + c*G, G,drop_prob = drop_prob))
+            convs.append(ConvBlock_3d(G0 + c*G, G,drop_prob = drop_prob))
         
         
         if attention:
@@ -83,7 +80,7 @@ class RDB(nn.Module):
         self.convs = nn.Sequential(*convs)
         
         # Local Feature Fusion
-        self.LFF = nn.Conv3d(G0 + C*G, G0, 1, padding=0, stride=1)
+        self.LFF = nn.Conv3d(G0 + C*G, G0, 1, padding=0, stride=1)  
 
     def forward(self, x):
         if self.attention != None:
@@ -100,10 +97,10 @@ class RDN(nn.Module):
 
         # number of RDB blocks, conv layers, out channels
         self.D, C, G = {
-            'A': (3, 5, 16),
-            'B': (4, 7, 32),
+            'A': (20, 6, 32),
+            'B': (16, 8, 64),
             'C': (5, 8, 32),
-            'D': (8, 8, 32)
+            'D': (5, 10, 64)
         }[args.RDNconfig]
 
         # Shallow feature extraction net
