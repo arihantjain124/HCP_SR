@@ -58,12 +58,15 @@ class Trainer():
             
             lr_tensor = lr.squeeze().to('cuda').float()  # ranges from [0, 1]
             hr_tensor = hr.squeeze().to('cuda').float()  # ranges from [0, 1]
-            
-            rel_coor = rel_coor.squeeze().to('cuda').float()
             scale = np.asarray(scale[0,:])
 
+            if(len(rel_coor) == 2):
+                tv_tensor = rel_coor[1].squeeze().to('cuda').float()  
+                rel_coor = rel_coor[0].squeeze().to('cuda').float()
+            else:
+                rel_coor = rel_coor.squeeze().to('cuda').float()
+                
             # print(rel_coor.shape)
-            # tv_tensor = tv.squeeze().to('cuda').float()  # ranges from [0, 1]
             
             # print(lr_tensor.shape,hr_tensor.shape,scale)
             
@@ -74,22 +77,27 @@ class Trainer():
 
 
             # inference
-            pred = self.model.forward(lr,scale,rel_coor)
 
-
+            if(self.args.tv):
+                pred,pred_tv = self.model.forward(lr,scale,rel_coor)
+            else:
+                pred = self.model.forward(lr,scale,rel_coor)
             if(len(lr_tensor.shape) == 5):
                 # print(pred.shape,lr.shape)
                 pred_tensor = torch.permute(pred, (0,2,3,4,1)).float()
-                # pred_tv_tensor = torch.permute(pred_tv, (0,2,3,4,1)).float()
+                if(self.args.tv):
+                    pred_tv_tensor = torch.permute(pred_tv, (0,2,3,4,1)).float()
             else:
                 pred_tensor = torch.permute(pred, (0,2,3,1)).float()
-                # pred_tv_tensor = torch.permute(pred_tv, (0,2,3,1)).float()
+                if(self.args.tv):
+                    pred_tv_tensor = torch.permute(pred_tv, (0,2,3,1)).float()
             
             
             # loss function
-            
-            loss = self.loss(pred_tensor,hr_tensor)
-            # loss = self.loss(pred,hr_tensor,pred_tv,tv_tensor)
+            if(self.args.tv):
+                loss = self.loss(pred_tensor,hr_tensor,pred_tv_tensor,tv_tensor)
+            else:
+                loss = self.loss(pred_tensor,hr_tensor)
             
             
             # backward
@@ -156,7 +164,10 @@ class Trainer():
             
             with torch.no_grad():
                 
-                pred = self.model.forward(lr,scale,rel_coor)
+                if(self.args.tv):
+                    pred,_ = self.model.forward(lr,scale,rel_coor)
+                else:
+                    pred = self.model.forward(lr,scale,rel_coor)
                 # pred = self.model.forward(lr,scale)
                 # pred = torch.nn.functional.interpolate(out,hr_tensor.shape[1:-1])
                 if(len(lr_tensor.shape) == 5):
@@ -194,7 +205,7 @@ class Trainer():
         
 
         if self.psnr_max is None or self.psnr_max < eval_psnr_avg:
-
+            
             self.psnr_max = eval_psnr_avg
             
             torch.save(
@@ -206,13 +217,16 @@ class Trainer():
                 os.path.join(self.ckp.dir ,"optimizer",'optimizer_{}.pt'.format(self.curr_epoch))
             )
         
-        if((self.curr_epoch - 1) > self.args.patience):
-            self.patience_count = 0
+        
+        
+        if(self.patience_count > self.args.patience):
+            self.patience_count = 0 
             t = self.loader.rebuild()
             self.logger.add_scalar("sca",t['sca'],self.test_cnt)
             self.logger.add_scalar("asy",t['asy'],self.test_cnt)
             self.logger.add_scalar("var",t['var'],self.test_cnt)
         
+        self.patience_count+=1
                 
 
     def save_model(self,epoch):

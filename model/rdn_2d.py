@@ -8,29 +8,41 @@ import torch
 import torch.nn as nn
 
 
-def make_rdn(in_chans=7, RDNkSize=3, growth = 16, RDNconfig='C'):
-    args = Namespace()
-    args.G0 = growth
-    args.RDNkSize = RDNkSize
-    args.RDNconfig = RDNconfig
+def make_rdn(arg, RDNkSize=3):
 
-    args.n_colors = in_chans
+    args = Namespace()
+    args.G0 = arg.growth
+    args.RDNkSize = RDNkSize
+    args.RDNconfig = arg.RDNconfig
+    args.attn = arg.attention
+    args.enc = arg.encoder
+
+    args.n_colors = arg.in_chans
+
     return RDN(args)
 
-class RDB_Conv(nn.Module):
-    def __init__(self, inChannels, growRate, kSize=3):
-        super(RDB_Conv, self).__init__()
-        Cin = inChannels
-        G  = growRate
-        self.conv = nn.Sequential(*[
-            nn.Conv2d(Cin, G, kSize, padding=(kSize-1)//2, stride=1),
-            nn.ReLU()
-        ])
+class ConvBlock_2d(nn.Module):
+    def __init__(self, in_chans, out_chans):
+        """
+        Args:
+            in_chans (int): Number of channels in the input.
+            out_chans (int): Number of channels in the output.
+            drop_prob (float): Dropout probability.
+        """
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Conv3d(in_chans, out_chans, kernel_size=3, padding=1),
+            nn.InstanceNorm3d(out_chans,affine=True),
+            nn.LeakyReLU()
+        )
 
-    def forward(self, x):
-        out = self.conv(x)
-        return torch.cat((x, out), 1)
 
+                  
+    def forward(self, input):
+
+        out = self.layers(input)
+        return torch.cat((input, out), 1)
+    
 class RDB(nn.Module):
     def __init__(self, growRate0, growRate, nConvLayers, kSize=3):
         super(RDB, self).__init__()
@@ -40,7 +52,8 @@ class RDB(nn.Module):
 
         convs = []
         for c in range(C):
-            convs.append(RDB_Conv(G0 + c*G, G))
+            convs.append(ConvBlock_2d(G0 + c*G, G))
+            
         self.convs = nn.Sequential(*convs)
 
         # Local Feature Fusion

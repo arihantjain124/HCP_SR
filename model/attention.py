@@ -33,7 +33,7 @@ class cSELayer_3d(nn.Module):
         
         super(cSELayer_3d, self).__init__()
         
-        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.avg_pool = nn.AdaptiveAvgPool3d(1)
         
         self.conv_du = nn.Sequential(
                 nn.Conv3d(channel, channel // reduction, 1, padding=0, bias=True),

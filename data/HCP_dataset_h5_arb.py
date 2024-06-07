@@ -113,7 +113,7 @@ class hcp_data(torch.utils.data.Dataset):
         
         self.blk_size = opt.block_size
         self.var_blk_size = opt.start_var
-        self.cnt = 0
+        
         self.thres = opt.thres
         self.base_dir = opt.dir if opt.dir != None else "/storage/users/arihant"
         self.ids = ids
@@ -344,6 +344,7 @@ class hcp_data(torch.utils.data.Dataset):
     def size_scale_set(self,idx):
 
         if self.var_blk_size:
+            
             x = np.around(np.random.uniform(1,1+self.sca),decimals=1)
             
             curr_scale = np.around(np.random.uniform(x,x+self.asy,3),decimals=1)
@@ -368,12 +369,13 @@ class hcp_data(torch.utils.data.Dataset):
                 curr_scale = np.around(np.random.uniform(x-asy,x+asy,3),decimals=1)
             else:
                 curr_scale = self.scale_const
-                
-            curr_blk_size = list(set(permutations(self.blk_size)))[self.cnt]
             
-            self.cnt+=1
-            if(self.cnt>2):
-                self.cnt = 0
+            curr_blk_size = list(self.blk_size)
+            if(self.model_type == '2d'):
+                curr_blk_size[-1] = 1
+
+            curr_blk_size = list(set(permutations(curr_blk_size)))[np.random.randint(0,3)]
+            
         
         if(min(curr_blk_size) == 1):
             curr_scale[np.where(np.asarray(curr_blk_size) == 1)[0][0]] = 1

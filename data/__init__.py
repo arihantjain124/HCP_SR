@@ -50,7 +50,7 @@ class Data:
                 t['sca'] -= 0.1
             
         elif(np.random.randint(5) <4):
-            if(t['var'] > 8):
+            if(t['var'] > 7):
                 self.flag_var = False
             elif(t['var'] < 2):
                 self.flag_var = True

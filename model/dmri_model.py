@@ -36,10 +36,10 @@ class DMRI_arb(nn.Module):
         return self.decoder(feat,size,rel_coor)
 
 class DMRI_arb_2d(nn.Module):
-    def __init__(self,inch = 7,growth = 16):
+    def __init__(self,args):
         super().__init__()
-        self.encoder = make_rdn_2d(in_chans=inch,growth = growth)
-        self.decoder = ImplicitDecoder_2d(in_channels= growth) 
+        self.encoder = make_rdn_2d(args)
+        self.decoder = ImplicitDecoder_2d(args) 
     
     def set_scale(self, scale):
         self.scale = scale
