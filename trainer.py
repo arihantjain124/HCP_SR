@@ -77,6 +77,8 @@ class Trainer():
                 pred,pred_tv = self.model.forward(lr,scale,rel_coor)
             else:
                 pred = self.model.forward(lr,scale,rel_coor)
+
+
             if(len(lr_tensor.shape) == 5):
                 # print(pred.shape,lr.shape)
                 pred_tensor = torch.permute(pred, (0,2,3,4,1)).float()
@@ -89,6 +91,7 @@ class Trainer():
             
             
             # loss function
+            
             if(self.args.tv):
                 loss = self.loss(pred_tensor,hr_tensor,pred_tv_tensor,tv_tensor)
             else:

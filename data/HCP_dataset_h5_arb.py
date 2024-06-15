@@ -93,10 +93,9 @@ def load_data(base_dir,ids):
 
 
 def interpolate(data,size):
-#     print(data.shape)
+    
     if(len(data.shape)==3):
         inp = torch.unsqueeze(data, 0)
-#         print(inp.shape)
     else:
         inp = torch.permute(data, (3,0,1,2))
     inp = torch.unsqueeze(inp, 0)
@@ -119,9 +118,9 @@ class hcp_data(torch.utils.data.Dataset):
         self.ids = ids
         self.debug = opt.debug
 
-        self.sca = 0
-        self.asy = 0
-        self.var = 0
+        self.sca = 0.1
+        self.asy = 0.2
+        self.var = 4
 
         self.enable_thres = opt.enable_thres
         self.type = opt.type
@@ -154,7 +153,7 @@ class hcp_data(torch.utils.data.Dataset):
         else:
             blk_idx = indx - self.blk_indx[blk_idx-1] - 1
 
-#         print(vol_idx,blk_idx)
+
         if(self.debug):
             return self.collate(vol_idx,blk_idx),(self.blks_ret_lr[vol_idx][blk_idx],self.blks_ret_hr[vol_idx][blk_idx])
         else:    
@@ -164,8 +163,6 @@ class hcp_data(torch.utils.data.Dataset):
     def _make_pos_encoding(self,blk): 
 
         blk = [ [i.item() for i in list(blk[j]) ] for j in range(len(blk))]
-        # print(blk)
-        # return 0
         res = []
         for n in range(len(blk)):   
             blk_x1,blk_x2,blk_y1,blk_y2,blk_z1,blk_z2 = blk[n]
@@ -173,7 +170,8 @@ class hcp_data(torch.utils.data.Dataset):
             if(self.type == '2d'):
 
                 if(blk_x1 - blk_x2 == 0):
-                    blk_x1,blk_x2 = blk_z1,blk_z2
+                    blk_x1,blk_x2 = blk_y1,blk_y2
+                    blk_y1,blk_y2 = blk_z1,blk_z2
                 elif(blk_y1 - blk_y2 == 0):
                     blk_y1,blk_y2 = blk_z1,blk_z2
 
@@ -444,7 +442,7 @@ class hcp_data(torch.utils.data.Dataset):
         
         self.blk_indx.append((curr_blk[2]//self.batch_size)-1)
 
-#         print(blks_rgb.shape)
+
 
         if(self.test):
             blks_lr_adc = torch.split(self.extract_block(torch.from_numpy(loaded[idx]['ADC']),curr_blk[0])[:drop_last,...],self.batch_size)

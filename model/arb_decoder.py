@@ -153,8 +153,6 @@ class ImplicitDecoder_2d(nn.Module):
             for i in range(len(self.K)):
                 
                 k = self.K[i](k)
-                    # print(k.shape,self.Q[i](q).shape)       
-                    # break
                 q = k*self.Q[i](q)
                 
             out = self.last_layer(q)
