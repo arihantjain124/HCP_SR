@@ -31,8 +31,8 @@ class ConvBlock_2d(nn.Module):
         """
         super().__init__()
         self.layers = nn.Sequential(
-            nn.Conv3d(in_chans, out_chans, kernel_size=3, padding=1),
-            nn.InstanceNorm3d(out_chans,affine=True),
+            nn.Conv2d(in_chans, out_chans, kernel_size=3, padding=1),
+            nn.InstanceNorm2d(out_chans,affine=True),
             nn.LeakyReLU()
         )
 

@@ -13,7 +13,7 @@ class Model(nn.Module):
         self.device = torch.device('cpu' if args.cpu else 'cuda')
         self.save_models = args.save_models
 
-        if args.model_type == '2d':
+        if args.type == '2d':
             self.model = dmri_model.DMRI_arb_2d(args).to(self.device)
         else:
             self.model = dmri_model.DMRI_arb(args).to(self.device)

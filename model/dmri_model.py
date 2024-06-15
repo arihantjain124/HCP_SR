@@ -41,20 +41,21 @@ class DMRI_arb_2d(nn.Module):
         self.encoder = make_rdn_2d(args)
         self.decoder = ImplicitDecoder_2d(args) 
     
-    def set_scale(self, scale):
-        self.scale = scale
-
-    def forward(self, inp):
+    def forward(self, inp,scale,rel_coor):
         
         B,C,H,W = inp.shape
+        
+        size = rel_coor.shape[2:]   
 
-        H_hr = round(H*self.scale[0])
-        W_hr = round(W*self.scale[1])
+        # H_hr = round(H*scale[0])
+        # W_hr = round(W*scale[1])
         
-        size = [H_hr, W_hr]
-        
+        # size = [H_hr, W_hr]
+
+
+        # print(rel_coor.shape,inp.shape,size,scale)
         feat = self.encoder(inp)
         
-        pred = self.decoder(feat,size)
+        pred = self.decoder(feat,size,rel_coor)
         
         return pred

@@ -11,6 +11,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from .dcel import DCELoss
+from .sog import SOG
 
 class Loss(nn.modules.loss._Loss):
     def __init__(self, args, ckp):
@@ -29,6 +30,8 @@ class Loss(nn.modules.loss._Loss):
                 loss_function = DCELoss()
             elif loss_type == 'TV':
                 loss_function = nn.MSELoss()
+            elif loss_type == 'SOG':
+                loss_function = SOG(args.out_chans,args.type)
             self.loss.append({
                 'type': loss_type,
                 'weight': float(weight),
@@ -68,6 +71,11 @@ class Loss(nn.modules.loss._Loss):
                     losses.append(effective_loss)
                     self.log[-1, i] += effective_loss.item()
                 elif l['type'] == 'DCE':
+                    loss = 1*l['function'](pred, hr)
+                    effective_loss = l['weight'] * loss
+                    losses.append(effective_loss)
+                    self.log[-1, i] += effective_loss.item()
+                elif l['type'] == 'SOG':
                     loss = 1*l['function'](pred, hr)
                     effective_loss = l['weight'] * loss
                     losses.append(effective_loss)

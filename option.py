@@ -144,7 +144,7 @@ parser.add_argument('--drop_prob', default=0,
 parser.add_argument("--growth", type=int, default=32,
                     help="epoch with scale (1,1,1)")
 
-parser.add_argument('--model_type', default='3d',
+parser.add_argument('--type', default='3d',
                     help='model name')
 
 

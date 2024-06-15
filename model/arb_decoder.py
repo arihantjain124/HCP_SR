@@ -116,7 +116,7 @@ class ImplicitDecoder_2d(nn.Module):
         self.tv = args.tv
         out_chans = args.out_chans
         last_dim_K = in_channels * 9
-        last_dim_Q = 3
+        last_dim_Q = 2
 
         self.K = nn.ModuleList()
         self.Q = nn.ModuleList()
@@ -124,8 +124,10 @@ class ImplicitDecoder_2d(nn.Module):
         for hidden_dim in hidden_dims:
             self.K.append(nn.Sequential(nn.Conv2d(last_dim_K, hidden_dim, 1),
                                         nn.LeakyReLU(),
-                                        ResBlock(channels = hidden_dim, nConvLayers = 4)
+                                        ResBlock(channels = hidden_dim, nConvLayers = 3)
                                         ))    
+
+
             self.Q.append(nn.Sequential(nn.Conv2d(last_dim_Q, hidden_dim, 1),
                                         SineAct()))
             last_dim_K = hidden_dim
@@ -133,34 +135,38 @@ class ImplicitDecoder_2d(nn.Module):
             
         self.last_layer = nn.Conv2d(hidden_dims[-1], out_chans, 1)
         
-        self.in_branch = nn.Sequential(nn.Conv2d(in_channels * 9, hidden_dims[-2], 1),
-                            nn.ReLU(),
-                            nn.Conv2d(hidden_dims[-2],hidden_dims[-1], 1),
-                            nn.ReLU(),
-                            nn.Conv2d(hidden_dims[-1],out_chans, 1),
-                            nn.ReLU())
-
-    def step(self, x, syn_inp):
+    def step(self, x, rel_coor):
         
-        q = syn_inp
         
         k = x
-        
-        for i in range(len(self.K)):
+        q = rel_coor
+        # print(q.shape)
+
+        if(q==None):
+            for i in range(len(self.K)):
+                k = self.K[i](k)
             
-            k = self.K[i](k)
-            q = k*self.Q[i](q)
             
-        q = self.last_layer(q)
+            out = self.last_layer(k)
+
+        else:
+            for i in range(len(self.K)):
+                
+                k = self.K[i](k)
+                    # print(k.shape,self.Q[i](q).shape)       
+                    # break
+                q = k*self.Q[i](q)
+                
+            out = self.last_layer(q)
         
-        return q + self.in_branch(x)
+        return out
 
 
     def forward(self, x, size,rel_coord):
         B, C, H_in, W_in = x.shape
         
         x = F.interpolate(F.unfold(x, 3, padding=1).view(B, C*9, H_in, W_in), size=size[-2:], mode='bilinear')
-        
+        # print(x.shape,size)
         # print(syn_inp.shape,x.shape)
         return self.step(x, rel_coord)
 

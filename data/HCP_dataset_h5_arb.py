@@ -124,10 +124,10 @@ class hcp_data(torch.utils.data.Dataset):
         self.var = 0
 
         self.enable_thres = opt.enable_thres
-        self.model_type = opt.model_type
+        self.type = opt.type
 
         self.tv = opt.tv
-        self.psnr_sim = opt.psnr_sim
+        # self.psnr_sim = opt.psnr_sim
 
         self.transform = tio.transforms.RescaleIntensity(masking_method=lambda x: x > 0)
         self.tv_transform = tio.transforms.RescaleIntensity(out_min_max = (-1,1))
@@ -164,26 +164,49 @@ class hcp_data(torch.utils.data.Dataset):
     def _make_pos_encoding(self,blk): 
 
         blk = [ [i.item() for i in list(blk[j]) ] for j in range(len(blk))]
-        
+        # print(blk)
+        # return 0
         res = []
-        for n in range(len(blk)):
+        for n in range(len(blk)):   
             blk_x1,blk_x2,blk_y1,blk_y2,blk_z1,blk_z2 = blk[n]
-            # print(blk[n])
-            t = []
-            for i in range(blk_x1,blk_x2+1):
+
+            if(self.type == '2d'):
+
+                if(blk_x1 - blk_x2 == 0):
+                    blk_x1,blk_x2 = blk_z1,blk_z2
+                elif(blk_y1 - blk_y2 == 0):
+                    blk_y1,blk_y2 = blk_z1,blk_z2
+
                 l = []
-                for j in range(blk_y1,blk_y2+1):
+                for i in range(blk_x1,blk_x2+1):
                     q = []
-                    for k in range(blk_z1,blk_z2+1):
-                        q.append((i,j,k))
+                    for j in range(blk_y1,blk_y2+1):
+                        q.append((i,j))   
                     l.append(q)
-                t.append(l)
-            res.append(t)
+                res.append(l)
 
+            else:
 
-        res = torch.from_numpy(np.asarray(res))
-        res = torch.permute(res, (0,4,1,2,3))
-    
+                t = []
+                for i in range(blk_x1,blk_x2+1):
+                    l = []
+                    for j in range(blk_y1,blk_y2+1):
+                        q = []
+                        for k in range(blk_z1,blk_z2+1):
+                            q.append((i,j,k))   
+                        l.append(q)
+                    t.append(l)
+                res.append(t)
+            
+
+        if (self.type == '2d'):
+            
+            res = torch.from_numpy(np.asarray(res))
+            res = torch.permute(res, (0,3,1,2))
+        else:
+            res = torch.from_numpy(np.asarray(res))
+            res = torch.permute(res, (0,4,1,2,3))
+        # print(blk,res.shape)
         return res
 
     def collate(self,vol_idx,blk_idx):
@@ -195,7 +218,7 @@ class hcp_data(torch.utils.data.Dataset):
         coor_hr = self._make_pos_encoding(coor[1])
 
         inp = torch.from_numpy(np.stack(data[0]))
-        if (self.model_type == '2d'):
+        if (self.type == '2d'):
             dims = 3
         else:
             dims = 4
@@ -302,18 +325,14 @@ class hcp_data(torch.utils.data.Dataset):
                     curr_blk_lr = vol_lr[temp_lr[0]:temp_lr[1]+1, temp_lr[2]:temp_lr[3]+1, temp_lr[4]:temp_lr[5]+1, ...]
 
                     curr_blk_hr = datahr[temp_hr[0]:temp_hr[1]+1, temp_hr[2]:temp_hr[3]+1, temp_hr[4]:temp_hr[5]+1, ...]
-                    psnr_sim = float(metrics.peak_signal_noise_ratio(curr_blk.numpy(),curr_blk_lr.numpy(),data_range=1))
+                    # psnr_sim = float(metrics.peak_signal_noise_ratio(curr_blk.numpy(),curr_blk_lr.numpy(),data_range=1))
 
 
                     if(self.enable_thres):
-                        if((torch.numel(curr_blk) != 0 and torch.count_nonzero(curr_blk)/torch.numel(curr_blk) > self.thres) and 
-                        (torch.numel(curr_blk_hr) != 0 and torch.count_nonzero(curr_blk_hr)/torch.numel(curr_blk_hr) > self.thres)):
-                            if(psnr_sim > self.psnr_sim):
-                                ind_block_lr.append(temp_lr)
-                                ind_block_hr.append(temp_hr)
-                                count = count + 1
-#                             else:
-#                                 print("rejected",psnr_sim)
+                        if((torch.numel(curr_blk_hr) != 0 and torch.count_nonzero(curr_blk_hr)/torch.numel(curr_blk_hr) > self.thres)):
+                            ind_block_lr.append(temp_lr)
+                            ind_block_hr.append(temp_hr)
+                            count = count + 1
                     else:
                         ind_block_lr.append(temp_lr)
                         ind_block_hr.append(temp_hr)
@@ -350,7 +369,7 @@ class hcp_data(torch.utils.data.Dataset):
             curr_scale = np.around(np.random.uniform(x,x+self.asy,3),decimals=1)
 
             curr_blk_size = [int(np.random.uniform(32-self.var,32+self.var)) for i in range(2)]
-            if(self.model_type == '2d'):
+            if(self.type == '2d'):
                 curr_blk_size.append(1)
             else:    
                 z_var = int(self.var//4)
@@ -371,7 +390,7 @@ class hcp_data(torch.utils.data.Dataset):
                 curr_scale = self.scale_const
             
             curr_blk_size = list(self.blk_size)
-            if(self.model_type == '2d'):
+            if(self.type == '2d'):
                 curr_blk_size[-1] = 1
 
             curr_blk_size = list(set(permutations(curr_blk_size)))[np.random.randint(0,3)]
@@ -379,6 +398,7 @@ class hcp_data(torch.utils.data.Dataset):
         
         if(min(curr_blk_size) == 1):
             curr_scale[np.where(np.asarray(curr_blk_size) == 1)[0][0]] = 1
+
 
         return curr_scale,curr_blk_size
     
@@ -391,6 +411,7 @@ class hcp_data(torch.utils.data.Dataset):
 
         size = [int(curr_scale[i] * vol.shape[i]) for i in range(3)]
         
+
         # print(curr_blk_size,curr_scale)
 
         vol_hr = interpolate(torch.from_numpy(loaded_gt[idx]['vol0']),size)
@@ -406,9 +427,6 @@ class hcp_data(torch.utils.data.Dataset):
         
 
         curr_blk = self.blk_points_pair(vol,vol_hr,blk_size=curr_blk_size,scale=curr_scale,vol_lr = vol_lr)
-        
-        # if(not self.debug):
-        #     curr_scale = curr_scale[curr_scale>1]
         
         drop_last = (curr_blk[2]//self.batch_size)*self.batch_size
         

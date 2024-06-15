@@ -55,7 +55,6 @@ class Trainer():
 
             self.optimizer.zero_grad()
             pbar.update(1)
-            
             lr_tensor = lr.squeeze().to('cuda').float()  # ranges from [0, 1]
             hr_tensor = hr.squeeze().to('cuda').float()  # ranges from [0, 1]
             scale = np.asarray(scale[0,:])
@@ -65,10 +64,6 @@ class Trainer():
                 rel_coor = rel_coor[0].squeeze().to('cuda').float()
             else:
                 rel_coor = rel_coor.squeeze().to('cuda').float()
-                
-            # print(rel_coor.shape)
-            
-            # print(lr_tensor.shape,hr_tensor.shape,scale)
             
             if(len(lr_tensor.shape) == 5):
                 lr = torch.permute(lr_tensor, (0,4,1,2,3))

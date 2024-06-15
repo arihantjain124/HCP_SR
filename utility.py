@@ -282,6 +282,7 @@ def logger_sampling(hr,pred,lr,scale,logger,iter,epoch,hfen):
     
     fig, ax = plt.subplots(3,4)
     # print(lr.shape,hr.shape)
+    # psnr_sim = float(metrics.peak_signal_noise_ratio(lr,hr,data_range=1))
     
     
     fig.suptitle(f'scale: {scale},blk_size: {lr.shape[:3]},HFEN: {hfen}', fontsize=10)
