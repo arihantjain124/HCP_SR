@@ -118,9 +118,9 @@ class hcp_data(torch.utils.data.Dataset):
         self.ids = ids
         self.debug = opt.debug
 
-        self.sca = 0.1
-        self.asy = 0.2
-        self.var = 4
+        self.sca = 0
+        self.asy = 0
+        self.var = 0
 
         self.enable_thres = opt.enable_thres
         self.type = opt.type
@@ -161,7 +161,7 @@ class hcp_data(torch.utils.data.Dataset):
         
 
     def _make_pos_encoding(self,blk): 
-
+        
         blk = [ [i.item() for i in list(blk[j]) ] for j in range(len(blk))]
         res = []
         for n in range(len(blk)):   
@@ -204,7 +204,6 @@ class hcp_data(torch.utils.data.Dataset):
         else:
             res = torch.from_numpy(np.asarray(res))
             res = torch.permute(res, (0,4,1,2,3))
-        # print(blk,res.shape)
         return res
 
     def collate(self,vol_idx,blk_idx):
@@ -213,7 +212,10 @@ class hcp_data(torch.utils.data.Dataset):
 
         coor = self.blks_ret_lr[vol_idx][blk_idx],self.blks_ret_hr[vol_idx][blk_idx]
 
-        coor_hr = self._make_pos_encoding(coor[1])
+        # coor_hr = self._make_pos_encoding(coor[1])
+
+        coor_hr = self.blks_coor_hr[vol_idx][blk_idx]
+
 
         inp = torch.from_numpy(np.stack(data[0]))
         if (self.type == '2d'):
@@ -234,7 +236,7 @@ class hcp_data(torch.utils.data.Dataset):
             return inp,hr,self.scale[vol_idx],(coor_hr,tv)
 
         else:
-            # tv = torch.from_numpy(np.stack(self.loaded_tv[vol_idx][blk_idx]))
+            
             return inp,hr,self.scale[vol_idx],coor_hr
     
     def preload_data(self,test = None,args = None):
@@ -254,6 +256,7 @@ class hcp_data(torch.utils.data.Dataset):
         self.scale = {}
         self.blks_ret_lr = {}
         self.blks_ret_hr = {}
+        self.blks_coor_hr = {}
         
         
         if(self.test):
@@ -266,9 +269,9 @@ class hcp_data(torch.utils.data.Dataset):
                 
         for i in self.ids:
             if(self.test):
-                self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i],self.scale[i],self.blks_ret_lr[i],self.blks_ret_hr[i],self.loaded_adc_lr[i],self.loaded_fa_lr[i],self.loaded_rgb_lr[i] = self.pre_proc(i)
+                self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i],self.scale[i],self.blks_ret_lr[i],self.blks_ret_hr[i],self.blks_coor_hr[i],self.loaded_adc_lr[i],self.loaded_fa_lr[i],self.loaded_rgb_lr[i] = self.pre_proc(i)
             else:
-                self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i],self.scale[i],self.blks_ret_lr[i],self.blks_ret_hr[i],self.loaded_tv[i] = self.pre_proc(i)
+                self.loaded_blk[i],self.loaded_adc[i],self.loaded_fa[i],self.loaded_rgb[i],self.scale[i],self.blks_ret_lr[i],self.blks_ret_hr[i],self.blks_coor_hr[i],self.loaded_tv[i] = self.pre_proc(i)
             if(self.debug == True):
                 print(i,"loaded")
         self.blk_indx = np.cumsum(self.blk_indx)
@@ -441,18 +444,21 @@ class hcp_data(torch.utils.data.Dataset):
         curr_blk_hr = torch.split(torch.from_numpy(curr_blk[1])[:drop_last,...],self.batch_size)
         
         self.blk_indx.append((curr_blk[2]//self.batch_size)-1)
-
-
+        # print(len(curr_blk_hr))
+        coor_hr = []
+        for i in curr_blk_hr:
+            coor_hr.append(self._make_pos_encoding(i))
+            # print(i.shape)
 
         if(self.test):
             blks_lr_adc = torch.split(self.extract_block(torch.from_numpy(loaded[idx]['ADC']),curr_blk[0])[:drop_last,...],self.batch_size)
             blks_lr_fa = torch.split(self.extract_block(torch.from_numpy(loaded[idx]['FA']),curr_blk[0])[:drop_last,...],self.batch_size)
             blks_lr_rgb = torch.split(self.extract_block(torch.from_numpy(loaded[idx]['color_FA']),curr_blk[0])[:drop_last,...],self.batch_size)
             # print(blks_lr_adc.shape,blks_lr_fa.shape,blks_lr_rgb.shape)
-            return blks_img,blks_adc,blks_fa,blks_rgb,curr_scale,curr_blk_lr,curr_blk_hr,blks_lr_adc,blks_lr_fa,blks_lr_rgb
+            return blks_img,blks_adc,blks_fa,blks_rgb,curr_scale,curr_blk_lr,curr_blk_hr,coor_hr,blks_lr_adc,blks_lr_fa,blks_lr_rgb
         else:
             # blks_tv = torch.split(self.extract_block(tv,curr_blk[1])[:drop_last,...],self.batch_size)
-            return blks_img,blks_adc,blks_fa,blks_rgb,curr_scale,curr_blk_lr,curr_blk_hr,blks_tv
+            return blks_img,blks_adc,blks_fa,blks_rgb,curr_scale,curr_blk_lr,curr_blk_hr,coor_hr,blks_tv
         
         # return blks_img,blks_adc,blks_fa,blks_rgb,blks_tv,curr_scale,curr_blk_lr,curr_blk_hr
 
