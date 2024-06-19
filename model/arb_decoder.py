@@ -17,6 +17,31 @@ class SineAct(nn.Module):
     def forward(self, x):
         return torch.sin(x)
 
+class PixelShuffle3d(nn.Module):
+    '''
+    This class is a 3d version of pixelshuffle.
+    '''
+    def __init__(self, scale):
+        '''
+        :param scale: upsample scale
+        '''
+        super().__init__()
+        self.scale = scale
+
+    def forward(self, input):
+        batch_size, channels, in_depth, in_height, in_width = input.size()
+        nOut = channels // self.scale ** 3
+
+        out_depth = in_depth * self.scale
+        out_height = in_height * self.scale
+        out_width = in_width * self.scale
+
+        input_view = input.contiguous().view(batch_size, nOut, self.scale, self.scale, self.scale, in_depth, in_height, in_width)
+
+        output = input_view.permute(0, 1, 5, 2, 6, 3, 7, 4).contiguous()
+
+        return output.view(batch_size, nOut, out_depth, out_height, out_width)
+
 class ImplicitDecoder_3d(nn.Module):
     def __init__(self, args,hidden_dims=[64,64,64,64,64]):
         super().__init__()
@@ -26,14 +51,14 @@ class ImplicitDecoder_3d(nn.Module):
         out_chans = args.out_chans
         last_dim_K = in_channels * 27
         last_dim_Q = 3
-        
+        self.pixel_shuffle = PixelShuffle3d(2)
         self.K = nn.ModuleList()
         self.Q = nn.ModuleList()
         
         for hidden_dim in hidden_dims:
             self.K.append(nn.Sequential(nn.Conv3d(last_dim_K, hidden_dim, 1),
                                         nn.LeakyReLU(),
-                                        ResBlock_3d(channels = hidden_dim, nConvLayers = 3)
+                                        ResBlock_3d(channels = hidden_dim, nConvLayers = 5)
                                         ))    
             
             self.Q.append(nn.Sequential(nn.Conv3d(last_dim_Q, hidden_dim, 1),
@@ -74,7 +99,7 @@ class ImplicitDecoder_3d(nn.Module):
             for i in range(len(self.K)):
                 k = self.K[i](k)
             
-            
+            q = k
             out = self.last_layer(k)
 
         else:
@@ -101,6 +126,8 @@ class ImplicitDecoder_3d(nn.Module):
     def forward(self, x, size,rel_coord):
 
         B, C, H_in, W_in,D_in = x.shape
+
+        # x = self.pixel_shuffle(x)
 
         x = F.interpolate(unfoldNd.unfoldNd(x, 3, padding=1).view(B, C*27, H_in, W_in,D_in), size=size[-3:],mode = "trilinear")
         
