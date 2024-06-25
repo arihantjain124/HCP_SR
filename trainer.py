@@ -36,10 +36,12 @@ class Trainer():
         self.psnr_max = None
 
     def train(self):
+
         self.loss.start_log()
         self.model.train()
         
         lr = self.scheduler.get_last_lr()[0]
+        
         if(self.logger != None):
             self.logger.add_scalar("LR",lr,self.curr_epoch)
         self.ckp.write_log('[Epoch {}]\tLearning rate: {:.2e}'.format(self.curr_epoch, Decimal(lr)))
@@ -51,13 +53,13 @@ class Trainer():
         # self.optimizer.zero_grad()
                 
         
-        for batch, (lr,hr,scale,rel_coor) in enumerate(self.loader.training_data):
+        for batch, (lr,hr,size,rel_coor) in enumerate(self.loader.training_data):
 
             self.optimizer.zero_grad()
             pbar.update(1)
             lr_tensor = lr.squeeze().to('cuda').float()  # ranges from [0, 1]
             hr_tensor = hr.squeeze().to('cuda').float()  # ranges from [0, 1]
-            scale = np.asarray(scale[0,:])
+            # size = np.asarray(size)
 
             if(len(rel_coor) == 2):
                 tv_tensor = rel_coor[1].squeeze().to('cuda').float()  
@@ -74,9 +76,9 @@ class Trainer():
             # inference
 
             if(self.args.tv):
-                pred,pred_tv = self.model.forward(lr,scale,rel_coor)
+                pred,pred_tv = self.model.forward(lr,size,rel_coor)
             else:
-                pred = self.model.forward(lr,scale,rel_coor)
+                pred = self.model.forward(lr,size,rel_coor)
 
 
             if(len(lr_tensor.shape) == 5):
@@ -108,7 +110,8 @@ class Trainer():
             
             
             pbar.set_description(f"{self.loss.display_loss(batch)}")
-            pbar.set_postfix({"scale":scale,"blk_size":list(lr_tensor.shape),"non_zero":len(pred_tensor[pred_tensor>0])})
+            size = [i.item() for i in size]
+            pbar.set_postfix({"size":size,"blk_size":list(lr_tensor.shape),"non_zero":len(pred_tensor[pred_tensor>0])})
                         
             
         
@@ -142,14 +145,14 @@ class Trainer():
         self.iter = 0
         # samples = random.sample(range(len(self.loader.testing_data)), num_samples)
         
-        for _, (lr, hr,scale,rel_coor,out) in enumerate(self.loader.testing_data, 1):
+        for _, (lr, hr,size,rel_coor,out) in enumerate(self.loader.testing_data, 1):
             # print(lr.shape,hr.shape)
             pbar.update(1)
             lr_tensor = lr.squeeze().to('cuda').float()  # ranges from [0, 1]
             hr_tensor = hr.squeeze().to('cuda').float()  # ranges from [0, 1]
             out_tensor = out.squeeze().to('cuda').float()
             rel_coor = rel_coor.squeeze().to('cuda').float()
-            scale = np.asarray(scale[0,:])
+            # size = np.asarray(size)
 
             # print(lr_tensor.shape,out_tensor.shape,hr_tensor.shape)
             
@@ -163,10 +166,10 @@ class Trainer():
             with torch.no_grad():
                 
                 if(self.args.tv):
-                    pred,_ = self.model.forward(lr,scale,rel_coor)
+                    pred,_ = self.model.forward(lr,size,rel_coor)
                 else:
-                    pred = self.model.forward(lr,scale,rel_coor)
-                # pred = self.model.forward(lr,scale)
+                    pred = self.model.forward(lr,size,rel_coor)
+                # pred = self.model.forward(lr,size)
                 # pred = torch.nn.functional.interpolate(out,hr_tensor.shape[1:-1])
                 if(len(lr_tensor.shape) == 5):
                     pred_tensor = torch.permute(pred, (0,2,3,4,1)).float()
@@ -176,15 +179,16 @@ class Trainer():
             # print()
             if(self.logger != None and np.random.randint(4) == 1):
                 # print("fig added")
-                psnr, hfen = utility.compute_scores(hr_tensor,pred_tensor,out_tensor,scale,self.logger,self.iter,mask = True,epoch = self.curr_epoch)
+                psnr, hfen = utility.compute_scores(hr_tensor,pred_tensor,out_tensor,size,self.logger,self.iter,mask = True,epoch = self.curr_epoch)
                 self.iter +=1
             else:
-                psnr, hfen = utility.compute_scores(hr_tensor,pred_tensor,out_tensor,scale,mask = True)
+                psnr, hfen = utility.compute_scores(hr_tensor,pred_tensor,out_tensor,size,mask = True)
             
             
             eval_hfen_avg.append(hfen)
             eval_psnr_avg.append(psnr)
-            pbar.set_postfix({"scale":scale,"blk_size":list(lr_tensor.shape),"hfen":hfen,"psnr":psnr,"non_zero":len(pred[pred>0])})
+            size = [i.item() for i in size]
+            pbar.set_postfix({"size":size,"blk_size":list(lr_tensor.shape),"hfen":hfen,"psnr":psnr,"non_zero":len(pred[pred>0])})
             torch.cuda.empty_cache()
             lr_tensor = None
         
