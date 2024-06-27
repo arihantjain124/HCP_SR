@@ -176,7 +176,8 @@ class Trainer():
                 else:
                     pred_tensor = torch.permute(pred, (0,2,3,1)).float()
             
-            # print()
+            # print()v
+            size = [i.item() for i in size]
             if(self.logger != None and np.random.randint(4) == 1):
                 # print("fig added")
                 psnr, hfen = utility.compute_scores(hr_tensor,pred_tensor,out_tensor,size,self.logger,self.iter,mask = True,epoch = self.curr_epoch)
@@ -187,7 +188,6 @@ class Trainer():
             
             eval_hfen_avg.append(hfen)
             eval_psnr_avg.append(psnr)
-            size = [i.item() for i in size]
             pbar.set_postfix({"size":size,"blk_size":list(lr_tensor.shape),"hfen":hfen,"psnr":psnr,"non_zero":len(pred[pred>0])})
             torch.cuda.empty_cache()
             lr_tensor = None
