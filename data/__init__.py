@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 
-import data.HCP_dataset_h5_arb_hr as HCP_dataset
+import data.HCP_dataset_h5_arb as HCP_dataset
 
 class Data:
     def __init__(self, args,ids,debug = False):

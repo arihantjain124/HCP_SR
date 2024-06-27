@@ -224,20 +224,22 @@ class hcp_data(torch.utils.data.Dataset):
             dims = 4
             
         hr = np.concatenate([np.expand_dims(data[1],axis = dims),np.expand_dims(data[2],axis = dims),data[3]], axis = dims)
+        # print(data[1].shape)
+        curr_size = [int(i) for i in data[1].shape]
         
         if(self.test):
             data = self.loaded_adc_lr[vol_idx][blk_idx],self.loaded_fa_lr[vol_idx][blk_idx],self.loaded_rgb_lr[vol_idx][blk_idx]
             out = np.concatenate([np.expand_dims(data[0],axis = dims),np.expand_dims(data[1],axis = dims),data[2]], axis = dims)
-            return inp,hr,self.scale[vol_idx],coor_hr,out
+            return inp,hr,curr_size,coor_hr,out
         
         elif(self.tv):
             
             tv = self.loaded_tv[vol_idx][blk_idx]
-            return inp,hr,self.scale[vol_idx],(coor_hr,tv)
+            return inp,hr,curr_size,(coor_hr,tv)
 
         else:
             
-            return inp,hr,self.scale[vol_idx],coor_hr
+            return inp,hr,curr_size,coor_hr
     
     def preload_data(self,test = None,args = None):
         
@@ -277,7 +279,7 @@ class hcp_data(torch.utils.data.Dataset):
         self.blk_indx = np.cumsum(self.blk_indx)
 
     
-    def blk_points_pair(self,datalr,datahr,blk_size = [16,16,4],stride = (0,0,0),scale = (1,1,1),vol_lr = None):
+    def blk_points_pair(self,datalr,datahr,blk_size = [16,16,4],stride = (0,0,0),scale = (1,1,1)):
     
         shpind = torch.nonzero(datalr)
         xmin,xmax = torch.min(shpind[:,0]).item(),torch.max(shpind[:,0]).item()
@@ -323,7 +325,6 @@ class hcp_data(torch.utils.data.Dataset):
                     
                     
                     curr_blk = datalr[temp_lr[0]:temp_lr[1]+1, temp_lr[2]:temp_lr[3]+1, temp_lr[4]:temp_lr[5]+1, ...]
-                    curr_blk_lr = vol_lr[temp_lr[0]:temp_lr[1]+1, temp_lr[2]:temp_lr[3]+1, temp_lr[4]:temp_lr[5]+1, ...]
 
                     curr_blk_hr = datahr[temp_hr[0]:temp_hr[1]+1, temp_hr[2]:temp_hr[3]+1, temp_hr[4]:temp_hr[5]+1, ...]
                     # psnr_sim = float(metrics.peak_signal_noise_ratio(curr_blk.numpy(),curr_blk_lr.numpy(),data_range=1))
@@ -406,7 +407,6 @@ class hcp_data(torch.utils.data.Dataset):
     def pre_proc(self,idx):
 
         vol = torch.from_numpy(loaded[idx]['vol0'])
-        vol_lr = interpolate(torch.from_numpy(loaded_gt[idx]['vol0']),vol.shape[:3])
 
         curr_scale,curr_blk_size = self.size_scale_set(idx)
 
@@ -414,8 +414,11 @@ class hcp_data(torch.utils.data.Dataset):
         
 
         # print(curr_blk_size,curr_scale)
+        vol_hr = torch.from_numpy(loaded_gt[idx]['vol0'])
 
-        vol_hr = interpolate(torch.from_numpy(loaded_gt[idx]['vol0']),size)
+        vol_lr = interpolate(vol_hr,vol.shape[:3])
+        
+        vol_hr = interpolate(vol_hr,size)
         adc = interpolate(torch.from_numpy(loaded_gt[idx]['ADC']),size)
         fa = interpolate(torch.from_numpy(loaded_gt[idx]['FA']),size)
         rgb = interpolate(torch.from_numpy(loaded_gt[idx]['color_FA']),size)
@@ -427,7 +430,7 @@ class hcp_data(torch.utils.data.Dataset):
         # tv = torch.from_numpy(loaded_gt[idx]['tensor_vals'])
         
 
-        curr_blk = self.blk_points_pair(vol,vol_hr,blk_size=curr_blk_size,scale=curr_scale,vol_lr = vol_lr)
+        curr_blk = self.blk_points_pair(vol_lr,vol_hr,blk_size=curr_blk_size,scale=curr_scale)
         
         drop_last = (curr_blk[2]//self.batch_size)*self.batch_size
         
