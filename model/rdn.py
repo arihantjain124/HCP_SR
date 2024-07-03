@@ -71,9 +71,9 @@ class RDB(nn.Module):
 
     def forward(self, x):
         if self.attention != None:
-            return self.attention(self.LFF(self.convs(x)) + x)
+            return self.attention(self.LFF(self.convs(x)))
         else:
-            return self.LFF(self.convs(x)) + x
+            return self.LFF(self.convs(x))
 
 class RDN(nn.Module):
     def __init__(self, args,encoder = 'rdb'):

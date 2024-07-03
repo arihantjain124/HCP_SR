@@ -67,28 +67,29 @@ class ImplicitDecoder_3d(nn.Module):
             last_dim_K = hidden_dim
             last_dim_Q = hidden_dim
             
-        self.last_layer = nn.Conv3d(hidden_dims[-1] , out_chans , 1)
+        # self.last_layer = nn.Conv3d(hidden_dims[-1] , out_chans , 1)
 
-        self.fa_adc = nn.Sequential(nn.Conv3d(2, hidden_dims[-2]//2, 1),
+        # if self.tv:
+        self.tensor_val = nn.Sequential(nn.Conv3d(hidden_dims[-1], hidden_dims[-2], 1),
+                            nn.LeakyReLU(),
+                            nn.Conv3d(hidden_dims[-2],hidden_dims[-1], 1),
+                            nn.LeakyReLU(),
+                            nn.Conv3d(hidden_dims[-1],6, 1),
+                            nn.LeakyReLU())
+                            
+        self.fa_adc = nn.Sequential(nn.Conv3d(6, hidden_dims[-2]//2, 1),
                                 nn.LeakyReLU(),
                                 nn.Conv3d(hidden_dims[-2]//2,hidden_dims[-1]//2, 1),
                                 nn.LeakyReLU(),
                                 nn.Conv3d(hidden_dims[-1]//2,2, 1),
                                 nn.ReLU())
 
-        self.rgb = nn.Sequential(nn.Conv3d(3, hidden_dims[-2]//2, 1),
+        self.rgb = nn.Sequential(nn.Conv3d(6, hidden_dims[-2]//2, 1),
                                 nn.LeakyReLU(),
                                 nn.Conv3d(hidden_dims[-2]//2,hidden_dims[-1]//2, 1),
                                 nn.LeakyReLU(),
                                 nn.Conv3d(hidden_dims[-1]//2,3, 1),
                                 nn.ReLU())
-        if self.tv:
-            self.tensor_val = nn.Sequential(nn.Conv3d(hidden_dims[-1], hidden_dims[-2], 1),
-                                nn.LeakyReLU(),
-                                nn.Conv3d(hidden_dims[-2],hidden_dims[-1], 1),
-                                nn.LeakyReLU(),
-                                nn.Conv3d(hidden_dims[-1],6, 1),
-                                nn.LeakyReLU())
             
     def step(self,  x, rel_coor):
         
@@ -109,14 +110,13 @@ class ImplicitDecoder_3d(nn.Module):
                 q = k*self.Q[i](q)
                 
         
-            out = self.last_layer(q)
+            tv_mat = self.tensor_val(q)
         
-        out = out + torch.cat([self.fa_adc(out[:,:2,:,:,:]), self.rgb(out[:,2:,:,:,:])], dim = 1)
+        out = torch.cat([self.fa_adc(tv_mat), self.rgb(tv_mat)], dim = 1)
 
 
         if self.tv:
-            tv = self.tensor_val(q)
-            return out ,tv
+            return out ,tv_mat
         else:
             return out     
         
