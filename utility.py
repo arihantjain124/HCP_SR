@@ -360,7 +360,7 @@ def compute_scores(hr,pred,out,scale,logger=None,iter=None,mask=False,epoch=None
     pred = pred.cpu().detach().numpy().squeeze()
     out = out.cpu().detach().numpy().squeeze()
     if(mask):   
-        mask = (hr>0)
+        mask = (hr>0)   
         # print(mask.shape,hr.shape,pred.shape)
         hr = hr.squeeze()*mask
         pred = pred.squeeze()*mask

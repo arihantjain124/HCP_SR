@@ -115,7 +115,7 @@ class Trainer():
                         
             
         
-            if(self.logger != None and np.random.randint(4) == 1):
+            if(self.logger != None and np.random.randint(3) == 1):
             ## plotting                
                 utility.plot_train_pred(lr_tensor,hr_tensor,pred_tensor,self.logger,self.iter,self.curr_epoch)
                 self.iter +=1
@@ -178,7 +178,7 @@ class Trainer():
             
             # print()v
             size = [i.item() for i in size]
-            if(self.logger != None and np.random.randint(4) == 1):
+            if(self.logger != None and np.random.randint(2) == 1):
                 # print("fig added")
                 psnr, hfen = utility.compute_scores(hr_tensor,pred_tensor,out_tensor,size,self.logger,self.iter,mask = True,epoch = self.curr_epoch)
                 self.iter +=1

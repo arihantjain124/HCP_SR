@@ -10,7 +10,6 @@ import os
 from torch.utils.tensorboard import SummaryWriter
 import numpy as np
 
-np.random.seed(args.seed)
 ids = utils.get_ids()
 # ids.sort()
 total_vols = args.no_vols+args.test_vols
@@ -29,7 +28,7 @@ print(args.run_name)
 
 # print(args.test_block_size)
 if __name__ == '__main__':
-    torch.manual_seed(args.seed)
+    # torch.manual_seed(args.seed)
     checkpoint = utility.checkpoint(args)       ## setting the log and the train information
     if checkpoint.ok:
         model = model.Model(args)

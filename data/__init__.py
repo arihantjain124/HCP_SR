@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 import data.HCP_dataset_h5_arb as HCP_dataset
 
 class Data:
-    def __init__(self, args,ids,debug = False,scale = None):
+    def __init__(self, args,ids,debug = False,scale = None,patch_size = 32,data_config = None):
         
         self.dataset_hcp = HCP_dataset
         self.pin_mem = args.pin_mem
@@ -17,6 +17,12 @@ class Data:
         self.flag_sca = True
         self.flag_asy = True
         self.flag_var = True
+        args.patch_size = patch_size
+
+        if data_config is not None:
+            args.sca,args.asy,args.var = data_config[0],data_config[1],data_config[2]
+        else:
+            args.sca,args.asy,args.var = 0,0,0
 
         self.training_dataset = self.dataset_hcp.hcp_data(args,self.ids[:self.train_vols],scale = scale)
 
@@ -37,8 +43,8 @@ class Data:
         t['asy'] = float(self.training_dataset.asy)
         t['var'] = float(self.training_dataset.var)
 
-        temp = np.random.randint(4) 
-        if(temp <= 1):
+        temp = np.random.randint(10) 
+        if(temp <= 3):
             
             if(t['sca'] > 1):
                 self.flag_sca = False
@@ -50,7 +56,7 @@ class Data:
             else:
                 t['sca'] -= 0.1
             
-        elif(temp <4):
+        elif(temp<=7):
             if(t['var'] > 7):
                 self.flag_var = False
             elif(t['var'] < 2):

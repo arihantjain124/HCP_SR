@@ -5,7 +5,7 @@ parser = argparse.ArgumentParser(description="DTI_ARB")
 
 parser.add_argument("--block_size", type=tuple, default=(48,48,6),
                     help="Block Size")
-parser.add_argument("--var_blk_size", type=bool, default=False,
+parser.add_argument("--var_blk_size", type=bool, default=True,
                     help="Block Size")
 # parser.add_argument("--enc", type=str, default='rdn',
 #                     help="Encoder Type")
