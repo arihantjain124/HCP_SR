@@ -1,0 +1,13 @@
+torch>=2.0
+torchvision
+numpy
+scipy
+scikit-image
+h5py
+opencv-python
+matplotlib
+tqdm
+dipy
+unfoldNd
+tensorboard
+jupyter
