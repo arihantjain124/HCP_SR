@@ -8,11 +8,6 @@ This is the reference implementation accompanying the paper:
 > Arihant Jain, Sriprabha Ramanarayanan, Keerthi Ram, Mohanasankar Sivaprakasam
 > Indian Institute of Technology, Madras
 
-<p align="center">
-  <img src="docs/assets/sample_comparison_1.jpg" width="90%" alt="HR vs LR DWI / ADC / FA / RGB comparison">
-  <br><em>Qualitative comparison: high-resolution (7T) vs. low-resolution (3T) DWI channels, and the derived ADC, FA and principal-diffusion-direction (RGB) maps, for a single HCP subject/patch.</em>
-</p>
-
 ## Why FastDTI
 
 Diffusion Tensor Imaging (DTI) needs many diffusion-weighted acquisitions along multiple directions to robustly estimate the diffusion tensor, which means long scan times and high sensitivity to motion. Prior deep-learning approaches (e.g. denoising CNNs, or diffusion-model-based methods like DiffDTI) either operate slice-by-slice with iterative multi-step inference, or don't support arbitrary upscaling. FastDTI addresses both:
